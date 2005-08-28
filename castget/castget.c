@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.1 2005/08/16 23:16:19 mariuslj Exp $
+  $Id: castget.c,v 1.2 2005/08/28 10:36:46 mariuslj Exp $
   
 */
 
@@ -118,6 +118,8 @@ int main(int argc, char **argv)
     return 1;
   }
 
+  LIBXML_TEST_VERSION;
+        
   /* Build the channel directory path and ensure that it exists. */
   channeldir = g_build_filename(g_get_home_dir(), ".castget", NULL);
 
@@ -153,6 +155,8 @@ int main(int argc, char **argv)
   if (kf)
     _configuration_file_close(kf);
   
+  xmlCleanupParser();
+
   return ret;
 }
 
@@ -263,8 +267,6 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
       if (g_key_file_has_key(kf, identifier, "spool", &error)) {
         spool_directory = g_key_file_get_value(kf, identifier, "spool", &error);
         
-        LIBXML_TEST_VERSION;
-        
         /* Construct channel file name. */
         channel_filename = g_strjoin(".", identifier, "xml", NULL);
         channel_file = g_build_filename(channel_directory, channel_filename, NULL);
@@ -274,23 +276,26 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
         
         g_free(channel_file);
 
-        switch (op) {
-        case OP_UPDATE:
-          libcastget_channel_update(c, &castget, _action_callback);
-          break;
-          
-        case OP_CATCHUP:
-          libcastget_channel_catchup(c, &castget, _action_callback);
-          break;
+        if (c) {
+          switch (op) {
+          case OP_UPDATE:
+            libcastget_channel_update(c, &castget, _action_callback);
+            break;
             
-        case OP_LIST:
-          libcastget_channel_list(c, &castget, _action_callback);
-          break;
+          case OP_CATCHUP:
+            libcastget_channel_catchup(c, &castget, _action_callback);
+            break;
+            
+          case OP_LIST:
+            libcastget_channel_list(c, &castget, _action_callback);
+            break;
+          }
+          
+          libcastget_channel_free(c);
+        } else {
+          fprintf(stderr, "Error parsing channel file for channel %s.\n", identifier);
+          ret = 1;
         }
-          
-        libcastget_channel_free(c);
-          
-        xmlCleanupParser();
       } else {
         fprintf(stderr, "No spool directory for channel %s.\n", identifier);
         ret = 1;
