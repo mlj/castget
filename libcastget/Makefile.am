@@ -28,7 +28,9 @@ libcastget_la_SOURCES = \
   rss.c \
   rss.h \
   urlget.c \
-  urlget.h
+  urlget.h \
+  utils.c \
+  utils.h
 
 include_HEADERS = \
   libcastget.h

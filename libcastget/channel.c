@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.c,v 1.1 2005/08/16 23:16:19 mariuslj Exp $
+  $Id: channel.c,v 1.2 2005/10/23 22:44:11 mariuslj Exp $
   
 */
 
@@ -30,6 +30,7 @@
 #include "urlget.h"
 #include "channel.h"
 #include "rss.h"
+#include "utils.h"
 
 static void _enclosure_iterator(const void *user_data, int i, const xmlNode *node)
 {
@@ -79,25 +80,25 @@ static void _cast_channel_save_downloaded_enclosure(gpointer key, gpointer value
                                                     gpointer user_data)
 {
   FILE *f = (FILE *)user_data;
+
   g_fprintf(f, "  <enclosure url=\"%s\"/>\n", (gchar *)key);
+}
+
+static int _cast_channel_save_channel(FILE *f, gpointer user_data)
+{
+  libcastget_channel *c = (libcastget_channel *)user_data;
+
+  g_fprintf(f, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+  g_fprintf(f, "<channel version=\"1.0\">\n");
+  g_hash_table_foreach(c->downloaded_enclosures, _cast_channel_save_downloaded_enclosure, f);
+  g_fprintf(f, "</channel>\n");
+
+  return 0;
 }
 
 static void _cast_channel_save(libcastget_channel *c)
 {
-  FILE *f;
-
-  f = fopen(c->channel_filename, "w");
-
-  if (!f) {
-    g_fprintf(stderr, "Error opening configuration file.\n");
-    return;
-  }
-
-  g_fprintf(f, "<channel>\n");
-  g_hash_table_foreach(c->downloaded_enclosures, _cast_channel_save_downloaded_enclosure, f);
-  g_fprintf(f, "</channel>\n");
-
-  fclose(f);
+  libcastget_write_by_temporary_file(c->channel_filename, _cast_channel_save_channel, c);
 }
 
 void libcastget_channel_free(libcastget_channel *c)
