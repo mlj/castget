@@ -17,11 +17,11 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id: configure.ac,v 1.1 2005/08/16 23:16:19 mariuslj Exp $
+# $Id: configure.ac,v 1.2 2005/11/13 23:03:31 mariuslj Exp $
 # 
 
 AC_PREREQ(2.59)
-AC_INIT(castget, 0.1, mariuslj@ifi.uio.no)
+AC_INIT(castget, 0.9.0, mariuslj@ifi.uio.no)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([castget/castget.c])
 AC_CONFIG_HEADER([config.h])
