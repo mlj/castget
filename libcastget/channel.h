@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.h,v 1.1 2005/08/16 23:16:19 mariuslj Exp $
+  $Id: channel.h,v 1.2 2005/11/13 23:01:27 mariuslj Exp $
   
 */
 
@@ -29,6 +29,7 @@ struct _libcastget_channel {
   gchar *channel_filename;
   gchar *spool_directory;
   GHashTable *downloaded_enclosures;
+  gchar *rss_last_fetched;
 };
 
 #endif /* CHANNEL_H */

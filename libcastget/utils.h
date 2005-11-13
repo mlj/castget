@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: utils.h,v 1.2 2005/11/13 21:53:00 mariuslj Exp $
+  $Id: utils.h,v 1.3 2005/11/13 23:01:27 mariuslj Exp $
   
 */
 
@@ -27,7 +27,9 @@
 
 int libcastget_write_by_temporary_file(const gchar *filename, 
                                        int(*writer)(FILE *f, gpointer user_data), 
-                                       gpointer user_data, gchar **used_filename);
+                                       gpointer user_data, gchar
+                                       **used_filename);
+gchar *libcastget_get_rfc822_time(void);
 
 #endif /* UTILS_H */
 
