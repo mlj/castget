@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.2 2005/08/28 10:36:46 mariuslj Exp $
+  $Id: castget.c,v 1.3 2005/11/13 21:51:43 mariuslj Exp $
   
 */
 
@@ -42,6 +42,14 @@ enum op {
   OP_LIST
 };
 
+struct castget {
+  int verbose;
+  int quiet;
+  const gchar *identifier;
+  enum op op;
+  GKeyFile *kf;
+};
+
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier, 
                             int verbose, int quiet, enum op op);
 static void usage(void);
@@ -49,10 +57,11 @@ static void version(void);
 static GKeyFile *_configuration_file_open(void);
 static void _configuration_file_close(GKeyFile *kf);
 #ifdef ENABLE_ID3LIB
-static int _id3_set(int clear, const gchar *filename, const gchar *lead_artist, 
+static int _id3_set(const gchar *filename, int clear, int verbose, const gchar *lead_artist, 
                     const gchar *content_group, const gchar *title, 
                     const gchar *album, const gchar *content_type, const gchar *year,
                     const gchar *comment);
+static int _id3_check_and_set(const gchar *filename, const struct castget *c);
 #endif /* ENABLE_ID3LIB */
 
 int main(int argc, char **argv)
@@ -171,13 +180,6 @@ static void version(void)
   g_printf("Copyright (C) 2005 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
 }
 
-struct castget {
-  int verbose;
-  int quiet;
-  const gchar *identifier;
-  enum op op;
-};
-
 static void _action_callback(void *user_data, libcastget_channel_action action, libcastget_channel_info *channel_info,
                              libcastget_enclosure *enclosure, const gchar *filename)
 {
@@ -237,7 +239,7 @@ static void _action_callback(void *user_data, libcastget_channel_action action, 
 
         if (!strcmp(enclosure->type, "audio/mpeg")) {
 #ifdef ENABLE_ID3LIB
-          _id3_set(0, filename, NULL, NULL, NULL, channel_info->title, "Podcast", "2005", "");
+          _id3_check_and_set(filename, c);
 #endif /* ENABLE_ID3LIB */
         }
       }
@@ -259,6 +261,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   castget.quiet = quiet;
   castget.identifier = identifier;
   castget.op = op;
+  castget.kf = kf;
 
   if (g_key_file_has_group(kf, identifier)) {
     if (g_key_file_has_key(kf, identifier, "url", &error)) {
@@ -266,7 +269,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
 
       if (g_key_file_has_key(kf, identifier, "spool", &error)) {
         spool_directory = g_key_file_get_value(kf, identifier, "spool", &error);
-        
+
         /* Construct channel file name. */
         channel_filename = g_strjoin(".", identifier, "xml", NULL);
         channel_file = g_build_filename(channel_directory, channel_filename, NULL);
@@ -364,7 +367,7 @@ static int _id3_find_and_set_frame(ID3Tag *tag, ID3_FrameID id, const char *valu
   return 0;
 }
 
-static int _id3_set(int clear, const gchar *filename, const gchar *lead_artist, 
+static int _id3_set(const gchar *filename, int clear, int verbose, const gchar *lead_artist, 
                     const gchar *content_group, const gchar *title, const gchar *album, 
                     const gchar *content_type, const gchar *year, const gchar *comment)
 {
@@ -381,26 +384,54 @@ static int _id3_set(int clear, const gchar *filename, const gchar *lead_artist,
   if (clear)
     ID3Tag_Clear(tag); // TODO
 
-  if (lead_artist)
+  if (lead_artist) {
     errors += _id3_find_and_set_frame(tag, ID3FID_LEADARTIST, lead_artist);
 
-  if (content_group)
+    if (verbose)
+      printf("Set ID3 tag lead artist to %s.\n", lead_artist);
+  }
+
+  if (content_group) {
     errors += _id3_find_and_set_frame(tag, ID3FID_CONTENTGROUP, content_group);
 
-  if (title)
+    if (verbose)
+      printf("Set ID3 tag content group to %s.\n", content_group);
+  }
+
+  if (title) {
     errors += _id3_find_and_set_frame(tag, ID3FID_TITLE, title);
 
-  if (album)
+    if (verbose)
+      printf("Set ID3 tag title to %s.\n", title);
+  }
+
+  if (album) {
     errors += _id3_find_and_set_frame(tag, ID3FID_ALBUM, album);
 
-  if (content_type)
+    if (verbose)
+      printf("Set ID3 tag album to %s.\n", album);
+  }
+
+  if (content_type) {
     errors += _id3_find_and_set_frame(tag, ID3FID_CONTENTTYPE, content_type);
 
-  if (year)
+    if (verbose)
+      printf("Set ID3 tag content type to %s.\n", content_type);
+  }
+
+  if (year) {
     errors += _id3_find_and_set_frame(tag, ID3FID_YEAR, year);
 
-  if (comment)
+    if (verbose)
+      printf("Set ID3 title year to %s.\n", year);
+  }
+
+  if (comment) {
     errors += _id3_find_and_set_frame(tag, ID3FID_COMMENT, comment);
+
+    if (verbose)
+      printf("Set ID3 tag comment to %s.\n", comment);
+  }
 
   if (!errors)
     ID3Tag_Update(tag);
@@ -409,6 +440,56 @@ static int _id3_set(int clear, const gchar *filename, const gchar *lead_artist,
 
   return errors;
 }
+
+static int _id3_check_and_set(const gchar *filename, const struct castget *c)
+{
+  const gchar *lead_artist = NULL;
+  const gchar *content_group = NULL; 
+  const gchar *title = NULL; 
+  const gchar *album = NULL;
+  const gchar *content_type = NULL;
+  const gchar *year = NULL;
+  const gchar *comment = NULL;
+  GError *error = NULL;
+
+  if (g_key_file_has_key(c->kf, c->identifier, "id3leadartist", &error)) {
+    lead_artist = g_key_file_get_value(c->kf, c->identifier, "id3leadartist", &error);
+  }
+      
+  if (g_key_file_has_key(c->kf, c->identifier, "id3contentgroup", &error)) {
+    content_group = g_key_file_get_value(c->kf, c->identifier, "id3contentgroup", &error);
+  }
+      
+  if (g_key_file_has_key(c->kf, c->identifier, "id3title", &error)) {
+    title = g_key_file_get_value(c->kf, c->identifier, "id3title", &error);
+  }
+      
+  if (g_key_file_has_key(c->kf, c->identifier, "id3album", &error)) {
+    album = g_key_file_get_value(c->kf, c->identifier, "id3album", &error);
+  }
+      
+  if (g_key_file_has_key(c->kf, c->identifier, "id3album", &error)) {
+    album = g_key_file_get_value(c->kf, c->identifier, "id3album", &error);
+  }
+      
+  if (g_key_file_has_key(c->kf, c->identifier, "id3contenttype", &error)) {
+    content_type = g_key_file_get_value(c->kf, c->identifier, "id3contenttype", &error);
+  }
+      
+  if (g_key_file_has_key(c->kf, c->identifier, "id3year", &error)) {
+    year = g_key_file_get_value(c->kf, c->identifier, "id3year", &error);
+  }
+      
+  if (g_key_file_has_key(c->kf, c->identifier, "id3comment", &error)) {
+    comment = g_key_file_get_value(c->kf, c->identifier, "id3comment", &error);
+  }
+      
+  if (lead_artist || content_group || title || album || content_type || year || comment)
+    return _id3_set(filename, 0, c->verbose, lead_artist, content_group, title, album, content_type, year, comment);
+  else
+    return 0;
+}
+
 #endif /* ENABLE_ID3LIB */
 
 /* 
