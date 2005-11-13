@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.c,v 1.1 2005/08/16 23:16:19 mariuslj Exp $
+  $Id: rss.c,v 1.2 2005/11/13 21:53:00 mariuslj Exp $
   
 */
 
@@ -149,62 +149,25 @@ rss_file *rss_open_file(const char *filename)
   return f;
 }
 
-static size_t _urlget_rss_callback(void *buffer, size_t size, size_t nmemb, void *user_data)
+static int _rss_open_url_cb(FILE *f, gpointer user_data)
 {
-  xmlParserCtxtPtr *ctxt = (xmlParserCtxtPtr *)user_data;
+  gchar *url = (gchar *)user_data;
 
-  if (!*ctxt) {
-    *ctxt = xmlCreatePushParserCtxt(NULL, NULL, buffer, size * nmemb, "feed.xml");
-   
-    if (!*ctxt) {
-      fprintf(stderr, "Error creating XML parser context.\n");
-      return 1;
-    }
-  } else
-    xmlParseChunk(*ctxt, buffer, size * nmemb, 0);
-
-  return size * nmemb;
+  return libcastget_urlget_file(url, f);
 }
 
 rss_file *rss_open_url(const char *url)
 {
-  xmlParserCtxtPtr ctxt = NULL;
-  xmlDocPtr doc;
   rss_file *f;
-  xmlNode *root_element = NULL;
-  int res;
+  gchar *rss_filename;
 
-  urlget(url, &ctxt, _urlget_rss_callback);
-
-  /* Indicate that parsing is finished. */
-  xmlParseChunk(ctxt, NULL, 0, 1);
-
-  doc = ctxt->myDoc;
-  res = ctxt->wellFormed;
-  xmlFreeParserCtxt(ctxt);
-
-  if (!res) {
-    fprintf(stderr, "Error parsing RSS file %s.\n", url);
+  if (libcastget_write_by_temporary_file(rss_filename, _rss_open_url_cb, url, &rss_filename))
     return NULL;
-  }
 
-  if (!doc) {
-    fprintf(stderr, "Error parsing RSS file %s.\n", url);
-    return NULL;
-  }
+  f = rss_open_file(rss_filename);
 
-  root_element = xmlDocGetRootElement(doc);
-
-  if (!root_element)  {
-    xmlFreeDoc(doc);
-
-    fprintf(stderr, "Error parsing RSS file %s.\n", url);
-    return NULL;
-  }
-
-  f = rss_parse(url, root_element);
- 
-  xmlFreeDoc(doc);
+  unlink(rss_filename);
+  g_free(rss_filename);
 
   return f;
 }

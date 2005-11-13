@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: utils.h,v 1.1 2005/10/23 22:44:11 mariuslj Exp $
+  $Id: utils.h,v 1.2 2005/11/13 21:53:00 mariuslj Exp $
   
 */
 
@@ -25,9 +25,9 @@
 #include <stdio.h>
 #include <glib.h>
 
-int libcastget_write_by_temporary_file(const char *filename, 
+int libcastget_write_by_temporary_file(const gchar *filename, 
                                        int(*writer)(FILE *f, gpointer user_data), 
-                                       gpointer user_data);
+                                       gpointer user_data, gchar **used_filename);
 
 #endif /* UTILS_H */
 

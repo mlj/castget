@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.c,v 1.2 2005/10/23 22:44:11 mariuslj Exp $
+  $Id: channel.c,v 1.3 2005/11/13 21:53:00 mariuslj Exp $
   
 */
 
@@ -98,7 +98,7 @@ static int _cast_channel_save_channel(FILE *f, gpointer user_data)
 
 static void _cast_channel_save(libcastget_channel *c)
 {
-  libcastget_write_by_temporary_file(c->channel_filename, _cast_channel_save_channel, c);
+  libcastget_write_by_temporary_file(c->channel_filename, _cast_channel_save_channel, c, NULL);
 }
 
 void libcastget_channel_free(libcastget_channel *c)
@@ -172,7 +172,7 @@ int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget
         if (cb)
           cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, &(f->channel_info), f->items[i]->enclosure, enclosure_full_filename);
 
-        if (urlget(f->items[i]->enclosure->url, enclosure_file, _enclosure_urlget_cb)) {
+        if (libcastget_urlget_buffer(f->items[i]->enclosure->url, enclosure_file, _enclosure_urlget_cb)) {
           g_fprintf(stderr, "Error downloading enclosure from %s.\n", f->items[i]->enclosure->url);
         } else {
           g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url, NULL);

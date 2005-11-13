@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: utils.c,v 1.1 2005/10/23 22:44:11 mariuslj Exp $
+  $Id: utils.c,v 1.2 2005/11/13 21:53:00 mariuslj Exp $
   
 */
 
@@ -25,9 +25,9 @@
 
 #include "utils.h"
 
-int libcastget_write_by_temporary_file(const char *filename, 
+int libcastget_write_by_temporary_file(const gchar *filename, 
                                        int(*writer)(FILE *f, gpointer user_data), 
-                                       gpointer user_data)
+                                       gpointer user_data, gchar **used_filename)
 {
   int retval;
   FILE *f;
@@ -57,8 +57,21 @@ int libcastget_write_by_temporary_file(const char *filename,
   fclose(f);
   close(fd);
 
-  if (g_rename(tmp_filename_used, filename) < 0) {
-    perror("Error renamin temporary file");
+  if (filename) {
+    if (g_rename(tmp_filename_used, filename) < 0) {
+      perror("Error renaming temporary file");
+      
+      unlink(tmp_filename_used);
+      g_free(tmp_filename_used);
+      return -1;
+    }
+  }
+
+  if (used_filename) {
+    if (filename)
+      *used_filename = g_strdup(filename);
+    else 
+      *used_filename = g_strdup(tmp_filename_used);
   }
 
   g_free(tmp_filename_used);
