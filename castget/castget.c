@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.3 2005/11/13 21:51:43 mariuslj Exp $
+  $Id: castget.c,v 1.4 2005/11/14 00:08:54 mariuslj Exp $
   
 */
 
@@ -171,7 +171,16 @@ int main(int argc, char **argv)
 
 static void usage(void)
 {
-  g_printf("castget [-c|-l] [-v|-q] [identifier(s)]\n");
+  g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [identifier(s)]\n\n");
+  g_printf("  --catchup   -c    Catch up with channels.\n");
+  g_printf("  --list      -l    List available enclosures.\n");
+  g_printf("  --version   -V    Print version number.\n");
+  g_printf("  --help      -h    Print usage information.\n");
+  g_printf("\n");
+  g_printf("  --verbose   -v    Verbose mode.\n");
+  g_printf("  --quiet     -q    Quiet mode.\n\n");
+  g_printf("The identifiers identifies the channels affected by the selected operation.\n");
+  g_printf("If no identifier is supplied all channels are affect.\n");
 }
 
 static void version(void)
