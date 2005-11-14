@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+  padding: 0; 
+  color: #303030; 
+  background-color: #e0e0e0;
+  font-family: sans-serif;
+}
+
+h1 {
+  margin: 0; 
+  color: #e06000; 
+  font-size: 4em; 
+  letter-spacing: -4px; 
+  text-align: center;
+}
+
+h2 {
+  margin: 0; 
+  color: #808080; 
+  font-weight: normal; 
+  font-size: 2.5em; 
+  letter-spacing: -2px; 
+  text-align: center;
+  padding-bottom: 1em;
+}
+
+h3 {
+  margin: 10px 0 10px 0; 
+  color: #e06000; 
+  font-weight: normal; 
+  font-size: 2em; 
+}
+
+p {
+  line-height: 1.5em;
+}
+
+a {
+  color: #d85d5d; 
+  font-weight: bold; 
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ul {
+  margin: 5px 0 5px 0; 
+}
+
+li {
+  margin: 0 0 8px 25px;
+}
+
+#content {
+  border: 2px solid #c0c0c0;
+  background-color: white;
+  margin: 20px 200px 20px 200px; 
+  padding: 20px 20px 20px 20px; 
+  height: 100%;
+}
+
+.application, .filename { 
+  font-style: italic;
+}
