@@ -23,7 +23,9 @@ EXTRA_DIST = castgetrc.example
 bin_PROGRAMS = castget
 
 castget_SOURCES = \
-  castget.c
+  castget.c \
+  configuration.h \
+  configuration.c
 
 castget_LDADD = \
   $(GLIBS_LIBS) \

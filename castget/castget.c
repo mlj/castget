@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.4 2005/11/14 00:08:54 mariuslj Exp $
+  $Id: castget.c,v 1.5 2005/11/19 16:52:33 mariuslj Exp $
   
 */
 
@@ -34,6 +34,7 @@
 #ifdef ENABLE_ID3LIB
 #include <id3.h>
 #endif /* ENABLE_ID3LIB */
+#include "configuration.h"
 #include "libcastget.h"
 
 enum op {
@@ -42,38 +43,33 @@ enum op {
   OP_LIST
 };
 
-struct castget {
-  int verbose;
-  int quiet;
-  const gchar *identifier;
-  enum op op;
-  GKeyFile *kf;
-};
-
-static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier, 
-                            int verbose, int quiet, enum op op);
+static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier,
+                            enum op op, struct channel_configuration *defaults);
 static void usage(void);
 static void version(void);
 static GKeyFile *_configuration_file_open(void);
 static void _configuration_file_close(GKeyFile *kf);
 #ifdef ENABLE_ID3LIB
-static int _id3_set(const gchar *filename, int clear, int verbose, const gchar *lead_artist, 
+static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist, 
                     const gchar *content_group, const gchar *title, 
                     const gchar *album, const gchar *content_type, const gchar *year,
                     const gchar *comment);
-static int _id3_check_and_set(const gchar *filename, const struct castget *c);
+static int _id3_check_and_set(const gchar *filename,
+                              const struct channel_configuration *cfg);
 #endif /* ENABLE_ID3LIB */
+
+static int verbose = 0;
+static int quiet = 0;
 
 int main(int argc, char **argv)
 {
   enum op op = OP_UPDATE;
-  int verbose = 0;
-  int quiet = 0;
   int c, i;
   int ret = 0;
   gchar **groups;
   gchar *channeldir;
   GKeyFile *kf;
+  struct channel_configuration *defaults;
 
   for (;;) {
     int option_index = 0;
@@ -139,24 +135,32 @@ int main(int argc, char **argv)
     }
   }
 
-  /* Read configuration file. */
+  /* Read configuration file and defaults. */
   kf = _configuration_file_open();
+
+  if (g_key_file_has_group(kf, "*"))
+    defaults = channel_configuration_new(kf, "*", NULL);
+  else
+    defaults = NULL;
 
   if (kf) {
     /* Perform actions. */
     if (optind < argc) {
       while (optind < argc)
-        _process_channel(channeldir, kf, argv[optind++], verbose, quiet, op);
+        _process_channel(channeldir, kf, argv[optind++], op, defaults);
     } else {
       groups = g_key_file_get_groups(kf, NULL);
       
       for (i = 0; groups[i]; i++)
-        _process_channel(channeldir, kf, groups[i], verbose, quiet, op);
+        _process_channel(channeldir, kf, groups[i], op, defaults);
       
       g_strfreev(groups);
     }
   } else
     ret = 1;
+
+  if (defaults)
+    channel_configuration_free(defaults);
 
   /* Clean-up. */
   g_free(channeldir);
@@ -189,139 +193,153 @@ static void version(void)
   g_printf("Copyright (C) 2005 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
 }
 
-static void _action_callback(void *user_data, libcastget_channel_action action, libcastget_channel_info *channel_info,
-                             libcastget_enclosure *enclosure, const gchar *filename)
+static void update_callback(void *user_data, libcastget_channel_action action, libcastget_channel_info *channel_info,
+                            libcastget_enclosure *enclosure, const gchar *filename)
 {
-  struct castget *c = (struct castget *)user_data;
+  struct channel_configuration *c = (struct channel_configuration *)user_data;
 
-  if (!c->quiet) {
+  if (!quiet) {
     switch (action) {
     case CCA_RSS_DOWNLOAD_START:
-      switch (c->op) {
-      case OP_UPDATE:
-        g_printf("Updating channel %s...\n", c->identifier);
-        break;
-        
-      case OP_CATCHUP:
-        g_printf("Catching up with channel %s...\n", c->identifier);
-        break;
-        
-      case OP_LIST:
-        g_printf("Listing channel %s...\n", c->identifier);
-        break;
-      }
-      break;
-
-    case CCA_RSS_DOWNLOAD_END:
+      g_printf("Updating channel %s...\n", c->identifier);
       break;
 
     case CCA_ENCLOSURE_DOWNLOAD_START:
       g_assert(channel_info);
       g_assert(enclosure);
 
-      if (c->verbose)
-        switch (c->op) {
-        case OP_UPDATE:
-          g_printf("Downloading %s (%ld bytes) from %s\n", enclosure->url, enclosure->length, 
-                   channel_info->title);
-          break;
-
-        case OP_CATCHUP:
-          g_printf("Catching up on %s (%ld bytes) from %s\n", enclosure->url, enclosure->length, 
-                   channel_info->title);
-          break;
-
-        case OP_LIST:
-          g_printf("* %s (%ld bytes) from %s\n", enclosure->url, enclosure->length, 
-                   channel_info->title);
-          break;
-        }
-
+      if (verbose)
+        g_printf("Downloading %s (%ld bytes) from %s\n", enclosure->url, enclosure->length,
+                 channel_info->title);
       break;
 
     case CCA_ENCLOSURE_DOWNLOAD_END:
       g_assert(channel_info);
       g_assert(enclosure);
+      g_assert(filename);
 
-      if (c->op == OP_UPDATE) {
-        g_assert(filename);
-
-        if (!strcmp(enclosure->type, "audio/mpeg")) {
+      if (!strcmp(enclosure->type, "audio/mpeg")) {
 #ifdef ENABLE_ID3LIB
-          _id3_check_and_set(filename, c);
+        _id3_check_and_set(filename, c);
 #endif /* ENABLE_ID3LIB */
-        }
       }
+      break;
+    }
+  } 
+}
+
+static void catchup_callback(void *user_data, libcastget_channel_action action, libcastget_channel_info *channel_info,
+                             libcastget_enclosure *enclosure, const gchar *filename)
+{
+  struct channel_configuration *c = (struct channel_configuration *)user_data;
+
+  if (!quiet) {
+    switch (action) {
+    case CCA_RSS_DOWNLOAD_START:
+      g_printf("Catching up with channel %s...\n", c->identifier);
+      break;
+
+    case CCA_ENCLOSURE_DOWNLOAD_START:
+      g_assert(channel_info);
+      g_assert(enclosure);
+
+      if (verbose)
+        g_printf("Catching up on %s (%ld bytes) from %s\n", enclosure->url, enclosure->length,
+                 channel_info->title);
+      break;
+    }
+  }
+}
+
+static void list_callback(void *user_data, libcastget_channel_action action, libcastget_channel_info *channel_info,
+                          libcastget_enclosure *enclosure, const gchar *filename)
+{
+  struct channel_configuration *c = (struct channel_configuration *)user_data;
+
+  if (!quiet) {
+    switch (action) {
+    case CCA_RSS_DOWNLOAD_START:
+      g_printf("Listing channel %s...\n", c->identifier);
+      break;
+
+    case CCA_ENCLOSURE_DOWNLOAD_START:
+      g_assert(channel_info);
+      g_assert(enclosure);
+
+      if (verbose)
+        g_printf("* %s (%ld bytes) from %s\n", enclosure->url, enclosure->length, 
+                 channel_info->title);
       break;
     }
   }
 }
 
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier, 
-                            int verbose, int quiet, enum op op)
+                            enum op op, struct channel_configuration *defaults)
 {
-  int ret = 0;
   libcastget_channel *c;
-  gchar *url, *channel_filename, *channel_file, *spool_directory;
-  GError *error = NULL;
-  struct castget castget;
+  gchar *channel_filename, *channel_file;
+  struct channel_configuration *channel_configuration;
 
-  castget.verbose = verbose;
-  castget.quiet = quiet;
-  castget.identifier = identifier;
-  castget.op = op;
-  castget.kf = kf;
-
-  if (g_key_file_has_group(kf, identifier)) {
-    if (g_key_file_has_key(kf, identifier, "url", &error)) {
-      url = g_key_file_get_value(kf, identifier, "url", &error);
-
-      if (g_key_file_has_key(kf, identifier, "spool", &error)) {
-        spool_directory = g_key_file_get_value(kf, identifier, "spool", &error);
-
-        /* Construct channel file name. */
-        channel_filename = g_strjoin(".", identifier, "xml", NULL);
-        channel_file = g_build_filename(channel_directory, channel_filename, NULL);
-        g_free(channel_filename);
-        
-        c = libcastget_channel_new(url, channel_file, spool_directory);
-        
-        g_free(channel_file);
-
-        if (c) {
-          switch (op) {
-          case OP_UPDATE:
-            libcastget_channel_update(c, &castget, _action_callback);
-            break;
-            
-          case OP_CATCHUP:
-            libcastget_channel_catchup(c, &castget, _action_callback);
-            break;
-            
-          case OP_LIST:
-            libcastget_channel_list(c, &castget, _action_callback);
-            break;
-          }
-          
-          libcastget_channel_free(c);
-        } else {
-          fprintf(stderr, "Error parsing channel file for channel %s.\n", identifier);
-          ret = 1;
-        }
-      } else {
-        fprintf(stderr, "No spool directory for channel %s.\n", identifier);
-        ret = 1;
-      }
-    } else {
-      fprintf(stderr, "No feed URL for channel %s.\n", identifier);
-      ret = 1;
-    }
-  } else {
+  /* Check channel identifier and read channel configuration. */
+  if (!g_key_file_has_group(kf, identifier)) {
     fprintf(stderr, "Unknown channel identifier %s.\n", identifier);
-    ret = 1;
+
+    return -1;
   }
 
-  return ret;
+  channel_configuration = channel_configuration_new(kf, identifier, defaults);
+
+  /* Check that mandatory keys were set. */
+  if (!channel_configuration->url) {
+    fprintf(stderr, "No feed URL set for channel %s.\n", identifier);
+      
+    channel_configuration_free(channel_configuration);
+    return -1;
+  }
+
+  if (!channel_configuration->spool_directory) {
+    fprintf(stderr, "No spool directory set for channel %s.\n", identifier);
+
+    channel_configuration_free(channel_configuration);
+    return -1;
+  }
+
+  /* Construct channel file name. */
+  channel_filename = g_strjoin(".", identifier, "xml", NULL);
+  channel_file = g_build_filename(channel_directory, channel_filename, NULL);
+  g_free(channel_filename);
+        
+  c = libcastget_channel_new(channel_configuration->url, channel_file, 
+                             channel_configuration->spool_directory);
+  g_free(channel_file);
+
+  if (!c) {
+    fprintf(stderr, "Error parsing channel file for channel %s.\n", identifier);
+
+    libcastget_channel_free(c);
+    channel_configuration_free(channel_configuration);
+    return -1;
+  }
+    
+  switch (op) {
+  case OP_UPDATE:
+    libcastget_channel_update(c, channel_configuration, update_callback);
+    break;
+            
+  case OP_CATCHUP:
+    libcastget_channel_catchup(c, channel_configuration, catchup_callback);
+    break;
+            
+  case OP_LIST:
+    libcastget_channel_list(c, channel_configuration, list_callback);
+    break;
+  }
+          
+  libcastget_channel_free(c);
+  channel_configuration_free(channel_configuration);
+
+  return 0;
 }
 
 static GKeyFile *_configuration_file_open(void)
@@ -376,7 +394,7 @@ static int _id3_find_and_set_frame(ID3Tag *tag, ID3_FrameID id, const char *valu
   return 0;
 }
 
-static int _id3_set(const gchar *filename, int clear, int verbose, const gchar *lead_artist, 
+static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist, 
                     const gchar *content_group, const gchar *title, const gchar *album, 
                     const gchar *content_type, const gchar *year, const gchar *comment)
 {
@@ -450,51 +468,14 @@ static int _id3_set(const gchar *filename, int clear, int verbose, const gchar *
   return errors;
 }
 
-static int _id3_check_and_set(const gchar *filename, const struct castget *c)
+static int _id3_check_and_set(const gchar *filename,
+                              const struct channel_configuration *cfg)
 {
-  const gchar *lead_artist = NULL;
-  const gchar *content_group = NULL; 
-  const gchar *title = NULL; 
-  const gchar *album = NULL;
-  const gchar *content_type = NULL;
-  const gchar *year = NULL;
-  const gchar *comment = NULL;
-  GError *error = NULL;
-
-  if (g_key_file_has_key(c->kf, c->identifier, "id3leadartist", &error)) {
-    lead_artist = g_key_file_get_value(c->kf, c->identifier, "id3leadartist", &error);
-  }
-      
-  if (g_key_file_has_key(c->kf, c->identifier, "id3contentgroup", &error)) {
-    content_group = g_key_file_get_value(c->kf, c->identifier, "id3contentgroup", &error);
-  }
-      
-  if (g_key_file_has_key(c->kf, c->identifier, "id3title", &error)) {
-    title = g_key_file_get_value(c->kf, c->identifier, "id3title", &error);
-  }
-      
-  if (g_key_file_has_key(c->kf, c->identifier, "id3album", &error)) {
-    album = g_key_file_get_value(c->kf, c->identifier, "id3album", &error);
-  }
-      
-  if (g_key_file_has_key(c->kf, c->identifier, "id3album", &error)) {
-    album = g_key_file_get_value(c->kf, c->identifier, "id3album", &error);
-  }
-      
-  if (g_key_file_has_key(c->kf, c->identifier, "id3contenttype", &error)) {
-    content_type = g_key_file_get_value(c->kf, c->identifier, "id3contenttype", &error);
-  }
-      
-  if (g_key_file_has_key(c->kf, c->identifier, "id3year", &error)) {
-    year = g_key_file_get_value(c->kf, c->identifier, "id3year", &error);
-  }
-      
-  if (g_key_file_has_key(c->kf, c->identifier, "id3comment", &error)) {
-    comment = g_key_file_get_value(c->kf, c->identifier, "id3comment", &error);
-  }
-      
-  if (lead_artist || content_group || title || album || content_type || year || comment)
-    return _id3_set(filename, 0, c->verbose, lead_artist, content_group, title, album, content_type, year, comment);
+  if (cfg->id3_lead_artist || cfg->id3_content_group || cfg->id3_title || 
+      cfg->id3_album || cfg->id3_content_type || cfg->id3_year || cfg->id3_comment)
+    return _id3_set(filename, 0, cfg->id3_lead_artist, cfg->id3_content_group, 
+                    cfg->id3_title, cfg->id3_album, cfg->id3_content_type, 
+                    cfg->id3_year, cfg->id3_comment);
   else
     return 0;
 }

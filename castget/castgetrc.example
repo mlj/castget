@@ -1,8 +1,12 @@
 #
 # Example castgetrc file.
 #
-#   $Id: castgetrc.example,v 1.1 2005/11/13 21:50:16 mariuslj Exp $
+#   $Id: castgetrc.example,v 1.2 2005/11/19 16:52:33 mariuslj Exp $
 #
+
+# Global settings. Always set the ID3 tag content type to "Podcast". 
+[*]
+id3contenttype=Podcast
 
 # Download the Daily Sourcecode to /home/tom/podcasts/dsc as is
 [dsc]
@@ -16,5 +20,4 @@ url=http://feeds.feedburner.com/YeastRadio
 spool=/home/tom/podcasts
 id3album=Yeast Radio
 id3leadartist=Madge Weinstein
-id3contenttype=Podcast
 id3comment=
