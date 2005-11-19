@@ -18,8 +18,6 @@
 
 INCLUDES = $(GLIBS_CFLAGS) -I$(top_srcdir)/libcastget
 
-EXTRA_DIST = castgetrc.example
-
 bin_PROGRAMS = castget
 
 castget_SOURCES = \

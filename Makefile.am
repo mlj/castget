@@ -19,3 +19,5 @@
 SUBDIRS = \
   libcastget \
   castget
+
+EXTRA_DIST = castgetrc.example

@@ -1,0 +1,24 @@
+#
+# Example castgetrc file.
+#
+#   $Id: castgetrc.example,v 1.1 2005/11/19 17:09:47 mariuslj Exp $
+#
+
+# Global settings. Always set the ID3 tag content type to "Podcast"
+# and use /home/tom/podcasts as default download directory.
+[*]
+id3contenttype=Podcast
+spool=/home/tom/podcasts
+
+# Download the Daily Sourcecode to /home/tom/podcasts/dsc.
+[dsc]
+url=http://radio.weblogs.com/0001014/categories/dailySourceCode/rss.xml
+spool=/home/tom/podcasts/dsc
+
+# Download Yeast Radio to the default download directory and set the ID3 
+# tags album and lead artist; clear the ID3 tag comment.
+[yeast]
+url=http://feeds.feedburner.com/YeastRadio
+id3album=Yeast Radio
+id3leadartist=Madge Weinstein
+id3comment=
