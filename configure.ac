@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id: configure.ac,v 1.2 2005/11/13 23:03:31 mariuslj Exp $
+# $Id: configure.ac,v 1.3 2005/11/19 17:15:33 mariuslj Exp $
 # 
 
 AC_PREREQ(2.59)
@@ -86,5 +86,6 @@ AC_CONFIG_FILES([
   Makefile
   castget/Makefile
   libcastget/Makefile
+  castget.1
 ])
 AC_OUTPUT

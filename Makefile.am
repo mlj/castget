@@ -20,4 +20,9 @@ SUBDIRS = \
   libcastget \
   castget
 
-EXTRA_DIST = castgetrc.example
+EXTRA_DIST = \
+  castgetrc.example \
+  castget.1.in
+
+man_MANS = \
+  castget.1

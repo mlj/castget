@@ -1,0 +1,38 @@
+.TH CASTGET "1" "November 2005" "castget 0.9.0" "User Commands"
+.SH NAME
+castget \- download RSS enclosures
+.SH SYNOPSIS
+.B castget 
+[\fIOPTION\fR]... [\fICHANNEL\fR]...
+.SH DESCRIPTION
+.PP
+Download RSS enclosures, e.g. podcasts, from RSS feeds.
+.TP
+\fB\-c\fR, \fB\-\-catchup\fR
+catch up with channels and exit
+.TP
+\fB\-l\fR, \fB\-\-list\fR
+list enclosures available for download and exit
+.TP
+\fB\-q\fR, \fB\-\-quiet\fR
+do not print anything except error messages
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+print detailed progress information
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+display help and exit
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+output version information and exit
+.PP
+Channels to be processed are indicated by the supplied channel identifiers. Channel
+identifiers must be defined in the configuration file \fB.castget\fR. If no channel 
+identifiers are provided, all available channels are processed. 
+.SH AUTHOR
+Written by Marius L. Jøhndal.
+.SH COPYRIGHT
+Copyright \(co 2005 Marius L. Jøhndal.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
