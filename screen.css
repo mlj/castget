@@ -64,3 +64,9 @@ li {
 .application, .filename { 
   font-style: italic;
 }
+
+#footer {
+  font-size: small;
+  border-top: 2px solid #c0c0c0;
+  padding-top: 1em;
+}
