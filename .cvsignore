@@ -16,3 +16,4 @@ config.log
 config.status
 config.sub
 aclocal.m4
+castget.1
