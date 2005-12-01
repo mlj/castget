@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.5 2005/11/19 16:52:33 mariuslj Exp $
+  $Id: castget.c,v 1.6 2005/12/01 22:14:54 mariuslj Exp $
   
 */
 
@@ -135,15 +135,16 @@ int main(int argc, char **argv)
     }
   }
 
-  /* Read configuration file and defaults. */
+  /* Try opening configuration file. */
   kf = _configuration_file_open();
 
-  if (g_key_file_has_group(kf, "*"))
-    defaults = channel_configuration_new(kf, "*", NULL);
-  else
-    defaults = NULL;
-
   if (kf) {
+    /* Read defaults. */
+    if (g_key_file_has_group(kf, "*"))
+      defaults = channel_configuration_new(kf, "*", NULL);
+    else
+      defaults = NULL;
+
     /* Perform actions. */
     if (optind < argc) {
       while (optind < argc)
@@ -156,11 +157,12 @@ int main(int argc, char **argv)
       
       g_strfreev(groups);
     }
+  
+    /* Clean up defaults. */
+    if (defaults)
+      channel_configuration_free(defaults);
   } else
     ret = 1;
-
-  if (defaults)
-    channel_configuration_free(defaults);
 
   /* Clean-up. */
   g_free(channeldir);
