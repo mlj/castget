@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
-INCLUDES = $(GLIBS_CFLAGS) $(CURL_CFLAGS) $(top_srcdir)/libcastget
+INCLUDES = $(GLIBS_CFLAGS) $(CURL_CFLAGS)
 
 lib_LTLIBRARIES = libcastget.la
 
