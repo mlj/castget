@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.6 2005/12/01 22:14:54 mariuslj Exp $
+  $Id: castget.c,v 1.7 2005/12/07 15:58:43 mariuslj Exp $
   
 */
 
@@ -153,7 +153,8 @@ int main(int argc, char **argv)
       groups = g_key_file_get_groups(kf, NULL);
       
       for (i = 0; groups[i]; i++)
-        _process_channel(channeldir, kf, groups[i], op, defaults);
+        if (strcmp(groups[i], "*"))
+          _process_channel(channeldir, kf, groups[i], op, defaults);
       
       g_strfreev(groups);
     }
