@@ -1,0 +1,73 @@
+2005-12-07  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* castget/castget.c: Added a missing test to exclude the global
+	group "*" from channel iteration.
+
+2005-12-01  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* castget/castget.c: Fixed broken handling of missing configuration
+	file.
+
+2005-12-01  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* libcastget/Makefile.am: Removed superfluous (and broken) include
+	path.
+
+2005-11-19  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* configure.ac: Bumped version number to 0.9.1.
+
+2005-11-19  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* Makefile.am, castget.1.in, configure.ac: Added man
+	page for castget program.
+
+2005-11-19  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* castgetrc.example, castget/castgetrc.example, Makefile.am,
+	castget/Makefile.am: Moved example configuration file to top-level
+	directory.
+
+2005-11-19  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* castget/Makefile.am, castget/castget.c,
+	castget/castgetrc.example, castget/configuration.c,
+	castget/configuration.h: Added a global section to the
+	configuration file.
+
+2005-11-14  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* castget/castget.c: Expanded usage information.
+
+2005-11-14  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* configure.ac: Bumped version number for initial release.
+
+2005-11-14  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* libcastget/channel.c, libcastget/channel.h, libcastget/utils.c,
+	libcastget/utils.h: Added timestamping of channel updates and
+	enclosure downloads.
+
+2005-11-13  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* libcastget/channel.c, libcastget/rss.c, libcastget/urlget.c,
+	libcastget/urlget.h, libcastget/utils.c, libcastget/utils.h:
+	Switched to downloading RSS file to temporary file in order to
+	avoid recurrent libxml2 parse errors.
+
+2005-11-13  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* castget/castget.c: Added user-defined per-channel ID3 tags.
+
+2005-10-24  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* libcastget/Makefile.am, libcastget/channel.c, libcastget/utils.c,
+	libcastget/utils.h: Modified channel file saving function to use
+	temporary files. Added proper XML prologue and a version number to
+	channel files.
+
+2005-08-28  Marius L. Jøhndal <mariuslj@ifi.uio.no>
+
+	* castget/castget.c: Check return value of libcastget_channel_new
+	and report error. Moved libxml2 to main block for now.
