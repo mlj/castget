@@ -67,6 +67,17 @@ li {
 
 #footer {
   font-size: small;
-  border-top: 2px solid #c0c0c0;
+  border-top: 2px solid #e0ac00;
   padding-top: 1em;
+}
+
+pre {
+  margin-left: 1em;
+  margin-right: 1em;
+  max-width: 100%;
+  padding: 0.5em 1em;
+  overflow: auto;
+  border: 1px solid #666;
+  color: black;
+  background-color: #e0e0e0;
 }
