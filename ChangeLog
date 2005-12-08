@@ -1,5 +1,7 @@
 2005-12-08  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* configure.ac: Bumped version number to 0.9.2.
+
 	* libcastget/rss.c, libcastget/utils.c: Fixed invalid cross device
 	link errors caused by uninitialized pointer in temporary file
 	function.
