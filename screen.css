@@ -61,7 +61,7 @@ li {
   height: 100%;
 }
 
-.application, .filename { 
+.application, .filename, .definition { 
   font-style: italic;
 }
 
@@ -80,4 +80,14 @@ pre {
   border: 1px solid #666;
   color: black;
   background-color: #e0e0e0;
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+a img {
+  border: none;
 }

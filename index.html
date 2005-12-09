@@ -79,9 +79,50 @@
       <p>
 	<span class="application">castget</span> is configured using a
 	configuration file called <span
-	class="filename">.castgetrc</span> in the user's home
-	directory. The source distribution includes a sample
-	configuration file.
+	class="filename">.castgetrc</span> located in the user's home
+	directory.
+      </p>
+
+      <p>
+	The format of this configuration file is very simple: There
+	should be one section for each RSS feed that you want to
+	subscribe to, for example:
+      </p>
+
+      <pre>[df]
+url=http://digitalflotsam.org/rss.xml
+spool=/home/joe/podcasts</pre>    
+
+      <p>
+	Each such section is referred to as a <span
+	class="definition">channel</span>. For each channel
+	you may adjust individual settings by adding key-value-pairs
+	like the the two <span class="variable">url</span> and <span
+	class="variable">spool</span> settings above.
+      </p>
+
+      <p>
+	You may also add a global section specifying overridable
+	defaults that affect all channels:
+      </p>
+
+      <pre>[*]
+id3contenttype=Podcast</pre>    
+
+      <p>
+	The source distribution includes a sample configuration file
+	demonstrating all supported settings.
+      </p>
+
+      <h3 id="screenshots">Screenshots</h3>
+
+      <p>
+	The mandatory screenshot:
+      </p>
+
+      <p>
+	<a href="screenshot.png"><img src="screenshot.png" alt="Screenshot of castget"
+	     width="90%" /></a>
       </p>
 
       <h3 id="development">Development</h3>
