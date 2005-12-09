@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: configuration.c,v 1.1 2005/11/19 16:52:33 mariuslj Exp $
+  $Id: configuration.c,v 1.2 2005/12/09 05:53:00 mariuslj Exp $
   
 */
 
@@ -45,6 +45,9 @@ void channel_configuration_free(struct channel_configuration *c)
 
   if (c->spool_directory)
     g_free(c->spool_directory);
+
+  if (c->playlist)
+    g_free(c->playlist);
 
   if (c->id3_lead_artist)
     g_free(c->id3_lead_artist);
@@ -85,6 +88,7 @@ struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gcha
   /* Read keys from configuration file. */
   c->url = _read_channel_configuration_key(kf, identifier, "url");
   c->spool_directory = _read_channel_configuration_key(kf, identifier, "spool");
+  c->playlist = _read_channel_configuration_key(kf, identifier, "playlist");
   c->id3_lead_artist = _read_channel_configuration_key(kf, identifier, "id3leadartist");
   c->id3_content_group = _read_channel_configuration_key(kf, identifier, "id3contentgroup");
   c->id3_title = _read_channel_configuration_key(kf, identifier, "id3title");
@@ -100,6 +104,9 @@ struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gcha
 
     if (!c->spool_directory && defaults->spool_directory)
       c->spool_directory = g_strdup(defaults->spool_directory);
+
+    if (!c->playlist && defaults->playlist)
+      c->playlist = g_strdup(defaults->playlist);
 
     if (!c->id3_lead_artist && defaults->id3_lead_artist)
       c->id3_lead_artist = g_strdup(defaults->id3_lead_artist);

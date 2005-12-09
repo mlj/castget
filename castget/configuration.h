@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: configuration.h,v 1.1 2005/11/19 16:52:33 mariuslj Exp $
+  $Id: configuration.h,v 1.2 2005/12/09 05:53:00 mariuslj Exp $
   
 */
 
@@ -28,6 +28,7 @@ struct channel_configuration {
   gchar *identifier;
   gchar *url;
   gchar *spool_directory;
+  gchar *playlist;
   gchar *id3_lead_artist;
   gchar *id3_content_group;
   gchar *id3_title;

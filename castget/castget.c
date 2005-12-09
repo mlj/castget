@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.7 2005/12/07 15:58:43 mariuslj Exp $
+  $Id: castget.c,v 1.8 2005/12/09 05:53:00 mariuslj Exp $
   
 */
 
@@ -57,6 +57,8 @@ static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist,
 static int _id3_check_and_set(const gchar *filename,
                               const struct channel_configuration *cfg);
 #endif /* ENABLE_ID3LIB */
+static int playlist_add(const gchar *playlist_file,
+                        const gchar *media_file);
 
 static int verbose = 0;
 static int quiet = 0;
@@ -221,10 +223,20 @@ static void update_callback(void *user_data, libcastget_channel_action action, l
       g_assert(enclosure);
       g_assert(filename);
 
+      /* Set media tags. */
       if (!strcmp(enclosure->type, "audio/mpeg")) {
 #ifdef ENABLE_ID3LIB
         _id3_check_and_set(filename, c);
 #endif /* ENABLE_ID3LIB */
+      }
+
+      /* Update playlist. */
+      if (c->playlist) {
+        playlist_add(c->playlist, filename);
+
+        if (verbose)
+          printf("Added downloaded enclosure %s to playlist %s.\n", 
+                 filename, c->playlist);
       }
       break;
     }
@@ -484,6 +496,25 @@ static int _id3_check_and_set(const gchar *filename,
 }
 
 #endif /* ENABLE_ID3LIB */
+
+static int playlist_add(const gchar *playlist_file,
+                        const gchar *media_file)
+{
+  FILE *f;
+
+  f = fopen(playlist_file, "a");
+
+  if (!f) {
+    fprintf(stderr, "Error opening playlist file %s: %s.\n",
+            playlist_file, strerror(errno));
+    return -1;
+  }
+
+  fprintf(f, "%s\n", media_file); 
+  fclose(f);
+  return 0;
+}
+
 
 /* 
    Local Variables:
