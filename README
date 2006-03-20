@@ -1,0 +1,23 @@
+INSTALLATION AND CONFIGURATION
+==============================
+
+Please see INSTALL for installation instructions.
+
+You will find a sample configuration file castgetrc.example in
+the top level directory of the distribution. You should copy
+this file to your home directory as .castgetrc and edit it to
+suit your preferences.
+
+USAGE
+=====
+
+For usage instructions please see the castget(1) man page.
+
+UPDATES AND BUG REPORTS
+=======================
+
+Please see the castget home page for information about updates
+and how to report bugs
+
+  http://www.nongnu.org/castget/
+  
