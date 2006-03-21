@@ -1,5 +1,7 @@
 2006-03-21  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* configure.ac: Bumped version number to 0.9.3.
+
 	* libcastget.h, rss.c, libxmlutil.c, libxmlutil.h: Added support
 	for the MRSS content tag. MRSS information will be preferred over
 	attributes on an enclosure tag.
