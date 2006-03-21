@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: libxmlutil.h,v 1.1 2005/08/16 23:16:19 mariuslj Exp $
+  $Id: libxmlutil.h,v 1.2 2006/03/21 00:51:25 mariuslj Exp $
   
 */
 
@@ -33,7 +33,8 @@ char *libxmlutil_dup_value(const xmlNode *node);
 int libxmlutil_count_by_tag_name(const xmlNode *node, const char *name);
 void libxmlutil_iterate_by_tag_name(const xmlNode *node, const char *name, void *user_data,
                                     void(*f)(const void *user_data, int i, const xmlNode *node));
-const xmlNode *libxmlutil_child_node_by_name(const xmlNode *node, const char *name);
+const xmlNode *libxmlutil_child_node_by_name(const xmlNode *node, const char *ns, 
+                                             const char *name);
 
 #endif /* LIBXMLUTIL_H */
 

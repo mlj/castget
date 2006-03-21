@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.c,v 1.3 2005/12/08 16:14:18 mariuslj Exp $
+  $Id: rss.c,v 1.4 2006/03/21 00:51:25 mariuslj Exp $
   
 */
 
@@ -32,11 +32,13 @@
 #include "urlget.h"
 #include "rss.h"
 
+#define MRSS_NAMESPACE "http://search.yahoo.com/mrss"
+
 static char *_dup_child_node_value(const xmlNode *node, const gchar *tag)
 {
   const xmlNode *n;
   
-  n = libxmlutil_child_node_by_name(node, tag);
+  n = libxmlutil_child_node_by_name(node, NULL, tag);
 
   if (n)
     return libxmlutil_dup_value(n);
@@ -48,6 +50,8 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
 {
   rss_file *f = (rss_file *)user_data;
   const xmlNode *enclosure;
+  const xmlNode *mrss_content;
+  const xmlNode *mrss_group;
 
   /* Allocate item structure. */
   f->items[i] = (rss_item *)malloc(sizeof(struct _rss_item));
@@ -57,15 +61,47 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
   f->items[i]->link = _dup_child_node_value(node, "link");
   f->items[i]->description = _dup_child_node_value(node, "description");
 
-  /* Figure out if there is an enclosure. */
-  enclosure = libxmlutil_child_node_by_name(node, "enclosure");
+  /* Look for mrss information first, if there is any. It may be
+     located either directly under the "item" tag, or inside an mrss
+     "group" tag. */
+  mrss_content = libxmlutil_child_node_by_name(node, MRSS_NAMESPACE, 
+                                               "content");
 
-  if (enclosure) {
+  if (!mrss_content) {
+    mrss_group = libxmlutil_child_node_by_name(node, MRSS_NAMESPACE, 
+                                               "group");
+
+    if (mrss_group)
+      mrss_content = libxmlutil_child_node_by_name(mrss_group, 
+                                                   MRSS_NAMESPACE, "content");
+  }
+
+  /* Figure out if there is an "enclosure" tag here. */
+  enclosure = libxmlutil_child_node_by_name(node, NULL, "enclosure");
+
+  if (mrss_content || enclosure) {
     f->items[i]->enclosure = (libcastget_enclosure *)malloc(sizeof(struct _libcastget_enclosure));
-    f->items[i]->enclosure->url = libxmlutil_dup_attr(enclosure, "url");
-    f->items[i]->enclosure->length = libxmlutil_attr_as_long(enclosure, "length");
-    f->items[i]->enclosure->type = libxmlutil_dup_attr(enclosure, "type");
-    f->items[i]->enclosure->description = libxmlutil_dup_attr(enclosure, "description");
+    f->items[i]->enclosure->url = NULL;
+    f->items[i]->enclosure->length = 0;
+    f->items[i]->enclosure->type = NULL;
+
+    /* Now read attributes. Prefer mrss over enclosure. */
+    if (mrss_content) {
+      f->items[i]->enclosure->url = libxmlutil_dup_attr(mrss_content, "url");
+      f->items[i]->enclosure->length = libxmlutil_attr_as_long(mrss_content, "fileSize");
+      f->items[i]->enclosure->type = libxmlutil_dup_attr(enclosure, "type");
+    }
+
+    if (enclosure) {
+      if (!f->items[i]->enclosure->url)
+        f->items[i]->enclosure->url = libxmlutil_dup_attr(enclosure, "url");
+
+      if (!f->items[i]->enclosure->length)
+        f->items[i]->enclosure->length = libxmlutil_attr_as_long(enclosure, "length");
+
+      if (!f->items[i]->enclosure->type)
+        f->items[i]->enclosure->type = libxmlutil_dup_attr(enclosure, "type");
+    }
   } else
     f->items[i]->enclosure = NULL;
 }
@@ -97,7 +133,7 @@ static rss_file *rss_parse(const gchar *url, const xmlNode *root_element)
   }
 
   /* Find the channel tag and parse it. */
-  channel = libxmlutil_child_node_by_name(root_element, "channel");
+  channel = libxmlutil_child_node_by_name(root_element, NULL, "channel");
 
   if (channel) {
     /* Allocate RSS file structure and room for pointers to all entries. */
@@ -186,9 +222,6 @@ void rss_close(rss_file *f)
       
       if (item->enclosure->type)
         free(item->enclosure->type);
-
-      if (item->enclosure->description)
-        free(item->enclosure->description);
 
       free(item->enclosure);
     }

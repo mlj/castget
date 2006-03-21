@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: libxmlutil.c,v 1.1 2005/08/16 23:16:19 mariuslj Exp $
+  $Id: libxmlutil.c,v 1.2 2006/03/21 00:51:25 mariuslj Exp $
   
 */
 
@@ -95,10 +95,12 @@ void libxmlutil_iterate_by_tag_name(const xmlNode *node, const char *name, void 
     }
 }
 
-const xmlNode *libxmlutil_child_node_by_name(const xmlNode *node, const char *name)
+const xmlNode *libxmlutil_child_node_by_name(const xmlNode *node, const char *ns, 
+                                             const char *name)
 {
   for (node = node->children; node; node = node->next)
-    if (node->type == XML_ELEMENT_NODE && !strcmp((char *)node->name, name))
+    if (node->type == XML_ELEMENT_NODE && !strcmp((char *)node->name, name)
+        && (!ns || !strcmp((char *)node->ns->href, ns)))
       return node;
 
   return NULL;
