@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005 Marius L. Jøhndal
+  Copyright (C) 2005, 2006 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.8 2005/12/09 05:53:00 mariuslj Exp $
+  $Id: castget.c,v 1.9 2006/03/21 00:13:09 mariuslj Exp $
   
 */
 
@@ -195,10 +195,11 @@ static void usage(void)
 static void version(void)
 {
   g_printf("%s %s\n", PACKAGE, VERSION);
-  g_printf("Copyright (C) 2005 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
+  g_printf("Copyright (C) 2005, 2006 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
 }
 
-static void update_callback(void *user_data, libcastget_channel_action action, libcastget_channel_info *channel_info,
+static void update_callback(void *user_data, libcastget_channel_action action, 
+                            libcastget_channel_info *channel_info,
                             libcastget_enclosure *enclosure, const gchar *filename)
 {
   struct channel_configuration *c = (struct channel_configuration *)user_data;
@@ -213,9 +214,25 @@ static void update_callback(void *user_data, libcastget_channel_action action, l
       g_assert(channel_info);
       g_assert(enclosure);
 
-      if (verbose)
-        g_printf("Downloading %s (%ld bytes) from %s\n", enclosure->url, enclosure->length,
-                 channel_info->title);
+      if (verbose) {
+        if (enclosure->length > 1024*1024*1024) {
+          g_printf(" * Downloading %s (%.1f GB) from %s\n", 
+                   enclosure->url, (float)enclosure->length / (1024.0*1024.0*1024.0), 
+                   channel_info->title);
+        } else if (enclosure->length > 1024*1024) {
+          g_printf(" * Downloading %s (%.1f MB) from %s\n", 
+                   enclosure->url, (float)enclosure->length / (1024.0*1024.0),
+                   channel_info->title);
+        } else if (enclosure->length > 1024) {
+          g_printf(" * Downloading %s (%.1f kB) from %s\n", 
+                   enclosure->url, (float)enclosure->length / 1024.0,
+                   channel_info->title);
+        } else {
+          g_printf(" * Downloading %s (%ld bytes) from %s\n", 
+                   enclosure->url, enclosure->length,
+                   channel_info->title);
+        }
+      }
       break;
 
     case CCA_ENCLOSURE_DOWNLOAD_END:
@@ -235,7 +252,7 @@ static void update_callback(void *user_data, libcastget_channel_action action, l
         playlist_add(c->playlist, filename);
 
         if (verbose)
-          printf("Added downloaded enclosure %s to playlist %s.\n", 
+          printf(" * Added downloaded enclosure %s to playlist %s.\n", 
                  filename, c->playlist);
       }
       break;

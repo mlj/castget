@@ -1,3 +1,8 @@
+2006-03-21  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* castget.c: Changed printing of file sizes to use kB, MB, and GB
+	when suitable. Some formatting adjustments to progress printout.
+
 2005-12-08  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* configure.ac: Bumped version number to 0.9.2.
