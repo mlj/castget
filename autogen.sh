@@ -1,11 +1,9 @@
 #! /bin/sh
 #
-# $Id: autogen.sh,v 1.1 2005/08/16 23:16:19 mariuslj Exp $
+# $Id: autogen.sh,v 1.2 2006/03/21 00:56:56 mariuslj Exp $
 #
 # runs autotools to create ./configure and friends
 #
-
-PROJECT=gtk-im-extra
 
 srcdir=`dirname "$0"`
 test -z $srcdir && srcdir=.
