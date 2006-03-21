@@ -1,0 +1,21 @@
+Release 1.0
+
+* FEATURE: Flush old entries from channel file.
+* BUG: Channel files corrupted when disk is full.
+* FEATURE: Enclosure file length vs. actually downloaded file size checking. 
+* BUG/FEATURE: Some fallback solution for identifying MIME type when tag is
+  missing from RSS.
+
+Release 1.1
+
+* FEATURE: mrss MD5/SHA-1 checking.
+* FEATURE: Expansion macros for tagging.
+* FEATURE: Tag clearing.
+* FEATURE: Download to current directory.
+* FEATURE: Logging.
+* FEATURE: Some sort of progress bar.
+
+Release 1.x
+
+* FEATURE: Download resume.
+* FEATURE: Threaded downloading.
