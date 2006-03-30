@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.9 2006/03/21 00:13:09 mariuslj Exp $
+  $Id: castget.c,v 1.10 2006/03/30 20:06:54 mariuslj Exp $
   
 */
 
@@ -217,19 +217,19 @@ static void update_callback(void *user_data, libcastget_channel_action action,
       if (verbose) {
         if (enclosure->length > 1024*1024*1024) {
           g_printf(" * Downloading %s (%.1f GB) from %s\n", 
-                   enclosure->url, (float)enclosure->length / (1024.0*1024.0*1024.0), 
+                   enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0), 
                    channel_info->title);
         } else if (enclosure->length > 1024*1024) {
           g_printf(" * Downloading %s (%.1f MB) from %s\n", 
-                   enclosure->url, (float)enclosure->length / (1024.0*1024.0),
+                   enclosure->filename, (float)enclosure->length / (1024.0*1024.0),
                    channel_info->title);
         } else if (enclosure->length > 1024) {
           g_printf(" * Downloading %s (%.1f kB) from %s\n", 
-                   enclosure->url, (float)enclosure->length / 1024.0,
+                   enclosure->filename, (float)enclosure->length / 1024.0,
                    channel_info->title);
         } else {
           g_printf(" * Downloading %s (%ld bytes) from %s\n", 
-                   enclosure->url, enclosure->length,
+                   enclosure->filename, enclosure->length,
                    channel_info->title);
         }
       }
@@ -447,49 +447,49 @@ static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist,
     errors += _id3_find_and_set_frame(tag, ID3FID_LEADARTIST, lead_artist);
 
     if (verbose)
-      printf("Set ID3 tag lead artist to %s.\n", lead_artist);
+      printf(" * Set ID3 tag lead artist to %s.\n", lead_artist);
   }
 
   if (content_group) {
     errors += _id3_find_and_set_frame(tag, ID3FID_CONTENTGROUP, content_group);
 
     if (verbose)
-      printf("Set ID3 tag content group to %s.\n", content_group);
+      printf(" * Set ID3 tag content group to %s.\n", content_group);
   }
 
   if (title) {
     errors += _id3_find_and_set_frame(tag, ID3FID_TITLE, title);
 
     if (verbose)
-      printf("Set ID3 tag title to %s.\n", title);
+      printf(" * Set ID3 tag title to %s.\n", title);
   }
 
   if (album) {
     errors += _id3_find_and_set_frame(tag, ID3FID_ALBUM, album);
 
     if (verbose)
-      printf("Set ID3 tag album to %s.\n", album);
+      printf(" * Set ID3 tag album to %s.\n", album);
   }
 
   if (content_type) {
     errors += _id3_find_and_set_frame(tag, ID3FID_CONTENTTYPE, content_type);
 
     if (verbose)
-      printf("Set ID3 tag content type to %s.\n", content_type);
+      printf(" * Set ID3 tag content type to %s.\n", content_type);
   }
 
   if (year) {
     errors += _id3_find_and_set_frame(tag, ID3FID_YEAR, year);
 
     if (verbose)
-      printf("Set ID3 title year to %s.\n", year);
+      printf(" * Set ID3 title year to %s.\n", year);
   }
 
   if (comment) {
     errors += _id3_find_and_set_frame(tag, ID3FID_COMMENT, comment);
 
     if (verbose)
-      printf("Set ID3 tag comment to %s.\n", comment);
+      printf(" * Set ID3 tag comment to %s.\n", comment);
   }
 
   if (!errors)

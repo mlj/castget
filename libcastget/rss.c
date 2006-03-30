@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.c,v 1.5 2006/03/21 00:53:23 mariuslj Exp $
+  $Id: rss.c,v 1.6 2006/03/30 20:06:54 mariuslj Exp $
   
 */
 
@@ -104,6 +104,10 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
     }
   } else
     f->items[i]->enclosure = NULL;
+
+  /* Determine filename of enclosure. */
+  if (f->items[i]->enclosure && f->items[i]->enclosure->url)
+    f->items[i]->enclosure->filename = g_path_get_basename(f->items[i]->enclosure->url);
 }
 
 static rss_file *rss_parse(const gchar *url, const xmlNode *root_element)
@@ -222,6 +226,9 @@ void rss_close(rss_file *f)
       
       if (item->enclosure->type)
         free(item->enclosure->type);
+
+      if (item->enclosure->filename)
+        free(item->enclosure->filename);
 
       free(item->enclosure);
     }

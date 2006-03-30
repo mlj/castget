@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.c,v 1.4 2005/11/13 23:01:27 mariuslj Exp $
+  $Id: channel.c,v 1.5 2006/03/30 20:06:54 mariuslj Exp $
   
 */
 
@@ -169,7 +169,7 @@ int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget
 {
   int i;
   rss_file *f;
-  gchar *enclosure_filename, *enclosure_full_filename;
+  gchar *enclosure_full_filename;
   FILE *enclosure_file;
   gchar *rss_last_fetched;
 
@@ -199,9 +199,7 @@ int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget
   for (i = 0; i < f->num_items; i++)
     if (f->items[i]->enclosure) {
       if (!g_hash_table_lookup_extended(c->downloaded_enclosures, f->items[i]->enclosure->url, NULL, NULL)) {
-        enclosure_filename = g_path_get_basename(f->items[i]->enclosure->url);
-        enclosure_full_filename = g_build_filename(c->spool_directory, enclosure_filename, NULL);
-        g_free(enclosure_filename);
+        enclosure_full_filename = g_build_filename(c->spool_directory, f->items[i]->enclosure->filename, NULL);
 
         enclosure_file = fopen(enclosure_full_filename, "w");
 

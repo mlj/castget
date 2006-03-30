@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: libcastget.h,v 1.3 2006/03/21 00:53:23 mariuslj Exp $
+  $Id: libcastget.h,v 1.4 2006/03/30 20:06:54 mariuslj Exp $
   
 */
 
@@ -46,6 +46,7 @@ typedef struct _libcastget_enclosure {
   char *url;
   long length;
   char *type;
+  char *filename;
 } libcastget_enclosure;
 
 typedef void (*libcastget_channel_callback)(void *user_data, 
