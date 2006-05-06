@@ -1,3 +1,9 @@
+2006-05-06  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* castget.c: Removed printing of enclosure length when length is
+	zero. Fixed broken enclosure MIME type check when no MIME type
+	appears in RSS feed.
+
 2006-03-30  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* rss.c, libcastget.h, channel.c, castget.c: Moved enclosure

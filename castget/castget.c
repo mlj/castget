@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.10 2006/03/30 20:06:54 mariuslj Exp $
+  $Id: castget.c,v 1.11 2006/05/06 21:00:24 mariuslj Exp $
   
 */
 
@@ -227,9 +227,13 @@ static void update_callback(void *user_data, libcastget_channel_action action,
           g_printf(" * Downloading %s (%.1f kB) from %s\n", 
                    enclosure->filename, (float)enclosure->length / 1024.0,
                    channel_info->title);
-        } else {
+        } else if (enclosure->length > 0) {
           g_printf(" * Downloading %s (%ld bytes) from %s\n", 
                    enclosure->filename, enclosure->length,
+                   channel_info->title);
+        } else {
+          g_printf(" * Downloading %s from %s\n",
+                   enclosure->filename,
                    channel_info->title);
         }
       }
@@ -241,7 +245,7 @@ static void update_callback(void *user_data, libcastget_channel_action action,
       g_assert(filename);
 
       /* Set media tags. */
-      if (!strcmp(enclosure->type, "audio/mpeg")) {
+      if (enclosure->type && !strcmp(enclosure->type, "audio/mpeg")) {
 #ifdef ENABLE_ID3LIB
         _id3_check_and_set(filename, c);
 #endif /* ENABLE_ID3LIB */
