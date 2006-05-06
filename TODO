@@ -6,16 +6,14 @@ Release 1.0
 * BUG/FEATURE: Some fallback solution for identifying MIME type when tag is
   missing from RSS.
 
-Release 1.1
+Release 1.x
 
 * FEATURE: mrss MD5/SHA-1 checking.
 * FEATURE: Expansion macros for tagging.
 * FEATURE: Tag clearing.
 * FEATURE: Download to current directory.
+* FEATRUE: On-the-fly RSS checking.
 * FEATURE: Logging.
 * FEATURE: Some sort of progress bar.
-
-Release 1.x
-
 * FEATURE: Download resume.
-* FEATURE: Threaded downloading.
+* FEATURE: Threaded downloading and persistent HTTP connections.
