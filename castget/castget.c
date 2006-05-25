@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.11 2006/05/06 21:00:24 mariuslj Exp $
+  $Id: castget.c,v 1.12 2006/05/25 15:19:48 mariuslj Exp $
   
 */
 
@@ -353,7 +353,6 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   if (!c) {
     fprintf(stderr, "Error parsing channel file for channel %s.\n", identifier);
 
-    libcastget_channel_free(c);
     channel_configuration_free(channel_configuration);
     return -1;
   }

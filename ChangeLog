@@ -1,3 +1,8 @@
+2006-05-25  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* castget.c: Removed misplaced libcastget_channel_free() in
+	channel parsing function.
+
 2006-05-06  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* castget.c: Removed printing of enclosure length when length is
