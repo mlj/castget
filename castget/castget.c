@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.12 2006/05/25 15:19:48 mariuslj Exp $
+  $Id: castget.c,v 1.13 2006/06/09 22:18:47 mariuslj Exp $
   
 */
 
@@ -387,7 +387,8 @@ static GKeyFile *_configuration_file_open(void)
   rcfile = g_build_filename(g_get_home_dir(), ".castgetrc", NULL);
 
   if (!g_key_file_load_from_file(kf, rcfile, G_KEY_FILE_NONE, &error)) {
-    fprintf(stderr, "Configuration file %s not found.\n", rcfile);
+    fprintf(stderr, "Error reading configuration file %s: %s.\n", rcfile, error->message);
+    g_error_free(error);
     g_key_file_free(kf);
     kf = NULL;
   }
