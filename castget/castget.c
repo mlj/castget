@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.13 2006/06/09 22:18:47 mariuslj Exp $
+  $Id: castget.c,v 1.14 2006/06/09 22:36:11 mariuslj Exp $
   
 */
 
@@ -302,9 +302,8 @@ static void list_callback(void *user_data, libcastget_channel_action action, lib
       g_assert(channel_info);
       g_assert(enclosure);
 
-      if (verbose)
-        g_printf("* %s (%ld bytes) from %s\n", enclosure->url, enclosure->length, 
-                 channel_info->title);
+      g_printf("* %s (%ld bytes) from %s\n", enclosure->url, enclosure->length, 
+               channel_info->title);
       break;
     }
   }
