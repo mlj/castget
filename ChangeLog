@@ -1,5 +1,7 @@
 2006-06-10  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* configure.ac: Bumped version number to 0.9.4.
+
 	* libcastget/channel.c: Added missing escaping of URLs written to
 	channel file.
 
