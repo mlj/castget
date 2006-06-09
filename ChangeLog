@@ -1,5 +1,8 @@
 2006-06-10  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* libcastget/channel.c: Added missing escaping of URLs written to
+	channel file.
+
 	* castget/castget.c: Removed silly verbosity check from channel
 	listing function.
 

@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.c,v 1.5 2006/03/30 20:06:54 mariuslj Exp $
+  $Id: channel.c,v 1.6 2006/06/09 22:46:11 mariuslj Exp $
   
 */
 
@@ -100,12 +100,15 @@ static void _cast_channel_save_downloaded_enclosure(gpointer key, gpointer value
                                                     gpointer user_data)
 {
   FILE *f = (FILE *)user_data;
+  gchar *escaped_key = g_markup_escape_text(key, -1);
 
   if (value)
     g_fprintf(f, "  <enclosure url=\"%s\" downloadtime=\"%s\"/>\n", 
-              (gchar *)key, (gchar *)value);
+              escaped_key, (gchar *)value);
   else
-    g_fprintf(f, "  <enclosure url=\"%s\"/>\n", (gchar *)key);
+    g_fprintf(f, "  <enclosure url=\"%s\"/>\n", escaped_key);
+
+  g_free(escaped_key);
 }
 
 static int _cast_channel_save_channel(FILE *f, gpointer user_data)
