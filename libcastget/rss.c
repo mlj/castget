@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.c,v 1.6 2006/03/30 20:06:54 mariuslj Exp $
+  $Id: rss.c,v 1.7 2006/06/09 21:58:44 mariuslj Exp $
   
 */
 
@@ -30,6 +30,7 @@
 #include "libcastget.h"
 #include "libxmlutil.h"
 #include "urlget.h"
+#include "htmlent.h"
 #include "rss.h"
 
 #define MRSS_NAMESPACE "http://search.yahoo.com/mrss"
@@ -160,16 +161,55 @@ static rss_file *rss_parse(const gchar *url, const xmlNode *root_element)
   return f;
 }
 
+static xmlEntityPtr _get_entity(void *ctxt, const xmlChar *name)
+{
+  static GHashTable *html_entities = NULL;
+  xmlEntityPtr entity;
+  gchar *contents;
+
+  /* Check if entity is any of the predefined entities such as &amp; */
+  entity = xmlGetPredefinedEntity(name);
+
+  if (!entity) {
+    /* Some of the RSS "specifications" are vague on whether HTML
+       entities are allowed or not, so we will assume that they are,
+       and look up HTML entities whenever we encounter them. */
+
+    if (!html_entities)
+      html_entities = htmlent_hash_new();
+
+    contents = (gchar *)g_hash_table_lookup(html_entities, name);
+
+    if (contents) {
+      /* TODO: Where do we free this memory? */
+      entity = (xmlEntityPtr)g_new0(xmlEntity, 1);
+      entity->type = XML_ENTITY_DECL;
+      entity->name = name;
+      entity->orig = contents;
+      entity->content = contents;
+      entity->length = g_utf8_strlen(contents, -1);
+      entity->etype = XML_INTERNAL_PREDEFINED_ENTITY;
+    }
+  }
+
+  return entity;
+}
+
 rss_file *rss_open_file(const char *filename)
 {
+  xmlParserCtxtPtr ctxt;
   xmlDocPtr doc;
   rss_file *f;
   xmlNode *root_element = NULL;
 
-  doc = xmlReadFile(filename, NULL, 0);
+  ctxt = xmlNewParserCtxt();
+  ctxt->sax->getEntity = _get_entity;
+  doc = xmlSAXParseFile(ctxt->sax, filename, 0);
 
   if (!doc) {
     fprintf(stderr, "Error parsing RSS file %s.\n", filename);
+    xmlFreeParserCtxt(ctxt);
+
     return NULL;
   }
 
@@ -177,6 +217,7 @@ rss_file *rss_open_file(const char *filename)
 
   if (!root_element)  {
     xmlFreeDoc(doc);
+    xmlFreeParserCtxt(ctxt);
 
     fprintf(stderr, "Error parsing RSS file %s.\n", filename);
     return NULL;
@@ -185,6 +226,7 @@ rss_file *rss_open_file(const char *filename)
   f = rss_parse(filename, root_element);
  
   xmlFreeDoc(doc);
+  xmlFreeParserCtxt(ctxt);
 
   return f;
 }

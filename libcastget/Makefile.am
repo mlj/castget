@@ -15,7 +15,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-#   $Id: Makefile.am,v 1.4 2006/03/20 23:44:59 mariuslj Exp $
+#   $Id: Makefile.am,v 1.5 2006/06/09 21:58:44 mariuslj Exp $
 #
 
 INCLUDES = $(GLIBS_CFLAGS) $(CURL_CFLAGS)
@@ -25,6 +25,8 @@ lib_LTLIBRARIES = libcastget.la
 libcastget_la_SOURCES = \
   channel.c \
   channel.h \
+  htmlent.c \
+  htmlent.h \
   libxmlutil.c \
   libxmlutil.h \
   rss.c \

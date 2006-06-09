@@ -1,3 +1,9 @@
+2006-06-09  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* libcastget/Makefile.am, libcastget/htmlent.c,
+	libcastget/htmlent.h, libcastget/rss.c: Added work-around for HTML
+	entitites in RSS files.
+
 2006-05-25  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* castget.c: Removed misplaced libcastget_channel_free() in
