@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: utils.c,v 1.4 2005/12/08 16:14:19 mariuslj Exp $
+  $Id: utils.c,v 1.5 2006/06/20 23:11:39 mariuslj Exp $
   
 */
 
@@ -35,30 +35,43 @@ int libcastget_write_by_temporary_file(const gchar *filename,
   FILE *f;
   gint fd;
   gchar *tmp_filename_used;
-  GError *error = NULL;
 
-  fd = g_file_open_tmp(NULL, &tmp_filename_used, &error);
-  
-  if (fd < 0) {
-    g_fprintf(stderr, "Error opening temporary file: %s\n", error->message);
-    return -1;
+  if (filename) {
+    tmp_filename_used = g_strconcat(filename, ".XXXXXX", NULL);
+
+    fd = g_mkstemp(tmp_filename_used);
+    
+    if (fd < 0) {
+      perror("Error opening temporary file");
+      g_free(tmp_filename_used);
+      return -1;
+    }
+  } else {
+    GError *error = NULL;
+
+    fd = g_file_open_tmp(NULL, &tmp_filename_used, &error);
+    
+    if (fd < 0) {
+      g_fprintf(stderr, "Error opening temporary file: %s\n", error->message);
+      return -1;
+    }
   }
-
+  
   f = fdopen(fd, "w");
 
   if (!f) {
     perror("Error opening temporary file stream");
-
+    
     close(fd);
     g_free(tmp_filename_used);
     return -1;
   }
-
+    
   retval = writer(f, user_data);
-
+    
   fclose(f);
   close(fd);
-
+  
   if (filename) {
     if (g_rename(tmp_filename_used, filename) < 0) {
       fprintf(stderr, "Error renaming temporary file %s to %s: %s.\n",
@@ -68,17 +81,16 @@ int libcastget_write_by_temporary_file(const gchar *filename,
       g_free(tmp_filename_used);
       return -1;
     }
-  }
-
-  if (used_filename) {
-    if (filename)
+    
+    if (used_filename)
       *used_filename = g_strdup(filename);
-    else 
+  } else {
+    if (used_filename)
       *used_filename = g_strdup(tmp_filename_used);
   }
-
+    
   g_free(tmp_filename_used);
-
+    
   return retval;
 }
 
