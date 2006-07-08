@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.14 2006/06/09 22:36:11 mariuslj Exp $
+  $Id: castget.c,v 1.15 2006/07/08 09:17:48 mariuslj Exp $
   
 */
 
@@ -43,6 +43,7 @@ enum op {
   OP_LIST
 };
 
+static int _verify_keys(GKeyFile *kf, const char *identifier);
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier,
                             enum op op, struct channel_configuration *defaults);
 static void usage(void);
@@ -142,9 +143,13 @@ int main(int argc, char **argv)
 
   if (kf) {
     /* Read defaults. */
-    if (g_key_file_has_group(kf, "*"))
+    if (g_key_file_has_group(kf, "*")) {
+      /* Verify the keys in the global configuration. */
+      if (_verify_keys(kf, "*") < 0)
+        return -1;
+
       defaults = channel_configuration_new(kf, "*", NULL);
-    else
+    } else
       defaults = NULL;
 
     /* Perform actions. */
@@ -309,6 +314,40 @@ static void list_callback(void *user_data, libcastget_channel_action action, lib
   }
 }
 
+static int _verify_keys(GKeyFile *kf, const char *identifier)
+{
+  int i;
+  gchar **key_list;
+
+  key_list = g_key_file_get_keys(kf, identifier, NULL, NULL);
+
+  if (!key_list) {
+    fprintf(stderr, "Error reading keys in configuration of channel %s.\n", identifier);
+
+    return -1;
+  }
+
+  for (i = 0; key_list[i]; i++) {
+    if (! (!strcmp(key_list[i], "url") ||
+           !strcmp(key_list[i], "spool") ||
+           !strcmp(key_list[i], "playlist") ||
+           !strcmp(key_list[i], "id3leadartist") ||
+           !strcmp(key_list[i], "id3contentgroup") ||
+           !strcmp(key_list[i], "id3title") ||
+           !strcmp(key_list[i], "id3album") ||
+           !strcmp(key_list[i], "id3contenttype") ||
+           !strcmp(key_list[i], "id3year") ||
+           !strcmp(key_list[i], "id3comment"))) {
+      fprintf(stderr, "Invalid key %s in configuration of channel %s.\n", key_list[i], identifier);
+      return -1;
+    }
+  }
+
+  g_strfreev(key_list);
+
+  return 0;
+}
+
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier, 
                             enum op op, struct channel_configuration *defaults)
 {
@@ -322,6 +361,10 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
 
     return -1;
   }
+
+  /* Verify the keys in the channel configuration. */
+  if (_verify_keys(kf, identifier) < 0)
+    return -1;
 
   channel_configuration = channel_configuration_new(kf, identifier, defaults);
 

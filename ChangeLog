@@ -1,3 +1,8 @@
+2006-07-08  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* castget/castget.c: Added verification of keys in configuration
+	file.
+
 2006-06-21  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* libcastget/utils.c: Rewrote temporary file handling to avoid
