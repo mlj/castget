@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2005 Marius L. Jøhndal
+# Copyright (C) 2005, 2006 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-#   $Id: Makefile.am,v 1.4 2006/03/21 00:56:42 mariuslj Exp $
+#   $Id: Makefile.am,v 1.5 2006/07/08 10:33:26 mariuslj Exp $
 #
 
 SUBDIRS = \
@@ -24,7 +24,9 @@ SUBDIRS = \
 
 EXTRA_DIST = \
   castgetrc.example \
-  castget.1.in
+  castget.1.in \
+  castgetrc.5.in
 
 man_MANS = \
-  castget.1
+  castget.1 \
+  castgetrc.5
