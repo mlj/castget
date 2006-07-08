@@ -1,5 +1,7 @@
 2006-07-08  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* configure.ac: Bumped version number to 0.9.5.
+
 	* castgetrc.5.in, Makefile.am, configure.ac: Added new man page on
 	the configuration file.
 
