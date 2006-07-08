@@ -1,5 +1,8 @@
 2006-07-08  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* castget.1.in: Clarifyed the default behaviour of castget when
+	invoked without arguments. Added reference to castgetrc(5).
+
 	* castget/castget.c: Added verification of keys in configuration
 	file.
 
