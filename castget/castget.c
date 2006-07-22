@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.15 2006/07/08 09:17:48 mariuslj Exp $
+  $Id: castget.c,v 1.16 2006/07/22 14:19:03 mariuslj Exp $
   
 */
 
@@ -307,8 +307,26 @@ static void list_callback(void *user_data, libcastget_channel_action action, lib
       g_assert(channel_info);
       g_assert(enclosure);
 
-      g_printf("* %s (%ld bytes) from %s\n", enclosure->url, enclosure->length, 
-               channel_info->title);
+
+      if (enclosure->length > 1024*1024*1024) {
+        g_printf(" * %s (%.1f GB) from %s\n", 
+                 enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0), 
+                 channel_info->title);
+      } else if (enclosure->length > 1024*1024) {
+        g_printf(" * %s (%.1f MB) from %s\n", 
+                 enclosure->filename, (float)enclosure->length / (1024.0*1024.0),
+                 channel_info->title);
+      } else if (enclosure->length > 1024) {
+        g_printf(" * %s (%.1f kB) from %s\n", 
+                 enclosure->filename, (float)enclosure->length / 1024.0,
+                 channel_info->title);
+      } else if (enclosure->length > 0) {
+        g_printf(" * %s (%ld bytes) from %s\n", 
+                 enclosure->filename, enclosure->length, channel_info->title);
+      } else {
+        g_printf(" * %s from %s\n", enclosure->filename, channel_info->title);
+      }
+
       break;
     }
   }
