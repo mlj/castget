@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.17 2006/07/28 20:32:28 mariuslj Exp $
+  $Id: castget.c,v 1.18 2006/07/28 20:38:20 mariuslj Exp $
   
 */
 
@@ -209,67 +209,67 @@ static void update_callback(void *user_data, libcastget_channel_action action,
 {
   struct channel_configuration *c = (struct channel_configuration *)user_data;
 
-  if (!quiet) {
-    switch (action) {
-    case CCA_RSS_DOWNLOAD_START:
+  switch (action) {
+  case CCA_RSS_DOWNLOAD_START:
+    if (!quiet)
       g_printf("Updating channel %s...\n", c->identifier);
-      break;
-      
-    case CCA_RSS_DOWNLOAD_END:
-      break;
-      
-    case CCA_ENCLOSURE_DOWNLOAD_START:
-      g_assert(channel_info);
-      g_assert(enclosure);
-
-      if (verbose) {
-        if (enclosure->length > 1024*1024*1024) {
-          g_printf(" * Downloading %s (%.1f GB) from %s\n", 
-                   enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0), 
-                   channel_info->title);
-        } else if (enclosure->length > 1024*1024) {
-          g_printf(" * Downloading %s (%.1f MB) from %s\n", 
-                   enclosure->filename, (float)enclosure->length / (1024.0*1024.0),
-                   channel_info->title);
-        } else if (enclosure->length > 1024) {
-          g_printf(" * Downloading %s (%.1f kB) from %s\n", 
-                   enclosure->filename, (float)enclosure->length / 1024.0,
-                   channel_info->title);
-        } else if (enclosure->length > 0) {
-          g_printf(" * Downloading %s (%ld bytes) from %s\n", 
-                   enclosure->filename, enclosure->length,
-                   channel_info->title);
-        } else {
-          g_printf(" * Downloading %s from %s\n",
-                   enclosure->filename,
-                   channel_info->title);
-        }
+    break;
+    
+  case CCA_RSS_DOWNLOAD_END:
+    break;
+    
+  case CCA_ENCLOSURE_DOWNLOAD_START:
+    g_assert(channel_info);
+    g_assert(enclosure);
+    
+    if (verbose) {
+      if (enclosure->length > 1024*1024*1024) {
+        g_printf(" * Downloading %s (%.1f GB) from %s\n", 
+                 enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0), 
+                 channel_info->title);
+      } else if (enclosure->length > 1024*1024) {
+        g_printf(" * Downloading %s (%.1f MB) from %s\n", 
+                 enclosure->filename, (float)enclosure->length / (1024.0*1024.0),
+                 channel_info->title);
+      } else if (enclosure->length > 1024) {
+        g_printf(" * Downloading %s (%.1f kB) from %s\n", 
+                 enclosure->filename, (float)enclosure->length / 1024.0,
+                 channel_info->title);
+      } else if (enclosure->length > 0) {
+        g_printf(" * Downloading %s (%ld bytes) from %s\n", 
+                 enclosure->filename, enclosure->length,
+                 channel_info->title);
+      } else {
+        g_printf(" * Downloading %s from %s\n",
+                 enclosure->filename,
+                 channel_info->title);
       }
-      break;
-
-    case CCA_ENCLOSURE_DOWNLOAD_END:
-      g_assert(channel_info);
-      g_assert(enclosure);
-      g_assert(filename);
-
-      /* Set media tags. */
-      if (enclosure->type && !strcmp(enclosure->type, "audio/mpeg")) {
-#ifdef ENABLE_ID3LIB
-        _id3_check_and_set(filename, c);
-#endif /* ENABLE_ID3LIB */
-      }
-
-      /* Update playlist. */
-      if (c->playlist) {
-        playlist_add(c->playlist, filename);
-
-        if (verbose)
-          printf(" * Added downloaded enclosure %s to playlist %s.\n", 
-                 filename, c->playlist);
-      }
-      break;
     }
-  } 
+    break;
+    
+  case CCA_ENCLOSURE_DOWNLOAD_END:
+    g_assert(channel_info);
+    g_assert(enclosure);
+    g_assert(filename);
+    
+    /* Set media tags. */
+    if (enclosure->type && !strcmp(enclosure->type, "audio/mpeg")) {
+#ifdef ENABLE_ID3LIB
+      if (_id3_check_and_set(filename, c))
+        fprintf(stderr, "Error setting ID3 tag for file %s.\n", filename);
+#endif /* ENABLE_ID3LIB */
+    }
+    
+    /* Update playlist. */
+    if (c->playlist) {
+      playlist_add(c->playlist, filename);
+      
+      if (verbose)
+        printf(" * Added downloaded enclosure %s to playlist %s.\n", 
+               filename, c->playlist);
+    }
+    break;
+  }
 }
 
 static void catchup_callback(void *user_data, libcastget_channel_action action, libcastget_channel_info *channel_info,
@@ -277,27 +277,26 @@ static void catchup_callback(void *user_data, libcastget_channel_action action, 
 {
   struct channel_configuration *c = (struct channel_configuration *)user_data;
 
-  if (!quiet) {
-    switch (action) {
-    case CCA_RSS_DOWNLOAD_START:
+  switch (action) {
+  case CCA_RSS_DOWNLOAD_START:
+    if (!quiet)
       g_printf("Catching up with channel %s...\n", c->identifier);
-      break;
+    break;
+    
+  case CCA_RSS_DOWNLOAD_END:
+    break;
 
-    case CCA_RSS_DOWNLOAD_END:
-      break;
-
-    case CCA_ENCLOSURE_DOWNLOAD_START:
-      g_assert(channel_info);
-      g_assert(enclosure);
-
-      if (verbose)
-        g_printf("Catching up on %s (%ld bytes) from %s\n", enclosure->url, enclosure->length,
-                 channel_info->title);
-      break;
-
-    case CCA_ENCLOSURE_DOWNLOAD_END:
-      break;
-    }
+  case CCA_ENCLOSURE_DOWNLOAD_START:
+    g_assert(channel_info);
+    g_assert(enclosure);
+    
+    if (verbose)
+      g_printf("Catching up on %s (%ld bytes) from %s\n", enclosure->url, enclosure->length,
+               channel_info->title);
+    break;
+    
+  case CCA_ENCLOSURE_DOWNLOAD_END:
+    break;
   }
 }
 
@@ -306,44 +305,41 @@ static void list_callback(void *user_data, libcastget_channel_action action, lib
 {
   struct channel_configuration *c = (struct channel_configuration *)user_data;
 
-  if (!quiet) {
-    switch (action) {
-    case CCA_RSS_DOWNLOAD_START:
-      g_printf("Listing channel %s...\n", c->identifier);
-      break;
-
-    case CCA_RSS_DOWNLOAD_END:
-      break;
-
-    case CCA_ENCLOSURE_DOWNLOAD_START:
-      g_assert(channel_info);
-      g_assert(enclosure);
-
-
-      if (enclosure->length > 1024*1024*1024) {
-        g_printf(" * %s (%.1f GB) from %s\n", 
-                 enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0), 
-                 channel_info->title);
-      } else if (enclosure->length > 1024*1024) {
-        g_printf(" * %s (%.1f MB) from %s\n", 
-                 enclosure->filename, (float)enclosure->length / (1024.0*1024.0),
-                 channel_info->title);
-      } else if (enclosure->length > 1024) {
-        g_printf(" * %s (%.1f kB) from %s\n", 
-                 enclosure->filename, (float)enclosure->length / 1024.0,
-                 channel_info->title);
-      } else if (enclosure->length > 0) {
-        g_printf(" * %s (%ld bytes) from %s\n", 
-                 enclosure->filename, enclosure->length, channel_info->title);
-      } else {
-        g_printf(" * %s from %s\n", enclosure->filename, channel_info->title);
-      }
-
-      break;
-
-    case CCA_ENCLOSURE_DOWNLOAD_END:
-      break;
+  switch (action) {
+  case CCA_RSS_DOWNLOAD_START:
+    g_printf("Listing channel %s...\n", c->identifier);
+    break;
+    
+  case CCA_RSS_DOWNLOAD_END:
+    break;
+    
+  case CCA_ENCLOSURE_DOWNLOAD_START:
+    g_assert(channel_info);
+    g_assert(enclosure);
+    
+    if (enclosure->length > 1024*1024*1024) {
+      g_printf(" * %s (%.1f GB) from %s\n", 
+               enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0), 
+               channel_info->title);
+    } else if (enclosure->length > 1024*1024) {
+      g_printf(" * %s (%.1f MB) from %s\n", 
+               enclosure->filename, (float)enclosure->length / (1024.0*1024.0),
+               channel_info->title);
+    } else if (enclosure->length > 1024) {
+      g_printf(" * %s (%.1f kB) from %s\n", 
+               enclosure->filename, (float)enclosure->length / 1024.0,
+               channel_info->title);
+    } else if (enclosure->length > 0) {
+      g_printf(" * %s (%ld bytes) from %s\n", 
+               enclosure->filename, enclosure->length, channel_info->title);
+    } else {
+      g_printf(" * %s from %s\n", enclosure->filename, channel_info->title);
     }
+    
+    break;
+    
+  case CCA_ENCLOSURE_DOWNLOAD_END:
+    break;
   }
 }
 

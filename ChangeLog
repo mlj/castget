@@ -1,5 +1,8 @@
 2006-07-28  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* castget/castget.c: Fixed a problem with the "quiet" option
+	interfering with the writing of ID3 tags (!)
+
 	* castget/castget.c, libcastget/rss.c, libcastget/utils.c:
 	Removed some warnings.
 
