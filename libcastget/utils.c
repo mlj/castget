@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: utils.c,v 1.5 2006/06/20 23:11:39 mariuslj Exp $
+  $Id: utils.c,v 1.6 2006/07/28 20:32:28 mariuslj Exp $
   
 */
 
@@ -24,7 +24,10 @@
 #endif /* HAVE_CONFIG_H */
 #include <time.h>
 #include <errno.h>
-
+#include <unistd.h>
+#include <string.h>
+#include <glib/gprintf.h>
+#include <glib/gstdio.h>
 #include "utils.h"
 
 int libcastget_write_by_temporary_file(const gchar *filename, 
@@ -100,7 +103,6 @@ gchar *libcastget_get_rfc822_time(void)
 {
   char rfc822_time_buffer[RFC822_TIME_BUFFER_LEN];
   time_t now;
-  int strflen;
 
   now = time(NULL);
 

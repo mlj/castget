@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.c,v 1.7 2006/06/09 21:58:44 mariuslj Exp $
+  $Id: rss.c,v 1.8 2006/07/28 20:32:28 mariuslj Exp $
   
 */
 
@@ -27,11 +27,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <glib.h>
+#include <unistd.h>
 #include "libcastget.h"
 #include "libxmlutil.h"
 #include "urlget.h"
 #include "htmlent.h"
 #include "rss.h"
+#include "utils.h"
 
 #define MRSS_NAMESPACE "http://search.yahoo.com/mrss"
 
@@ -243,7 +245,7 @@ rss_file *rss_open_url(const char *url)
   rss_file *f;
   gchar *rss_filename;
 
-  if (libcastget_write_by_temporary_file(NULL, _rss_open_url_cb, url, &rss_filename))
+  if (libcastget_write_by_temporary_file(NULL, _rss_open_url_cb, (gpointer)url, &rss_filename))
     return NULL;
 
   f = rss_open_file(rss_filename);

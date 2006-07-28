@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.16 2006/07/22 14:19:03 mariuslj Exp $
+  $Id: castget.c,v 1.17 2006/07/28 20:32:28 mariuslj Exp $
   
 */
 
@@ -214,7 +214,10 @@ static void update_callback(void *user_data, libcastget_channel_action action,
     case CCA_RSS_DOWNLOAD_START:
       g_printf("Updating channel %s...\n", c->identifier);
       break;
-
+      
+    case CCA_RSS_DOWNLOAD_END:
+      break;
+      
     case CCA_ENCLOSURE_DOWNLOAD_START:
       g_assert(channel_info);
       g_assert(enclosure);
@@ -280,6 +283,9 @@ static void catchup_callback(void *user_data, libcastget_channel_action action, 
       g_printf("Catching up with channel %s...\n", c->identifier);
       break;
 
+    case CCA_RSS_DOWNLOAD_END:
+      break;
+
     case CCA_ENCLOSURE_DOWNLOAD_START:
       g_assert(channel_info);
       g_assert(enclosure);
@@ -287,6 +293,9 @@ static void catchup_callback(void *user_data, libcastget_channel_action action, 
       if (verbose)
         g_printf("Catching up on %s (%ld bytes) from %s\n", enclosure->url, enclosure->length,
                  channel_info->title);
+      break;
+
+    case CCA_ENCLOSURE_DOWNLOAD_END:
       break;
     }
   }
@@ -301,6 +310,9 @@ static void list_callback(void *user_data, libcastget_channel_action action, lib
     switch (action) {
     case CCA_RSS_DOWNLOAD_START:
       g_printf("Listing channel %s...\n", c->identifier);
+      break;
+
+    case CCA_RSS_DOWNLOAD_END:
       break;
 
     case CCA_ENCLOSURE_DOWNLOAD_START:
@@ -327,6 +339,9 @@ static void list_callback(void *user_data, libcastget_channel_action action, lib
         g_printf(" * %s from %s\n", enclosure->filename, channel_info->title);
       }
 
+      break;
+
+    case CCA_ENCLOSURE_DOWNLOAD_END:
       break;
     }
   }
