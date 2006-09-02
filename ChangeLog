@@ -1,3 +1,8 @@
+2006-09-03  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* configure.ac: Tried to correct problems with the id3lib checking
+	failing to link.
+
 2006-07-28  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* castget/castget.c: Fixed a problem with the "quiet" option

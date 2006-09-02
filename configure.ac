@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id: configure.ac,v 1.9 2006/07/08 10:40:03 mariuslj Exp $
+# $Id: configure.ac,v 1.10 2006/09/02 22:48:19 mariuslj Exp $
 # 
 
 AC_PREREQ(2.59)
@@ -54,21 +54,15 @@ else
 fi
 
 if test "x$configure_enable_id3lib" = "xyes"; then
-  AC_CHECK_LIB(z, deflate, , configure_enable_id3lib=no,)
+  AC_SEARCH_LIBS(ID3Tag_Link,
+    "id3" "id3 -lstdc++" "id3 -lz" "id3 -lz -lstdc++",
+    , 
+    AC_MSG_ERROR(Required library id3lib not found))
 
-  if ! test "x$configure_enable_id3lib" = "xyes"; then
-    AC_MSG_ERROR(Required library libz not found)
-  fi
+  dnl Needed to link correctly with id3lib 3.8.0
+  LIBS="-lz -lstdc++ $LIBS"
 
-  AC_CHECK_LIB(id3, ID3Tag_Link, , configure_enable_id3lib=no,)
-
-  if ! test "x$configure_enable_id3lib" = "xyes"; then
-    AC_MSG_ERROR(Required library id3lib not found)
-  fi
-fi
-
-if test "x$configure_enable_id3lib" = "xyes"; then
-  AC_DEFINE([ENABLE_ID3LIB], [1])
+  AC_DEFINE(ENABLE_ID3LIB, [1], [Define for id3lib support])
 fi
 
 # Checks for header files.
