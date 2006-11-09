@@ -17,7 +17,7 @@ If run without any options, \fBcastget\fR will perform the default action on all
 catch up with channels and exit
 .TP
 \fB\-l\fR, \fB\-\-list\fR
-list enclosures available for download and exit
+list available enclosures that have not yet been downloaded, and exit
 .TP
 \fB\-q\fR, \fB\-\-quiet\fR
 do not print anything except error messages
