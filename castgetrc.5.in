@@ -56,6 +56,8 @@ A channel definition with the channel identifier `*' will define a global config
 for example, is equivalent to adding the key-value pair \fBid3contenttype=Podcast\fR to all other channel definitions.
 .PP
 Key-value pairs in channel definitions override the global configuration.
+.SH CHANNEL REMOVAL
+If a channel configuration is removed, the channel status remains the same so that if the channel is subsequently re-added, any enclosures marked as already downloaded will not be downloaded again.
 .SH NOTE
 The source distribution includes a sample configuration file demonstrating all supported settings. 
 .SH SEE ALSO

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.18 2006/07/28 20:38:20 mariuslj Exp $
+  $Id: castget.c,v 1.19 2007/01/24 19:48:37 mariuslj Exp $
   
 */
 
@@ -30,6 +30,7 @@
 #include <glib/gstdio.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 #include <libxml/parser.h>
 #ifdef ENABLE_ID3LIB
 #include <id3.h>
@@ -63,6 +64,7 @@ static int playlist_add(const gchar *playlist_file,
 
 static int verbose = 0;
 static int quiet = 0;
+static int new = 0;
 
 int main(int argc, char **argv)
 {
@@ -81,13 +83,14 @@ int main(int argc, char **argv)
       {"catchup", 0, 0, 'c'},
       {"help", 0, 0, 'h'},
       {"list", 0, 0, 'l'},
+      {"new-only", 0, 0, 'n'},
       {"verbose", 0, 0, 'v'},
       {"version", 0, 0, 'V'},
       {"quiet", 0, 0, 'q'},
       {0, 0, 0, 0}
     };
     
-    c = getopt_long(argc, argv, "chlqvV", long_options, &option_index);
+    c = getopt_long(argc, argv, "chlnqvV", long_options, &option_index);
 
     if (c == -1)
       break;
@@ -99,6 +102,10 @@ int main(int argc, char **argv)
 
     case 'l':
       op = OP_LIST;
+      break;
+
+    case 'n':
+      new = 1;
       break;
 
     case 'v':
@@ -124,6 +131,10 @@ int main(int argc, char **argv)
   if (verbose && quiet) {
     usage();
     return 1;
+  }
+
+  if (verbose && new) {
+    printf("Fetching new channels only...\n");
   }
 
   LIBXML_TEST_VERSION;
@@ -188,6 +199,7 @@ static void usage(void)
   g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [identifier(s)]\n\n");
   g_printf("  --catchup   -c    Catch up with channels.\n");
   g_printf("  --list      -l    List available enclosures.\n");
+  g_printf("  --new-only  -n    Only fetch new channel(s).\n");
   g_printf("  --version   -V    Print version number.\n");
   g_printf("  --help      -h    Print usage information.\n");
   g_printf("\n");
@@ -416,7 +428,15 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   channel_filename = g_strjoin(".", identifier, "xml", NULL);
   channel_file = g_build_filename(channel_directory, channel_filename, NULL);
   g_free(channel_filename);
-        
+
+  if (new && access(channel_file, F_OK) == 0) {
+    /* If we are only fetching new channels, skip the channel if there is
+       already a channel file present. */
+
+    channel_configuration_free(channel_configuration);
+    return 0;
+  }
+
   c = libcastget_channel_new(channel_configuration->url, channel_file, 
                              channel_configuration->spool_directory);
   g_free(channel_file);

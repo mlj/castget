@@ -1,3 +1,11 @@
+2007-01-24  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* castget/castget.c: Added --new-only option (Jick Nan).
+
+	* castget.1.in, castgetrc.5.in: Documented --new option. Clarified
+	behaviour of channel files when configurations are removed from
+	configuration files.
+
 2006-11-09  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* castget.1.in: Clarified intended behaviour of the --list option.
