@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.19 2007/01/24 19:48:37 mariuslj Exp $
+  $Id: castget.c,v 1.20 2007/01/24 21:32:54 mariuslj Exp $
   
 */
 
@@ -65,6 +65,7 @@ static int playlist_add(const gchar *playlist_file,
 static int verbose = 0;
 static int quiet = 0;
 static int new = 0;
+static int first_only = 0;
 
 int main(int argc, char **argv)
 {
@@ -81,6 +82,7 @@ int main(int argc, char **argv)
 
     static struct option long_options[] = {
       {"catchup", 0, 0, 'c'},
+      {"first-only", 0, 0, '1'},
       {"help", 0, 0, 'h'},
       {"list", 0, 0, 'l'},
       {"new-only", 0, 0, 'n'},
@@ -90,7 +92,7 @@ int main(int argc, char **argv)
       {0, 0, 0, 0}
     };
     
-    c = getopt_long(argc, argv, "chlnqvV", long_options, &option_index);
+    c = getopt_long(argc, argv, "1chlnqvV", long_options, &option_index);
 
     if (c == -1)
       break;
@@ -106,6 +108,10 @@ int main(int argc, char **argv)
 
     case 'n':
       new = 1;
+      break;
+
+    case '1':
+      first_only = 1;
       break;
 
     case 'v':
@@ -197,14 +203,15 @@ int main(int argc, char **argv)
 static void usage(void)
 {
   g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [identifier(s)]\n\n");
-  g_printf("  --catchup   -c    Catch up with channels.\n");
-  g_printf("  --list      -l    List available enclosures.\n");
-  g_printf("  --new-only  -n    Only fetch new channel(s).\n");
-  g_printf("  --version   -V    Print version number.\n");
-  g_printf("  --help      -h    Print usage information.\n");
+  g_printf("  --catchup     -c    Catch up with channels.\n");
+  g_printf("  --list        -l    List available enclosures.\n");
+  g_printf("  --first-only  -1    Only operate on the most recent enclosure in each channel.\n");
+  g_printf("  --new-only    -n    Only operate on new channel(s).\n");
+  g_printf("  --version     -V    Print version number.\n");
+  g_printf("  --help        -h    Print usage information.\n");
   g_printf("\n");
-  g_printf("  --verbose   -v    Verbose mode.\n");
-  g_printf("  --quiet     -q    Quiet mode.\n\n");
+  g_printf("  --verbose     -v    Verbose mode.\n");
+  g_printf("  --quiet       -q    Quiet mode.\n\n");
   g_printf("The identifiers identifies the channels affected by the selected operation.\n");
   g_printf("If no identifier is supplied all channels are affect.\n");
 }
@@ -450,15 +457,18 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
     
   switch (op) {
   case OP_UPDATE:
-    libcastget_channel_update(c, channel_configuration, update_callback);
+    libcastget_channel_update(c, channel_configuration, update_callback, 
+                              0, 0, first_only);
     break;
             
   case OP_CATCHUP:
-    libcastget_channel_catchup(c, channel_configuration, catchup_callback);
+    libcastget_channel_update(c, channel_configuration, catchup_callback,
+                              1, 0, first_only);
     break;
             
   case OP_LIST:
-    libcastget_channel_list(c, channel_configuration, list_callback);
+    libcastget_channel_update(c, channel_configuration, list_callback,
+                              1, 1, first_only);
     break;
   }
           

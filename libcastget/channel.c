@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.c,v 1.6 2006/06/09 22:46:11 mariuslj Exp $
+  $Id: channel.c,v 1.7 2007/01/24 21:32:54 mariuslj Exp $
   
 */
 
@@ -168,13 +168,12 @@ static rss_file *_get_rss(libcastget_channel *c, void *user_data, libcastget_cha
   return f;
 }
 
-int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget_channel_callback cb)
+static int _do_download(libcastget_channel *c, libcastget_channel_info *channel_info, 
+                        rss_item *item, void *user_data, libcastget_channel_callback cb)
 {
-  int i;
-  rss_file *f;
+  int download_failed;
   gchar *enclosure_full_filename;
   FILE *enclosure_file;
-  gchar *rss_last_fetched;
 
   /* Check that the spool directory exists. */
   if (!g_file_test(c->spool_directory, G_FILE_TEST_IS_DIR)) {
@@ -182,123 +181,101 @@ int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget
     return 1;
   }
 
+  /* Build enclosure file name and open file. */
+  enclosure_full_filename = g_build_filename(c->spool_directory, item->enclosure->filename, NULL);
+
+  enclosure_file = fopen(enclosure_full_filename, "w");
+
+  if (!enclosure_file) {
+    g_free(enclosure_full_filename);
+    
+    g_fprintf(stderr, "Error opening enclosure file %s.\n", enclosure_full_filename);
+    return 1;
+  }
+  
+  if (cb)
+    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, enclosure_full_filename);
+  
+  if (libcastget_urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb)) {
+    g_fprintf(stderr, "Error downloading enclosure from %s.\n", item->enclosure->url);
+
+    download_failed = 1;
+  } else
+    download_failed = 0;
+  
+  fclose(enclosure_file);
+  
+  if (cb)
+    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, channel_info, item->enclosure, enclosure_full_filename);
+  
+  g_free(enclosure_full_filename); 
+
+  return download_failed;
+}
+
+static int _do_catchup(libcastget_channel *c, libcastget_channel_info *channel_info, rss_item *item,
+                       void *user_data, libcastget_channel_callback cb)
+{
+  if (cb) {
+    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, NULL);
+  
+    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, channel_info, item->enclosure, NULL);
+  }
+
+  return 0;
+}  
+
+int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget_channel_callback cb,
+                              int no_download, int no_mark_read, int first_only)
+{
+  int i, download_failed;
+  rss_file *f;
+  gchar *rss_last_fetched;
+
+  /* Retrieve the RSS file. */
   f = _get_rss(c, user_data, cb);
 
   if (!f)
     return 1;
-
-  /* Get the current time and keep it around for later use as the new RSS last fetched time. */
-  rss_last_fetched = libcastget_get_rfc822_time();
-
-  if (!rss_last_fetched) {
-    g_fprintf(stderr, "Error retrieving current time.\n");
-
-    rss_close(f);
-
-    return 1;
-  }
 
   /* Check enclosures in RSS file. */
   for (i = 0; i < f->num_items; i++)
     if (f->items[i]->enclosure) {
       if (!g_hash_table_lookup_extended(c->downloaded_enclosures, f->items[i]->enclosure->url, NULL, NULL)) {
-        enclosure_full_filename = g_build_filename(c->spool_directory, f->items[i]->enclosure->filename, NULL);
+        if (no_download)
+          download_failed = _do_catchup(c, &(f->channel_info), f->items[i], user_data, cb);
+        else
+          download_failed = _do_download(c, &(f->channel_info), f->items[i], user_data, cb);
 
-        enclosure_file = fopen(enclosure_full_filename, "w");
-
-        if (!enclosure_file) {
-          g_free(enclosure_full_filename);
-
-          g_fprintf(stderr, "Error opening enclosure file %s.\n", enclosure_full_filename);
+        if (download_failed)
           break;
-        }
 
-        if (cb)
-          cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, &(f->channel_info), f->items[i]->enclosure, enclosure_full_filename);
-
-        if (libcastget_urlget_buffer(f->items[i]->enclosure->url, enclosure_file, _enclosure_urlget_cb)) {
-          g_fprintf(stderr, "Error downloading enclosure from %s.\n", f->items[i]->enclosure->url);
-        } else {
+        if (!no_mark_read) {
+          /* Mark enclosure as downloaded and immediately save channel
+             file to ensure that it reflects the change. */
           g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url, 
                               (gpointer)libcastget_get_rfc822_time());
+
+          _cast_channel_save(c);
         }
 
-        fclose(enclosure_file);
-
-        /* Save the channel file for each downloaded enclosure to make
-           sure that it remains up to date. */
-        _cast_channel_save(c);
-
-        if (cb)
-          cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, &(f->channel_info), f->items[i]->enclosure, enclosure_full_filename);
-
-        g_free(enclosure_full_filename);
+        /* If we have been instructed to deal only with the first
+           available enclosure, it is time to break out of the loop. */
+        if (first_only)
+          break;
       }
     }
 
-  /* Update the RSS last fetched time and save the channel file again. */
-  if (c->rss_last_fetched)
-    g_free(c->rss_last_fetched);
+  if (!no_mark_read) {
+    /* Update the RSS last fetched time and save the channel file again. */
 
-  c->rss_last_fetched = rss_last_fetched;
+    if (c->rss_last_fetched)
+      g_free(c->rss_last_fetched);
 
-  _cast_channel_save(c);
+    c->rss_last_fetched = g_strdup(f->fetched_time);
 
-  rss_close(f);
-
-  return 0;
-}
-
-int libcastget_channel_catchup(libcastget_channel *c, void *user_data, libcastget_channel_callback cb)
-{
-  int i;
-  rss_file *f;
-
-  f = _get_rss(c, user_data, cb);
-
-  if (!f)
-    return 1;
-
-  for (i = 0; i < f->num_items; i++)
-    if (f->items[i]->enclosure) {
-      if (!g_hash_table_lookup_extended(c->downloaded_enclosures, f->items[i]->enclosure->url, NULL, NULL)) {
-        if (cb)
-          cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, &(f->channel_info), f->items[i]->enclosure, NULL);
-        
-        g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url, 
-                            (gpointer)libcastget_get_rfc822_time());
-
-        if (cb)
-          cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, &(f->channel_info), f->items[i]->enclosure, NULL);
-      }
-    }
-
-  _cast_channel_save(c);
-
-  rss_close(f);
-
-  return 0;
-}
-
-int libcastget_channel_list(libcastget_channel *c, void *user_data, libcastget_channel_callback cb)
-{
-  int i;
-  rss_file *f;
-
-  f = _get_rss(c, user_data, cb);
-
-  if (!f)
-    return 1;
-
-  for (i = 0; i < f->num_items; i++)
-    if (f->items[i]->enclosure) {
-      if (!g_hash_table_lookup_extended(c->downloaded_enclosures, f->items[i]->enclosure->url, NULL, NULL))
-        if (cb)
-          cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, &(f->channel_info), f->items[i]->enclosure, NULL);
-
-        if (cb)
-          cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, &(f->channel_info), f->items[i]->enclosure, NULL);
-    }
+    _cast_channel_save(c);
+  }
 
   rss_close(f);
 

@@ -9,6 +9,13 @@
 	* libcastget/rss.c, libcastget/rss.c: Added the field fetched_time
 	to the RSS file structure.
 
+	* castget/castget.c, libcastget/libcastget.c,
+	libcastget/libcastget.h: Refactored libcastget_channel_update,
+	libcastget_channel_catchup and libcastget_channel_list. Added
+	first_only flag.
+
+	* castget/castget.c, castget.1.in: Added --first-only option.
+
 2006-11-09  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* castget.1.in: Clarified intended behaviour of the --list option.

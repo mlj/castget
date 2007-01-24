@@ -16,11 +16,14 @@ If run without any options, \fBcastget\fR will perform the default action on all
 \fB\-c\fR, \fB\-\-catchup\fR
 catch up with channels and exit
 .TP
-\fB\-n\fR, \fB\-\-new-only\fR
-download enclosures from new channels only, i.e. from channels that have never been downloaded from or been caught up with before. Note that if a channel is added to the configuration and subsequently removed, its download history is preserved so that the channel will not be considered as `new' if re-added to the configuration at a later time.
-.TP
 \fB\-l\fR, \fB\-\-list\fR
 list available enclosures that have not yet been downloaded, and exit
+.TP
+\fB\-n\fR, \fB\-\-new-only\fR
+operate on new channels only, i.e. on channels that have never been downloaded from or been caught up with before. Note that if a channel is added to the configuration and subsequently removed, its download history is preserved so that the channel will not be considered as `new' if re-added to the configuration at a later time.
+.TP
+\fB\-1\fR, \fB\-\-first-only\fR
+operate on the most recent enclosure in each channel only.
 .TP
 \fB\-q\fR, \fB\-\-quiet\fR
 do not print anything except error messages

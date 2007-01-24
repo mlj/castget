@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: libcastget.h,v 1.4 2006/03/30 20:06:54 mariuslj Exp $
+  $Id: libcastget.h,v 1.5 2007/01/24 21:32:54 mariuslj Exp $
   
 */
 
@@ -57,9 +57,8 @@ typedef void (*libcastget_channel_callback)(void *user_data,
 
 libcastget_channel *libcastget_channel_new(const char *url, const char *channel_file, const char *spool_directory);
 void libcastget_channel_free(libcastget_channel *c);
-int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget_channel_callback cb);
-int libcastget_channel_catchup(libcastget_channel *c, void *user_data, libcastget_channel_callback cb);
-int libcastget_channel_list(libcastget_channel *c, void *user_data, libcastget_channel_callback cb);
+int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget_channel_callback cb,
+                              int no_download, int no_mark_read, int first_only);
 
 #ifdef __cplusplus
 }
