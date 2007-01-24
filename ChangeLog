@@ -6,6 +6,9 @@
 	behaviour of channel files when configurations are removed from
 	configuration files.
 
+	* rss.c, rss.c: Added the field fetched_time to the RSS file
+	structure.
+
 2006-11-09  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* castget.1.in: Clarified intended behaviour of the --list option.

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005 Marius L. Jøhndal
+  Copyright (C) 2005, 2007 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.h,v 1.1 2005/08/16 23:16:19 mariuslj Exp $
+  $Id: rss.h,v 1.2 2007/01/24 21:28:05 mariuslj Exp $
   
 */
 
@@ -43,6 +43,7 @@ typedef struct _rss_file {
   int num_items;
   rss_item **items;
   libcastget_channel_info channel_info;
+  gchar *fetched_time;
 } rss_file;
 
 rss_file *rss_open_file(const char *filename);

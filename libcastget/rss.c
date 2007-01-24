@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.c,v 1.8 2006/07/28 20:32:28 mariuslj Exp $
+  $Id: rss.c,v 1.9 2007/01/24 21:28:05 mariuslj Exp $
   
 */
 
@@ -113,7 +113,7 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
     f->items[i]->enclosure->filename = g_path_get_basename(f->items[i]->enclosure->url);
 }
 
-static rss_file *rss_parse(const gchar *url, const xmlNode *root_element)
+static rss_file *rss_parse(const gchar *url, const xmlNode *root_element, gchar *fetched_time)
 {
   const char *version_string;
   const xmlNode *channel;
@@ -145,6 +145,9 @@ static rss_file *rss_parse(const gchar *url, const xmlNode *root_element)
   if (channel) {
     /* Allocate RSS file structure and room for pointers to all entries. */
     f = (rss_file *)malloc(sizeof(struct _rss_file));
+
+    f->fetched_time = g_strdup(fetched_time);
+
     f->num_items = libxmlutil_count_by_tag_name(channel, "item");
     f->items = (rss_item **)malloc(sizeof(rss_item *) * f->num_items);
 
@@ -203,6 +206,7 @@ rss_file *rss_open_file(const char *filename)
   xmlDocPtr doc;
   rss_file *f;
   xmlNode *root_element = NULL;
+  gchar *fetched_time;
 
   ctxt = xmlNewParserCtxt();
   ctxt->sax->getEntity = _get_entity;
@@ -225,10 +229,22 @@ rss_file *rss_open_file(const char *filename)
     return NULL;
   }
 
-  f = rss_parse(filename, root_element);
+  /* Establish the time the RSS file was 'fetched'. */
+  fetched_time = libcastget_get_rfc822_time();
+  
+  if (!fetched_time) {
+    xmlFreeDoc(doc);
+    xmlFreeParserCtxt(ctxt);
+
+    g_fprintf(stderr, "Error retrieving current time.\n");
+    return NULL;
+  }
+
+  f = rss_parse(filename, root_element, fetched_time);
  
   xmlFreeDoc(doc);
   xmlFreeParserCtxt(ctxt);
+  g_free(fetched_time);
 
   return f;
 }
@@ -285,6 +301,8 @@ void rss_close(rss_file *f)
 
   if (f->channel_info.title)
     free(f->channel_info.title);
+
+  g_free(f->fetched_time);
 
   free(f);
 }
