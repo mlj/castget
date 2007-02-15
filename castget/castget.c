@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.21 2007/02/15 17:48:30 mariuslj Exp $
+  $Id: castget.c,v 1.22 2007/02/15 17:53:26 mariuslj Exp $
   
 */
 
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
       {0, 0, 0, 0}
     };
     
-    c = getopt_long(argc, argv, "1chlnqvV", long_options, &option_index);
+    c = getopt_long(argc, argv, "1chlnqrvV", long_options, &option_index);
 
     if (c == -1)
       break;
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
 
 static void usage(void)
 {
-  g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [identifier(s)]\n\n");
+  g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [-r] [-1] [-n] [identifier(s)]\n\n");
   g_printf("  --catchup     -c    Catch up with channels.\n");
   g_printf("  --list        -l    List available enclosures.\n");
   g_printf("  --first-only  -1    Only operate on the most recent enclosure in each channel.\n");
