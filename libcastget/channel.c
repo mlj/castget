@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.c,v 1.8 2007/02/15 17:48:30 mariuslj Exp $
+  $Id: channel.c,v 1.9 2007/02/15 17:55:18 mariuslj Exp $
   
 */
 
@@ -250,7 +250,6 @@ int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget
 {
   int i, download_failed;
   rss_file *f;
-  gchar *rss_last_fetched;
 
   /* Retrieve the RSS file. */
   f = _get_rss(c, user_data, cb);

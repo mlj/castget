@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.c,v 1.9 2007/01/24 21:28:05 mariuslj Exp $
+  $Id: rss.c,v 1.10 2007/02/15 17:55:18 mariuslj Exp $
   
 */
 
@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <glib.h>
+#include <glib/gprintf.h>
 #include <unistd.h>
 #include "libcastget.h"
 #include "libxmlutil.h"
