@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: libcastget.h,v 1.5 2007/01/24 21:32:54 mariuslj Exp $
+  $Id: libcastget.h,v 1.6 2007/02/15 17:48:30 mariuslj Exp $
   
 */
 
@@ -55,10 +55,11 @@ typedef void (*libcastget_channel_callback)(void *user_data,
                                          libcastget_enclosure *enclosure,
                                          const char *filename);
 
-libcastget_channel *libcastget_channel_new(const char *url, const char *channel_file, const char *spool_directory);
+libcastget_channel *libcastget_channel_new(const char *url, const char *channel_file, 
+                                           const char *spool_directory, int resume);
 void libcastget_channel_free(libcastget_channel *c);
 int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget_channel_callback cb,
-                              int no_download, int no_mark_read, int first_only);
+                              int no_download, int no_mark_read, int first_only, int resume);
 
 #ifdef __cplusplus
 }

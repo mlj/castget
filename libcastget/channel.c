@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.c,v 1.7 2007/01/24 21:32:54 mariuslj Exp $
+  $Id: channel.c,v 1.8 2007/02/15 17:48:30 mariuslj Exp $
   
 */
 
@@ -24,6 +24,8 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include "libxmlutil.h"
@@ -50,7 +52,8 @@ static void _enclosure_iterator(const void *user_data, int i, const xmlNode *nod
                       (gpointer)downloadtime);
 }
 
-libcastget_channel *libcastget_channel_new(const char *url, const char *channel_file, const char *spool_directory)
+libcastget_channel *libcastget_channel_new(const char *url, const char *channel_file, 
+                                           const char *spool_directory, int resume)
 {
   libcastget_channel *c;
   xmlDocPtr doc;
@@ -61,6 +64,7 @@ libcastget_channel *libcastget_channel_new(const char *url, const char *channel_
   c->url = g_strdup(url);
   c->channel_filename = g_strdup(channel_file);
   c->spool_directory = g_strdup(spool_directory);
+  //  c->resume = resume;
   c->rss_last_fetched = NULL;
   c->downloaded_enclosures = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, g_free);
 
@@ -169,11 +173,14 @@ static rss_file *_get_rss(libcastget_channel *c, void *user_data, libcastget_cha
 }
 
 static int _do_download(libcastget_channel *c, libcastget_channel_info *channel_info, 
-                        rss_item *item, void *user_data, libcastget_channel_callback cb)
+                        rss_item *item, void *user_data, libcastget_channel_callback cb, 
+                        int resume)
 {
   int download_failed;
+  long resume_from = 0;
   gchar *enclosure_full_filename;
   FILE *enclosure_file;
+  struct stat fileinfo;
 
   /* Check that the spool directory exists. */
   if (!g_file_test(c->spool_directory, G_FILE_TEST_IS_DIR)) {
@@ -184,7 +191,20 @@ static int _do_download(libcastget_channel *c, libcastget_channel_info *channel_
   /* Build enclosure file name and open file. */
   enclosure_full_filename = g_build_filename(c->spool_directory, item->enclosure->filename, NULL);
 
-  enclosure_file = fopen(enclosure_full_filename, "w");
+  if (resume) {
+    /* We're told to continue from where we are now. Get the
+     * size of the file as it is now and open it for append instead.
+     * Stolen from curl. */
+    
+    if (0 == stat(enclosure_full_filename, &fileinfo))
+      /* Set offset to current file size. */
+      resume_from = fileinfo.st_size;
+    else
+      /* Let offset be 0. */
+      resume_from = 0;
+  }
+
+  enclosure_file = fopen(enclosure_full_filename, resume_from ? "ab" : "wb");
 
   if (!enclosure_file) {
     g_free(enclosure_full_filename);
@@ -196,7 +216,7 @@ static int _do_download(libcastget_channel *c, libcastget_channel_info *channel_
   if (cb)
     cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, enclosure_full_filename);
   
-  if (libcastget_urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb)) {
+  if (libcastget_urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb, resume_from)) {
     g_fprintf(stderr, "Error downloading enclosure from %s.\n", item->enclosure->url);
 
     download_failed = 1;
@@ -226,7 +246,7 @@ static int _do_catchup(libcastget_channel *c, libcastget_channel_info *channel_i
 }  
 
 int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget_channel_callback cb,
-                              int no_download, int no_mark_read, int first_only)
+                              int no_download, int no_mark_read, int first_only, int resume)
 {
   int i, download_failed;
   rss_file *f;
@@ -245,7 +265,7 @@ int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget
         if (no_download)
           download_failed = _do_catchup(c, &(f->channel_info), f->items[i], user_data, cb);
         else
-          download_failed = _do_download(c, &(f->channel_info), f->items[i], user_data, cb);
+          download_failed = _do_download(c, &(f->channel_info), f->items[i], user_data, cb, resume);
 
         if (download_failed)
           break;

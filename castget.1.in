@@ -25,6 +25,9 @@ operate on new channels only, i.e. on channels that have never been downloaded f
 \fB\-1\fR, \fB\-\-first-only\fR
 operate on the most recent enclosure in each channel only.
 .TP
+\fB\-r\fR, \fB\-\-resume\fR
+resume aborted downloads
+.TP
 \fB\-q\fR, \fB\-\-quiet\fR
 do not print anything except error messages
 .TP

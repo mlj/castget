@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.20 2007/01/24 21:32:54 mariuslj Exp $
+  $Id: castget.c,v 1.21 2007/02/15 17:48:30 mariuslj Exp $
   
 */
 
@@ -66,6 +66,7 @@ static int verbose = 0;
 static int quiet = 0;
 static int new = 0;
 static int first_only = 0;
+static int resume = 0;
 
 int main(int argc, char **argv)
 {
@@ -86,6 +87,7 @@ int main(int argc, char **argv)
       {"help", 0, 0, 'h'},
       {"list", 0, 0, 'l'},
       {"new-only", 0, 0, 'n'},
+      {"resume", 0, 0, 'r'},
       {"verbose", 0, 0, 'v'},
       {"version", 0, 0, 'V'},
       {"quiet", 0, 0, 'q'},
@@ -108,6 +110,10 @@ int main(int argc, char **argv)
 
     case 'n':
       new = 1;
+      break;
+
+    case 'r':
+      resume = 1;
       break;
 
     case '1':
@@ -207,6 +213,7 @@ static void usage(void)
   g_printf("  --list        -l    List available enclosures.\n");
   g_printf("  --first-only  -1    Only operate on the most recent enclosure in each channel.\n");
   g_printf("  --new-only    -n    Only operate on new channel(s).\n");
+  g_printf("  --resume      -r    Resume aborted downloads.\n");
   g_printf("  --version     -V    Print version number.\n");
   g_printf("  --help        -h    Print usage information.\n");
   g_printf("\n");
@@ -445,7 +452,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   }
 
   c = libcastget_channel_new(channel_configuration->url, channel_file, 
-                             channel_configuration->spool_directory);
+                             channel_configuration->spool_directory, resume);
   g_free(channel_file);
 
   if (!c) {
@@ -458,17 +465,17 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   switch (op) {
   case OP_UPDATE:
     libcastget_channel_update(c, channel_configuration, update_callback, 
-                              0, 0, first_only);
+                              0, 0, first_only, resume);
     break;
             
   case OP_CATCHUP:
     libcastget_channel_update(c, channel_configuration, catchup_callback,
-                              1, 0, first_only);
+                              1, 0, first_only, 0);
     break;
             
   case OP_LIST:
     libcastget_channel_update(c, channel_configuration, list_callback,
-                              1, 1, first_only);
+                              1, 1, first_only, 0);
     break;
   }
           
