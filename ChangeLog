@@ -1,5 +1,7 @@
 2007-02-15  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* configure.ac: Bumped version number to 0.9.6.
+
 	* castget.1.in, castget/castget.c, libcastget/channel.c,
 	libcastget/channel.h, libcastget/libcastget.h,
 	libcastget/urlget.c, libcastget/urlget.h: Added --resume option
