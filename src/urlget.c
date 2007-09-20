@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: urlget.c,v 1.3 2007/02/15 17:48:30 mariuslj Exp $
+  $Id: urlget.c,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
   
 */
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2007 Marius L. Jøhndal
+  Copyright (C) 2005, 2007 Marius L. JÃ¸hndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,48 +15,26 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.h,v 1.2 2007/01/24 21:28:05 mariuslj Exp $
+  $Id: urlget.h,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
   
 */
 
-#ifndef RSS_H
-#define RSS_H
+#ifndef URLGET_H
+#define URLGET_H
 
-#include "libcastget.h"
+int libcastget_urlget_file(const char *url, FILE *f);
+int libcastget_urlget_buffer(const char *url, void *user_data,
+                             size_t (*write_buffer)(void *buffer, size_t size, size_t nmemb, void *user_data),
+                             long resume_from);
 
-typedef struct _rss_item {
-  char *title;
-  char *link;
-  char *description;
-  libcastget_enclosure *enclosure;
-} rss_item;
-
-enum rss_version {
-  RSS_UNKNOWN,
-  RSS_VERSION_0_91,
-  RSS_VERSION_0_92,
-  RSS_VERSION_2_0
-};
-
-typedef struct _rss_file {
-  enum rss_version version;
-  int num_items;
-  rss_item **items;
-  libcastget_channel_info channel_info;
-  gchar *fetched_time;
-} rss_file;
-
-rss_file *rss_open_file(const char *filename);
-rss_file *rss_open_url(const char *url);
-void rss_close(rss_file *f);
-
-#endif /* RSS_H */
+#endif /* URLGET_H */
 
 /* 
    Local Variables:
    mode:c
    indent-tabs-mode:nil
    c-basic-offset:2
+   coding:utf-8
    End:
 */
 

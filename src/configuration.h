@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2006 Marius L. Jøhndal
+  Copyright (C) 2005 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,26 +15,39 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: htmlent.h,v 1.1 2006/06/09 21:58:44 mariuslj Exp $
+  $Id: configuration.h,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
   
 */
 
-#ifndef HTMLENT_H
-#define HTMLENT_H
+#ifndef CONFIGURATION_H
+#define CONFIGURATION_H
 
 #include <glib.h>
 
-GHashTable *htmlent_hash_new(void);
-void htmlent_hash_destroy(GHashTable *h);
+struct channel_configuration {
+  gchar *identifier;
+  gchar *url;
+  gchar *spool_directory;
+  gchar *playlist;
+  gchar *id3_lead_artist;
+  gchar *id3_content_group;
+  gchar *id3_title;
+  gchar *id3_album;
+  gchar *id3_content_type;
+  gchar *id3_year;
+  gchar *id3_comment;
+};
 
-#endif /* HTMLENT_H */
+struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gchar *identifier,
+                                                        struct channel_configuration *defaults);
+void channel_configuration_free(struct channel_configuration *c);
 
-/* 
+#endif /* CONFIGURATION_H */
+
+/*
    Local Variables:
    mode:c
    indent-tabs-mode:nil
    c-basic-offset:2
-   coding:utf-8
    End:
 */
-

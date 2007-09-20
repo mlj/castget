@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005 Marius L. Jøhndal
+  Copyright (C) 2005, 2007 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,39 +15,31 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: configuration.h,v 1.2 2005/12/09 05:53:00 mariuslj Exp $
+  $Id: channel.h,v 1.1 2007/09/20 17:49:22 mariuslj Exp $
   
 */
 
-#ifndef CONFIGURATION_H
-#define CONFIGURATION_H
+#ifndef CHANNEL_H
+#define CHANNEL_H
 
-#include <glib.h>
+#include "libcastget.h"
 
-struct channel_configuration {
-  gchar *identifier;
+struct _libcastget_channel {
   gchar *url;
+  gchar *channel_filename;
   gchar *spool_directory;
-  gchar *playlist;
-  gchar *id3_lead_artist;
-  gchar *id3_content_group;
-  gchar *id3_title;
-  gchar *id3_album;
-  gchar *id3_content_type;
-  gchar *id3_year;
-  gchar *id3_comment;
+  GHashTable *downloaded_enclosures;
+  gchar *rss_last_fetched;
 };
 
-struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gchar *identifier,
-                                                        struct channel_configuration *defaults);
-void channel_configuration_free(struct channel_configuration *c);
+#endif /* CHANNEL_H */
 
-#endif /* CONFIGURATION_H */
-
-/*
+/* 
    Local Variables:
    mode:c
    indent-tabs-mode:nil
    c-basic-offset:2
+   coding:utf-8
    End:
 */
+

@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: utils.c,v 1.6 2006/07/28 20:32:28 mariuslj Exp $
+  $Id: utils.c,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
   
 */
 

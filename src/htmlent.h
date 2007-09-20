@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2007 Marius L. Jøhndal
+  Copyright (C) 2006 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,19 +15,19 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: urlget.h,v 1.3 2007/02/15 17:48:30 mariuslj Exp $
+  $Id: htmlent.h,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
   
 */
 
-#ifndef URLGET_H
-#define URLGET_H
+#ifndef HTMLENT_H
+#define HTMLENT_H
 
-int libcastget_urlget_file(const char *url, FILE *f);
-int libcastget_urlget_buffer(const char *url, void *user_data,
-                             size_t (*write_buffer)(void *buffer, size_t size, size_t nmemb, void *user_data),
-                             long resume_from);
+#include <glib.h>
 
-#endif /* URLGET_H */
+GHashTable *htmlent_hash_new(void);
+void htmlent_hash_destroy(GHashTable *h);
+
+#endif /* HTMLENT_H */
 
 /* 
    Local Variables:

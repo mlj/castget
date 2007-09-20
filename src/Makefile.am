@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2005 Marius L. Jøhndal
+# Copyright (C) 2005, 2006, 2007 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,18 +15,21 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-#   $Id: Makefile.am,v 1.5 2006/06/09 21:58:44 mariuslj Exp $
+#   $Id: Makefile.am,v 1.1 2007/09/20 17:49:22 mariuslj Exp $
 #
-
 INCLUDES = $(GLIBS_CFLAGS) $(CURL_CFLAGS)
 
-lib_LTLIBRARIES = libcastget.la
+bin_PROGRAMS = castget
 
-libcastget_la_SOURCES = \
+castget_SOURCES = \
+  castget.c \
   channel.c \
   channel.h \
+  configuration.h \
+  configuration.c \
   htmlent.c \
   htmlent.h \
+  libcastget.h \
   libxmlutil.c \
   libxmlutil.h \
   rss.c \
@@ -36,9 +39,6 @@ libcastget_la_SOURCES = \
   utils.c \
   utils.h
 
-include_HEADERS = \
-  libcastget.h
-
-libcastget_la_LIBADD = \
+castget_LDADD = \
   $(GLIBS_LIBS) \
   $(CURL_LIBS)

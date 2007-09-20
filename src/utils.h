@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2007 Marius L. Jøhndal
+  Copyright (C) 2005 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,24 +15,23 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.h,v 1.3 2007/02/15 17:48:30 mariuslj Exp $
+  $Id: utils.h,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
   
 */
 
-#ifndef CHANNEL_H
-#define CHANNEL_H
+#ifndef UTILS_H
+#define UTILS_H
 
-#include "libcastget.h"
+#include <stdio.h>
+#include <glib.h>
 
-struct _libcastget_channel {
-  gchar *url;
-  gchar *channel_filename;
-  gchar *spool_directory;
-  GHashTable *downloaded_enclosures;
-  gchar *rss_last_fetched;
-};
+int libcastget_write_by_temporary_file(const gchar *filename, 
+                                       int(*writer)(FILE *f, gpointer user_data), 
+                                       gpointer user_data, gchar
+                                       **used_filename);
+gchar *libcastget_get_rfc822_time(void);
 
-#endif /* CHANNEL_H */
+#endif /* UTILS_H */
 
 /* 
    Local Variables:

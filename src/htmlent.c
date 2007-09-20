@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: htmlent.c,v 1.1 2006/06/09 21:58:44 mariuslj Exp $
+  $Id: htmlent.c,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
   
 */
 

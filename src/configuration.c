@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: configuration.c,v 1.2 2005/12/09 05:53:00 mariuslj Exp $
+  $Id: configuration.c,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
   
 */
 
