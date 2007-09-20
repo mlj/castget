@@ -3,9 +3,20 @@
 castgetrc \- configuration file for castget
 .SH DESCRIPTION
 .PP
-The configuration file \fB.castgetrc\fR located in a user's home directory defines the channels known to the RSS enclosure downloader \fBcastget\fR.
+The configuration file \fB.castgetrc\fR should be located in a user's
+home directory. It defines the behaviour of the RSS enclosure
+downloader \fBcastget\fR, and in particular the list of channels it
+operates on.
 .PP
-A simple key-value format is used. This consists of channel definitions for each RSS feed that you want \fBcastget\fR to process. Each channel definition is started by a line containing a user defined channel identifier enclosed in brackets. Following this are one or more key-value pairs on the form \fBkey=value\fR. A channel definition ends by the start of another channel definition or the end of the file.
+The file is based on a simple key-value format. It consists of a
+channel definition for each RSS feed \fBcastget\fR should process. A
+channel definition starts with a line containing a channel identifier
+enclosed in brackets. The channel identifier can be freely chosen by
+the user and is used for all subsequent operations on the
+channel. Following this are one or more key-value pairs on the form
+\fBkey=value\fR that define \fBcastget\fR's behaviour when operating
+on the channel. A channel definition ends when another
+channel definition is started or at the end of the file. 
 .PP
 Lines beginning with a hash character (`#') and blank lines are considered comments. All identifiers, keys and values should be UTF-8 encoded.
 .PP
