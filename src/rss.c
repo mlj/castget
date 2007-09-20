@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.c,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
+  $Id: rss.c,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
   
 */
 
@@ -29,7 +29,6 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <unistd.h>
-#include "libcastget.h"
 #include "libxmlutil.h"
 #include "urlget.h"
 #include "htmlent.h"
@@ -53,7 +52,7 @@ static char *_dup_child_node_value(const xmlNode *node, const gchar *tag)
 static void _item_iterator(const void *user_data, int i, const xmlNode *node)
 {
   rss_file *f = (rss_file *)user_data;
-  const xmlNode *enclosure;
+  const xmlNode *encl;
   const xmlNode *mrss_content;
   const xmlNode *mrss_group;
 
@@ -81,10 +80,10 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
   }
 
   /* Figure out if there is an "enclosure" tag here. */
-  enclosure = libxmlutil_child_node_by_name(node, NULL, "enclosure");
+  encl = libxmlutil_child_node_by_name(node, NULL, "enclosure");
 
-  if (mrss_content || enclosure) {
-    f->items[i]->enclosure = (libcastget_enclosure *)malloc(sizeof(struct _libcastget_enclosure));
+  if (mrss_content || encl) {
+    f->items[i]->enclosure = (enclosure *)malloc(sizeof(struct _enclosure));
     f->items[i]->enclosure->url = NULL;
     f->items[i]->enclosure->length = 0;
     f->items[i]->enclosure->type = NULL;
@@ -93,18 +92,18 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
     if (mrss_content) {
       f->items[i]->enclosure->url = libxmlutil_dup_attr(mrss_content, "url");
       f->items[i]->enclosure->length = libxmlutil_attr_as_long(mrss_content, "fileSize");
-      f->items[i]->enclosure->type = libxmlutil_dup_attr(enclosure, "type");
+      f->items[i]->enclosure->type = libxmlutil_dup_attr(encl, "type");
     }
 
-    if (enclosure) {
+    if (encl) {
       if (!f->items[i]->enclosure->url)
-        f->items[i]->enclosure->url = libxmlutil_dup_attr(enclosure, "url");
+        f->items[i]->enclosure->url = libxmlutil_dup_attr(encl, "url");
 
       if (!f->items[i]->enclosure->length)
-        f->items[i]->enclosure->length = libxmlutil_attr_as_long(enclosure, "length");
+        f->items[i]->enclosure->length = libxmlutil_attr_as_long(encl, "length");
 
       if (!f->items[i]->enclosure->type)
-        f->items[i]->enclosure->type = libxmlutil_dup_attr(enclosure, "type");
+        f->items[i]->enclosure->type = libxmlutil_dup_attr(encl, "type");
     }
   } else
     f->items[i]->enclosure = NULL;
@@ -231,7 +230,7 @@ rss_file *rss_open_file(const char *filename)
   }
 
   /* Establish the time the RSS file was 'fetched'. */
-  fetched_time = libcastget_get_rfc822_time();
+  fetched_time = get_rfc822_time();
   
   if (!fetched_time) {
     xmlFreeDoc(doc);
@@ -254,7 +253,7 @@ static int _rss_open_url_cb(FILE *f, gpointer user_data)
 {
   gchar *url = (gchar *)user_data;
 
-  return libcastget_urlget_file(url, f);
+  return urlget_file(url, f);
 }
 
 rss_file *rss_open_url(const char *url)
@@ -262,7 +261,7 @@ rss_file *rss_open_url(const char *url)
   rss_file *f;
   gchar *rss_filename;
 
-  if (libcastget_write_by_temporary_file(NULL, _rss_open_url_cb, (gpointer)url, &rss_filename))
+  if (write_by_temporary_file(NULL, _rss_open_url_cb, (gpointer)url, &rss_filename))
     return NULL;
 
   f = rss_open_file(rss_filename);
@@ -316,18 +315,6 @@ long rss_total_enclosure_size(rss_file *f)
   for (i = 0; i < f->num_items; i++)
     if (f->items[i]->enclosure)
       n += f->items[i]->enclosure->length;
-    
-  return n;
-}
-
-int libcastget_enclosure_count(rss_file *f)
-{
-  int i;
-  int n = 0;
-
-  for (i = 0; i < f->num_items; i++)
-    if (f->items[i]->enclosure)
-      n++;
     
   return n;
 }

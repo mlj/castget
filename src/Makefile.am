@@ -15,7 +15,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-#   $Id: Makefile.am,v 1.1 2007/09/20 17:49:22 mariuslj Exp $
+#   $Id: Makefile.am,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
 #
 INCLUDES = $(GLIBS_CFLAGS) $(CURL_CFLAGS)
 
@@ -29,7 +29,6 @@ castget_SOURCES = \
   configuration.c \
   htmlent.c \
   htmlent.h \
-  libcastget.h \
   libxmlutil.c \
   libxmlutil.h \
   rss.c \

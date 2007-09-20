@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005 Marius L. Jøhndal
+  Copyright (C) 2005, 2007 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: utils.c,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
+  $Id: utils.c,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
   
 */
 
@@ -30,9 +30,9 @@
 #include <glib/gstdio.h>
 #include "utils.h"
 
-int libcastget_write_by_temporary_file(const gchar *filename, 
-                                       int(*writer)(FILE *f, gpointer user_data), 
-                                       gpointer user_data, gchar **used_filename)
+int write_by_temporary_file(const gchar *filename, 
+                            int(*writer)(FILE *f, gpointer user_data), 
+                            gpointer user_data, gchar **used_filename)
 {
   int retval;
   FILE *f;
@@ -99,7 +99,7 @@ int libcastget_write_by_temporary_file(const gchar *filename,
 
 #define RFC822_TIME_BUFFER_LEN 64
 
-gchar *libcastget_get_rfc822_time(void)
+gchar *get_rfc822_time(void)
 {
   char rfc822_time_buffer[RFC822_TIME_BUFFER_LEN];
   time_t now;

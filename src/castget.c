@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.1 2007/09/20 17:49:22 mariuslj Exp $
+  $Id: castget.c,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
   
 */
 
@@ -36,7 +36,7 @@
 #include <id3.h>
 #endif /* ENABLE_ID3LIB */
 #include "configuration.h"
-#include "libcastget.h"
+#include "channel.h"
 
 enum op {
   OP_UPDATE,
@@ -229,9 +229,9 @@ static void version(void)
   g_printf("Copyright (C) 2005, 2006 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
 }
 
-static void update_callback(void *user_data, libcastget_channel_action action, 
-                            libcastget_channel_info *channel_info,
-                            libcastget_enclosure *enclosure, const gchar *filename)
+static void update_callback(void *user_data, channel_action action, 
+                            channel_info *channel_info, enclosure *enclosure, 
+                            const gchar *filename)
 {
   struct channel_configuration *c = (struct channel_configuration *)user_data;
 
@@ -298,8 +298,8 @@ static void update_callback(void *user_data, libcastget_channel_action action,
   }
 }
 
-static void catchup_callback(void *user_data, libcastget_channel_action action, libcastget_channel_info *channel_info,
-                             libcastget_enclosure *enclosure, const gchar *filename)
+static void catchup_callback(void *user_data, channel_action action, channel_info *channel_info,
+                             enclosure *enclosure, const gchar *filename)
 {
   struct channel_configuration *c = (struct channel_configuration *)user_data;
 
@@ -326,8 +326,8 @@ static void catchup_callback(void *user_data, libcastget_channel_action action, 
   }
 }
 
-static void list_callback(void *user_data, libcastget_channel_action action, libcastget_channel_info *channel_info,
-                          libcastget_enclosure *enclosure, const gchar *filename)
+static void list_callback(void *user_data, channel_action action, channel_info *channel_info,
+                          enclosure *enclosure, const gchar *filename)
 {
   struct channel_configuration *c = (struct channel_configuration *)user_data;
 
@@ -406,7 +406,7 @@ static int _verify_keys(GKeyFile *kf, const char *identifier)
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier, 
                             enum op op, struct channel_configuration *defaults)
 {
-  libcastget_channel *c;
+  channel *c;
   gchar *channel_filename, *channel_file;
   struct channel_configuration *channel_configuration;
 
@@ -451,8 +451,8 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
     return 0;
   }
 
-  c = libcastget_channel_new(channel_configuration->url, channel_file, 
-                             channel_configuration->spool_directory, resume);
+  c = channel_new(channel_configuration->url, channel_file, 
+                  channel_configuration->spool_directory, resume);
   g_free(channel_file);
 
   if (!c) {
@@ -464,22 +464,22 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
     
   switch (op) {
   case OP_UPDATE:
-    libcastget_channel_update(c, channel_configuration, update_callback, 
-                              0, 0, first_only, resume);
+    channel_update(c, channel_configuration, update_callback, 0, 0, 
+                   first_only, resume);
     break;
             
   case OP_CATCHUP:
-    libcastget_channel_update(c, channel_configuration, catchup_callback,
-                              1, 0, first_only, 0);
+    channel_update(c, channel_configuration, catchup_callback, 1, 0, 
+                   first_only, 0);
     break;
             
   case OP_LIST:
-    libcastget_channel_update(c, channel_configuration, list_callback,
-                              1, 1, first_only, 0);
+    channel_update(c, channel_configuration, list_callback, 1, 1, first_only, 
+                   0);
     break;
   }
           
-  libcastget_channel_free(c);
+  channel_free(c);
   channel_configuration_free(channel_configuration);
 
   return 0;

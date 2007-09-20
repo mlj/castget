@@ -15,17 +15,17 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: urlget.h,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
+  $Id: urlget.h,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
   
 */
 
 #ifndef URLGET_H
 #define URLGET_H
 
-int libcastget_urlget_file(const char *url, FILE *f);
-int libcastget_urlget_buffer(const char *url, void *user_data,
-                             size_t (*write_buffer)(void *buffer, size_t size, size_t nmemb, void *user_data),
-                             long resume_from);
+int urlget_file(const char *url, FILE *f);
+int urlget_buffer(const char *url, void *user_data,
+                  size_t (*write_buffer)(void *buffer, size_t size, size_t nmemb, void *user_data),
+                  long resume_from);
 
 #endif /* URLGET_H */
 

@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.c,v 1.1 2007/09/20 17:49:22 mariuslj Exp $
+  $Id: channel.c,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
   
 */
 
@@ -38,29 +38,29 @@ static void _enclosure_iterator(const void *user_data, int i, const xmlNode *nod
 {
   const char *downloadtime;
 
-  libcastget_channel *c = (libcastget_channel *)user_data;
+  channel *c = (channel *)user_data;
   
   downloadtime = libxmlutil_attr_as_string(node, "downloadtime");
 
   if (downloadtime)
     downloadtime = g_strdup(downloadtime);
   else
-    downloadtime = libcastget_get_rfc822_time();
+    downloadtime = get_rfc822_time();
 
   g_hash_table_insert(c->downloaded_enclosures, 
                       (gpointer)libxmlutil_attr_as_string(node, "url"), 
                       (gpointer)downloadtime);
 }
 
-libcastget_channel *libcastget_channel_new(const char *url, const char *channel_file, 
-                                           const char *spool_directory, int resume)
+channel *channel_new(const char *url, const char *channel_file, 
+                     const char *spool_directory, int resume)
 {
-  libcastget_channel *c;
+  channel *c;
   xmlDocPtr doc;
   xmlNode *root_element = NULL;
   const char *s;
 
-  c = (libcastget_channel *)malloc(sizeof(struct _libcastget_channel));
+  c = (channel *)malloc(sizeof(struct _channel));
   c->url = g_strdup(url);
   c->channel_filename = g_strdup(channel_file);
   c->spool_directory = g_strdup(spool_directory);
@@ -117,7 +117,7 @@ static void _cast_channel_save_downloaded_enclosure(gpointer key, gpointer value
 
 static int _cast_channel_save_channel(FILE *f, gpointer user_data)
 {
-  libcastget_channel *c = (libcastget_channel *)user_data;
+  channel *c = (channel *)user_data;
 
   g_fprintf(f, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
@@ -133,12 +133,12 @@ static int _cast_channel_save_channel(FILE *f, gpointer user_data)
   return 0;
 }
 
-static void _cast_channel_save(libcastget_channel *c)
+static void _cast_channel_save(channel *c)
 {
-  libcastget_write_by_temporary_file(c->channel_filename, _cast_channel_save_channel, c, NULL);
+  write_by_temporary_file(c->channel_filename, _cast_channel_save_channel, c, NULL);
 }
 
-void libcastget_channel_free(libcastget_channel *c)
+void channel_free(channel *c)
 {
   g_hash_table_destroy(c->downloaded_enclosures);
   g_free(c->spool_directory);
@@ -154,7 +154,7 @@ static size_t _enclosure_urlget_cb(void *buffer, size_t size, size_t nmemb, void
   return fwrite(buffer, size, nmemb, f);
 }
 
-static rss_file *_get_rss(libcastget_channel *c, void *user_data, libcastget_channel_callback cb)
+static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb)
 {
   rss_file *f;
 
@@ -172,9 +172,8 @@ static rss_file *_get_rss(libcastget_channel *c, void *user_data, libcastget_cha
   return f;
 }
 
-static int _do_download(libcastget_channel *c, libcastget_channel_info *channel_info, 
-                        rss_item *item, void *user_data, libcastget_channel_callback cb, 
-                        int resume)
+static int _do_download(channel *c, channel_info *channel_info, rss_item *item, 
+                        void *user_data, channel_callback cb, int resume)
 {
   int download_failed;
   long resume_from = 0;
@@ -216,7 +215,7 @@ static int _do_download(libcastget_channel *c, libcastget_channel_info *channel_
   if (cb)
     cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, enclosure_full_filename);
   
-  if (libcastget_urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb, resume_from)) {
+  if (urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb, resume_from)) {
     g_fprintf(stderr, "Error downloading enclosure from %s.\n", item->enclosure->url);
 
     download_failed = 1;
@@ -233,8 +232,8 @@ static int _do_download(libcastget_channel *c, libcastget_channel_info *channel_
   return download_failed;
 }
 
-static int _do_catchup(libcastget_channel *c, libcastget_channel_info *channel_info, rss_item *item,
-                       void *user_data, libcastget_channel_callback cb)
+static int _do_catchup(channel *c, channel_info *channel_info, rss_item *item,
+                       void *user_data, channel_callback cb)
 {
   if (cb) {
     cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, NULL);
@@ -245,8 +244,8 @@ static int _do_catchup(libcastget_channel *c, libcastget_channel_info *channel_i
   return 0;
 }  
 
-int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget_channel_callback cb,
-                              int no_download, int no_mark_read, int first_only, int resume)
+int channel_update(channel *c, void *user_data, channel_callback cb,
+                   int no_download, int no_mark_read, int first_only, int resume)
 {
   int i, download_failed;
   rss_file *f;
@@ -273,7 +272,7 @@ int libcastget_channel_update(libcastget_channel *c, void *user_data, libcastget
           /* Mark enclosure as downloaded and immediately save channel
              file to ensure that it reflects the change. */
           g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url, 
-                              (gpointer)libcastget_get_rfc822_time());
+                              (gpointer)get_rfc822_time());
 
           _cast_channel_save(c);
         }

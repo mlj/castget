@@ -15,20 +15,20 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: rss.h,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
+  $Id: rss.h,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
   
 */
 
 #ifndef RSS_H
 #define RSS_H
 
-#include "libcastget.h"
+#include "channel.h"
 
 typedef struct _rss_item {
   char *title;
   char *link;
   char *description;
-  libcastget_enclosure *enclosure;
+  enclosure *enclosure;
 } rss_item;
 
 enum rss_version {
@@ -42,7 +42,7 @@ typedef struct _rss_file {
   enum rss_version version;
   int num_items;
   rss_item **items;
-  libcastget_channel_info channel_info;
+  channel_info channel_info;
   gchar *fetched_time;
 } rss_file;
 
