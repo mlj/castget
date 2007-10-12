@@ -1,4 +1,8 @@
-2007-02-15  Jick Nan  <jick.nan@gmail.com>
+2007-10-12  Marius Larsen Jøhndal  <mariuslj@ifi.uio.no>
+
+	* castget.1.in: Documented --rcfile option.
+
+2007-10-12  Jick Nan  <jick.nan@gmail.com>
 
 	* src/castget.c: Add --rcfile <path/to/rcfile> option.
 
