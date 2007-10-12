@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
+  $Id: castget.c,v 1.3 2007/10/12 12:17:30 jicknan Exp $
   
 */
 
@@ -67,11 +67,12 @@ static int quiet = 0;
 static int new = 0;
 static int first_only = 0;
 static int resume = 0;
+char *rcfile = NULL;
 
 int main(int argc, char **argv)
 {
   enum op op = OP_UPDATE;
-  int c, i;
+  int c, i, len;
   int ret = 0;
   gchar **groups;
   gchar *channeldir;
@@ -83,6 +84,7 @@ int main(int argc, char **argv)
 
     static struct option long_options[] = {
       {"catchup", 0, 0, 'c'},
+      {"rcfile", 1, 0, 'C'},
       {"first-only", 0, 0, '1'},
       {"help", 0, 0, 'h'},
       {"list", 0, 0, 'l'},
@@ -93,8 +95,8 @@ int main(int argc, char **argv)
       {"quiet", 0, 0, 'q'},
       {0, 0, 0, 0}
     };
-    
-    c = getopt_long(argc, argv, "1chlnqrvV", long_options, &option_index);
+
+    c = getopt_long(argc, argv, "1cC:hlnqrvV", long_options, &option_index);
 
     if (c == -1)
       break;
@@ -103,6 +105,13 @@ int main(int argc, char **argv)
     case 'c':
       op = OP_CATCHUP;
       break;
+
+    case 'C':
+      len = strlen(optarg) > 255 ? 255 : strlen(optarg);
+      rcfile = malloc(len + 2);
+      strncpy(rcfile, optarg, len);
+      break;
+
 
     case 'l':
       op = OP_LIST;
@@ -488,11 +497,12 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
 static GKeyFile *_configuration_file_open(void)
 {
   GKeyFile *kf;
-  gchar *rcfile;
   GError *error = NULL;
 
   kf = g_key_file_new();
-  rcfile = g_build_filename(g_get_home_dir(), ".castgetrc", NULL);
+  if ( rcfile == NULL) {
+      rcfile = g_build_filename(g_get_home_dir(), ".castgetrc", NULL);
+  }
 
   if (!g_key_file_load_from_file(kf, rcfile, G_KEY_FILE_NONE, &error)) {
     fprintf(stderr, "Error reading configuration file %s: %s.\n", rcfile, error->message);
