@@ -1,5 +1,7 @@
 2007-10-18  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* libcastget/urlget.c: Added custom User-Agent header.
+
 	* castget/castget.c: Updated banner copyright.
 
 2007-09-20  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
