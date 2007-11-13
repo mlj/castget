@@ -1,3 +1,8 @@
+2007-11-13  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* libcastget/utils.c: Improved handling of out of disk space
+	errors. Removed superfluous close().
+
 2007-10-18  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* libcastget/urlget.c: Added custom User-Agent header.
