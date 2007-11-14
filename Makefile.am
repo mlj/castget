@@ -15,7 +15,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-#   $Id: Makefile.am,v 1.6 2007/09/20 17:49:20 mariuslj Exp $
+#   $Id: Makefile.am,v 1.7 2007/11/14 14:21:07 mariuslj Exp $
 #
 SUBDIRS = src
 
@@ -27,3 +27,6 @@ EXTRA_DIST = \
 man_MANS = \
   castget.1 \
   castgetrc.5
+
+preview-man: castget.1
+	groff -Tutf8 -man castget.1 | less
