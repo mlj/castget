@@ -1,5 +1,7 @@
 2007-11-14  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* src/castget.c: Made rcfile non-global.
+
 	* README: Added details about dependencies.
 
 	* configure.ac: Switched to bzip2 for dist files.

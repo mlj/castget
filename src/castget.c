@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.4 2007/11/14 14:25:21 mariuslj Exp $
+  $Id: castget.c,v 1.5 2007/11/14 14:54:32 mariuslj Exp $
   
 */
 
@@ -50,7 +50,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
                             enclosure_filter *filter);
 static void usage(void);
 static void version(void);
-static GKeyFile *_configuration_file_open(void);
+static GKeyFile *_configuration_file_open(const gchar *rcfile);
 static void _configuration_file_close(GKeyFile *kf);
 #ifdef ENABLE_ID3LIB
 static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist, 
@@ -68,10 +68,10 @@ static int quiet = 0;
 static int new = 0;
 static int first_only = 0;
 static int resume = 0;
-char *rcfile = NULL;
 
 int main(int argc, char **argv)
 {
+  char *rcfile = NULL;
   enum op op = OP_UPDATE;
   int c, i, len;
   int ret = 0;
@@ -110,9 +110,7 @@ int main(int argc, char **argv)
       break;
 
     case 'C':
-      len = strlen(optarg) > 255 ? 255 : strlen(optarg);
-      rcfile = malloc(len + 2);
-      strncpy(rcfile, optarg, len);
+      rcfile = g_strdup(optarg);
       break;
 
     case 'f':
@@ -184,7 +182,11 @@ int main(int argc, char **argv)
   }
 
   /* Try opening configuration file. */
-  kf = _configuration_file_open();
+  if (!rcfile)
+    /* Supply default path name. */
+    rcfile = g_build_filename(g_get_home_dir(), ".castgetrc", NULL);
+
+  kf = _configuration_file_open(rcfile);
 
   if (kf) {
     /* Read defaults. */
@@ -224,6 +226,8 @@ int main(int argc, char **argv)
 
   if (filter)
     g_free(filter);
+
+  g_free(rcfile);
 
   if (kf)
     _configuration_file_close(kf);
@@ -513,15 +517,12 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   return 0;
 }
 
-static GKeyFile *_configuration_file_open(void)
+static GKeyFile *_configuration_file_open(const gchar *rcfile)
 {
   GKeyFile *kf;
   GError *error = NULL;
 
   kf = g_key_file_new();
-  if ( rcfile == NULL) {
-      rcfile = g_build_filename(g_get_home_dir(), ".castgetrc", NULL);
-  }
 
   if (!g_key_file_load_from_file(kf, rcfile, G_KEY_FILE_NONE, &error)) {
     fprintf(stderr, "Error reading configuration file %s: %s.\n", rcfile, error->message);
@@ -529,8 +530,6 @@ static GKeyFile *_configuration_file_open(void)
     g_key_file_free(kf);
     kf = NULL;
   }
-
-  g_free(rcfile);
 
   return kf;
 }
