@@ -17,13 +17,13 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id: configure.ac,v 1.13 2007/09/20 17:49:20 mariuslj Exp $
+# $Id: configure.ac,v 1.12.2.1 2007/11/14 16:13:00 mariuslj Exp $
 # 
 
 AC_PREREQ(2.59)
-AC_INIT(castget, 1.0.0, mariuslj@ifi.uio.no)
+AC_INIT(castget, 1.0.1, mariuslj@ifi.uio.no)
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([src/castget.c])
+AC_CONFIG_SRCDIR([castget/castget.c])
 AC_CONFIG_HEADER([config.h])
 
 AH_TEMPLATE([ENABLE_ID3LIB], [Define to 1 if you want to enable support for id3lib])
@@ -78,7 +78,8 @@ AC_CHECK_FUNCS([strdup strtol])
 
 AC_CONFIG_FILES([
   Makefile
-  src/Makefile
+  castget/Makefile
+  libcastget/Makefile
   castget.1
   castgetrc.5
 ])
