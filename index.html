@@ -36,21 +36,27 @@
       <h3 id="news">News</h3>
 
       <ul>
-              <li><b>20 September 2007</b>: Version 1.0.0 is available.There are only minor documentation updates in this release, but, more importantly, it is the first officially stable release of castget! We will start implementing new features in a new series of unstable releases. Please contact us if you have features that you would like to see included!</li>
-	<li><b>16 February 2007</b>: Version 0.9.6 is available. This 
-	release adds an 
-	option to restrict actions to the most recent enclosure available from a channel, an 
-	option to restrict actions to new channels only, and an option to 
-	resume any downloads that have been aborted.
-	The release also fixes problems with ID3 tags not being written in some 
-	cases and problems with linking with the 
-	id3lib library.</li>
+        <li><b>14 November 2007</b>: Version 1.0.1 is available. This
+        release fixes a major issue that can lead to loss of the
+        entire download history for a channel. Starting with this
+        release, castget will also identify itself using the
+        User-Agent field in HTTP requests.</li>
 
-	<li><b>8 July 2006</b>: Version 0.9.5 is available. This is
-	another bug-fix only release. The release fixes a serious
-	problem with the handling of temporary files, adds further
-	validation of the configuration file and includes updates to
-	the documentation.</li>
+        <li><b>20 September 2007</b>: Version 1.0.0 is
+        available. There are only minor documentation updates in this
+        release, but, more importantly, it is the first officially
+        stable release of castget! We will start implementing new
+        features in a new series of unstable releases. Please contact
+        us if you have features that you would like to see
+        included!</li>
+
+	<li><b>16 February 2007</b>: Version 0.9.6 is available. This
+	release adds an option to restrict actions to the most recent
+	enclosure available from a channel, an option to restrict
+	actions to new channels only, and an option to resume any
+	downloads that have been aborted.  The release also fixes
+	problems with ID3 tags not being written in some cases and
+	problems with linking with the id3lib library.</li>
       </ul>
 
       <h3 id="features">Features</h3>
@@ -68,38 +74,17 @@
       <h3 id="download">Download</h3>
 
       <p>
-        You can download
-	a <a href="http://savannah.nongnu.org/download/castget/castget-1.0.0.tar.gz">tarball</a>
-	of the latest stable release
-	or <a href="http://savannah.nongnu.org/download/castget/">browse
+	The latest stable release
+	of <span class="application">castget</span>
+	is <a href="http://savannah.nongnu.org/download/castget/castget-1.0.1.tar.gz">castget-1.0.1.tar.gz</a>. An
+	unstable release is not yet available.
+      </p>
+
+      <p>
+	You can
+	also <a href="http://savannah.nongnu.org/download/castget/">browse
 	the release directory</a> for previous releases.
       </p>
-
-      <p>
-	To build <span class="application">castget</span> you will
-	need
-      </p>
-
-      <ul>
-	<li>glib2</li>
-	<li>libxml2</li>
-	<li>libcurl</li>
-      </ul>
-
-      <p>
-	and optionally
-      </p>
-
-      <ul>
-	<li>id3lib</li>
-      </ul>
-
-      <p>
-	<span class="application">castget</span> has only been tested
-	on Linux, but should work on other UNIX-like systems.
-      </p>
-
-      <h4 id="binaries">Pre-built binaries and packages </h4>
 
       <p>
         Pre-built binaries or packages may be available for some operating systems and distributions. The <span class="application">castget</span> maintainers are aware of the following:
@@ -161,6 +146,32 @@ id3contenttype=Podcast</pre>
       <p>
 	<a href="screenshot.png"><img src="screenshot.png" alt="Screenshot of castget"
 	     width="90%" /></a>
+      </p>
+
+      <h3 id="binaries">Dependencies</h3>
+
+      <p>
+	To build <span class="application">castget</span> you will
+	need
+      </p>
+
+      <ul>
+	<li>glib2</li>
+	<li>libxml2</li>
+	<li>libcurl</li>
+      </ul>
+
+      <p>
+	and optionally
+      </p>
+
+      <ul>
+	<li>id3lib</li>
+      </ul>
+
+      <p>
+	<span class="application">castget</span> has only been tested
+	on Linux, but should work on other UNIX-like systems.
       </p>
 
       <h3 id="bugs">Bugs</h3>
