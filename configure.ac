@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id: configure.ac,v 1.13 2007/09/20 17:49:20 mariuslj Exp $
+# $Id: configure.ac,v 1.14 2007/11/14 14:25:21 mariuslj Exp $
 # 
 
 AC_PREREQ(2.59)
@@ -27,12 +27,18 @@ AC_CONFIG_SRCDIR([src/castget.c])
 AC_CONFIG_HEADER([config.h])
 
 AH_TEMPLATE([ENABLE_ID3LIB], [Define to 1 if you want to enable support for id3lib])
+AC_ARG_ENABLE(id3lib,
+              [AC_HELP_STRING([--disable-id3lib],
+                              [disable support for id3lib [default=no]])],
+              configure_enable_id3lib=$enableval,
+              configure_enable_id3lib=yes)
 
-AC_ARG_ENABLE( [id3lib],
-               AC_HELP_STRING( [--disable-id3lib],
-                               [disable support for id3lib]),
-               configure_enable_id3lib=$enableval,
-               configure_enable_id3lib=yes )
+AH_TEMPLATE([ENABLE_GREGEX], [Define to 1 if you want to enable support for GRegex])
+AC_ARG_ENABLE(gregex,
+              [AC_HELP_STRING([--disable-gregex],
+                              [disable support for GRegex filters [default=no]])],
+              configure_enable_gregex=$enableval,
+              configure_enable_gregex=yes)
 
 # Checks for programs.
 AC_PROG_CC
@@ -40,7 +46,18 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
 # Checks for libraries.
-PKG_CHECK_MODULES(GLIBS, glib-2.0 libxml-2.0)
+if test "x$configure_enable_gregex" = "xyes"; then
+  GLIB_REQUIRED_VERSION=2.14
+  AC_DEFINE(ENABLE_GREGEX, [1], [Define for GRegex support])
+else
+  GLIB_REQUIRED_VERSION=2.0
+fi
+dnl AC_SUBST(GLIB_REQUIRED_VERSION)
+
+PKG_CHECK_MODULES(GLIBS, [
+  glib-2.0 >= $GLIB_REQUIRED_VERSION
+  libxml-2.0 
+])
 
 AC_PATH_PROG(CURL_CONFIG, curl-config, no)
 if test "$CURL_CONFIG" = "no" ; then

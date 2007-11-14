@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.c,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
+  $Id: channel.c,v 1.3 2007/11/14 14:25:21 mariuslj Exp $
   
 */
 
@@ -33,6 +33,9 @@
 #include "channel.h"
 #include "rss.h"
 #include "utils.h"
+
+static int _enclosure_pattern_match(enclosure_filter *filter,
+                                    const enclosure *enclosure); 
 
 static void _enclosure_iterator(const void *user_data, int i, const xmlNode *node)
 {
@@ -245,7 +248,8 @@ static int _do_catchup(channel *c, channel_info *channel_info, rss_item *item,
 }  
 
 int channel_update(channel *c, void *user_data, channel_callback cb,
-                   int no_download, int no_mark_read, int first_only, int resume)
+                   int no_download, int no_mark_read, int first_only, 
+                   int resume, enclosure_filter *filter)
 {
   int i, download_failed;
   rss_file *f;
@@ -260,27 +264,33 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
   for (i = 0; i < f->num_items; i++)
     if (f->items[i]->enclosure) {
       if (!g_hash_table_lookup_extended(c->downloaded_enclosures, f->items[i]->enclosure->url, NULL, NULL)) {
-        if (no_download)
-          download_failed = _do_catchup(c, &(f->channel_info), f->items[i], user_data, cb);
-        else
-          download_failed = _do_download(c, &(f->channel_info), f->items[i], user_data, cb, resume);
+        rss_item *item;
 
-        if (download_failed)
-          break;
+        item = f->items[i];
 
-        if (!no_mark_read) {
-          /* Mark enclosure as downloaded and immediately save channel
-             file to ensure that it reflects the change. */
-          g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url, 
-                              (gpointer)get_rfc822_time());
+        if (!filter || _enclosure_pattern_match(filter, item->enclosure)) {
+          if (no_download)
+            download_failed = _do_catchup(c, &(f->channel_info), item, user_data, cb);
+          else
+            download_failed = _do_download(c, &(f->channel_info), item, user_data, cb, resume);
 
-          _cast_channel_save(c);
+          if (download_failed)
+            break;
+
+          if (!no_mark_read) {
+            /* Mark enclosure as downloaded and immediately save channel
+               file to ensure that it reflects the change. */
+            g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url, 
+                                (gpointer)get_rfc822_time());
+
+            _cast_channel_save(c);
+          }
+
+          /* If we have been instructed to deal only with the first
+             available enclosure, it is time to break out of the loop. */
+          if (first_only)
+            break;
         }
-
-        /* If we have been instructed to deal only with the first
-           available enclosure, it is time to break out of the loop. */
-        if (first_only)
-          break;
       }
     }
 
@@ -298,6 +308,48 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
   rss_close(f);
 
   return 0;
+}
+
+/* Match the (file) name of an enclosure against a regexp. Letters
+   in the pattern match both upper and lower case letters if
+   'caseless' is TRUE. Returns TRUE if the pattern matches, FALSE 
+   otherwise. */
+static gboolean _enclosure_pattern_match(enclosure_filter *filter,
+                                         const enclosure *enclosure)
+{
+#ifdef ENABLE_GREGEX
+  GError *error = NULL;
+  GRegexCompileFlags compile_options = 0;
+  GRegexMatchFlags match_options = 0;
+  GRegex *regex;
+  gboolean match;
+
+  g_assert(filter);
+  g_assert(filter->pattern);
+  g_assert(enclosure);
+
+  if (filter->caseless)
+    compile_options |= G_REGEX_CASELESS;
+
+  regex = g_regex_new(filter->pattern, compile_options, match_options, 
+                      &error);
+
+  if (error) {
+    fprintf(stderr, "Error compiling regular expression %s: %s\n", 
+            filter->pattern, error->message);
+    g_error_free(error);
+    return FALSE;
+  }
+        
+  match = g_regex_match(regex, enclosure->filename, match_options, 
+                        NULL);
+
+  g_regex_unref(regex);
+
+  return match;
+#else
+  return FALSE;
+#endif
 }
 
 /* 

@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.h,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
+  $Id: channel.h,v 1.3 2007/11/14 14:25:21 mariuslj Exp $
   
 */
 
@@ -51,6 +51,11 @@ typedef struct _enclosure {
   char *filename;
 } enclosure;
 
+typedef struct _enclosure_filter {
+  const gchar *pattern;
+  gboolean caseless;
+} enclosure_filter;
+
 typedef void (*channel_callback)(void *user_data, 
                                  channel_action action, 
                                  channel_info *channel_info, 
@@ -61,8 +66,8 @@ channel *channel_new(const char *url, const char *channel_file,
                      const char *spool_directory, int resume);
 void channel_free(channel *c);
 int channel_update(channel *c, void *user_data, channel_callback cb, int no_download, 
-                   int no_mark_read, int first_only, int resume);
-
+                   int no_mark_read, int first_only, int resume, 
+                   enclosure_filter *filter);
 
 #endif /* CHANNEL_H */
 
@@ -74,4 +79,3 @@ int channel_update(channel *c, void *user_data, channel_callback cb, int no_down
    coding:utf-8
    End:
 */
-

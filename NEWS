@@ -1,0 +1,5 @@
+Version 1.1.0:
+
+  * New command line option --filter for restricting operations to enclosures
+  matching a regular expression. This feature requires glib >= 2.14 and can be
+  disabled by supplying --disable-gregex to configure.

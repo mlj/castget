@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.3 2007/10/12 12:17:30 jicknan Exp $
+  $Id: castget.c,v 1.4 2007/11/14 14:25:21 mariuslj Exp $
   
 */
 
@@ -46,7 +46,8 @@ enum op {
 
 static int _verify_keys(GKeyFile *kf, const char *identifier);
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier,
-                            enum op op, struct channel_configuration *defaults);
+                            enum op op, struct channel_configuration *defaults,
+                            enclosure_filter *filter);
 static void usage(void);
 static void version(void);
 static GKeyFile *_configuration_file_open(void);
@@ -78,6 +79,7 @@ int main(int argc, char **argv)
   gchar *channeldir;
   GKeyFile *kf;
   struct channel_configuration *defaults;
+  enclosure_filter *filter = NULL;
 
   for (;;) {
     int option_index = 0;
@@ -85,6 +87,7 @@ int main(int argc, char **argv)
     static struct option long_options[] = {
       {"catchup", 0, 0, 'c'},
       {"rcfile", 1, 0, 'C'},
+      {"filter", 1, 0, 'f'},
       {"first-only", 0, 0, '1'},
       {"help", 0, 0, 'h'},
       {"list", 0, 0, 'l'},
@@ -96,7 +99,7 @@ int main(int argc, char **argv)
       {0, 0, 0, 0}
     };
 
-    c = getopt_long(argc, argv, "1cC:hlnqrvV", long_options, &option_index);
+    c = getopt_long(argc, argv, "1cC:f:hlnqrvV", long_options, &option_index);
 
     if (c == -1)
       break;
@@ -112,6 +115,16 @@ int main(int argc, char **argv)
       strncpy(rcfile, optarg, len);
       break;
 
+    case 'f':
+#ifdef ENABLE_GREGEX
+      filter = g_malloc(sizeof(struct _enclosure_filter));
+      filter->pattern = g_strdup(optarg);
+      filter->caseless = FALSE; /* TODO */
+#else
+      fprintf(stderr, "Regular expression filters not supported by this build of castget.\nPlease rebuild with support for GRegex.\n");
+      return 1;
+#endif
+      break;
 
     case 'l':
       op = OP_LIST;
@@ -187,13 +200,15 @@ int main(int argc, char **argv)
     /* Perform actions. */
     if (optind < argc) {
       while (optind < argc)
-        _process_channel(channeldir, kf, argv[optind++], op, defaults);
+        _process_channel(channeldir, kf, argv[optind++], op, defaults, 
+                         filter);
     } else {
       groups = g_key_file_get_groups(kf, NULL);
       
       for (i = 0; groups[i]; i++)
         if (strcmp(groups[i], "*"))
-          _process_channel(channeldir, kf, groups[i], op, defaults);
+          _process_channel(channeldir, kf, groups[i], op, defaults, 
+                           filter);
       
       g_strfreev(groups);
     }
@@ -206,6 +221,9 @@ int main(int argc, char **argv)
 
   /* Clean-up. */
   g_free(channeldir);
+
+  if (filter)
+    g_free(filter);
 
   if (kf)
     _configuration_file_close(kf);
@@ -413,7 +431,8 @@ static int _verify_keys(GKeyFile *kf, const char *identifier)
 }
 
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier, 
-                            enum op op, struct channel_configuration *defaults)
+                            enum op op, struct channel_configuration *defaults,
+                            enclosure_filter *filter)
 {
   channel *c;
   gchar *channel_filename, *channel_file;
@@ -474,17 +493,17 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   switch (op) {
   case OP_UPDATE:
     channel_update(c, channel_configuration, update_callback, 0, 0, 
-                   first_only, resume);
+                   first_only, resume, filter);
     break;
             
   case OP_CATCHUP:
     channel_update(c, channel_configuration, catchup_callback, 1, 0, 
-                   first_only, 0);
+                   first_only, 0, filter);
     break;
             
   case OP_LIST:
     channel_update(c, channel_configuration, list_callback, 1, 1, first_only, 
-                   0);
+                   0, filter);
     break;
   }
           

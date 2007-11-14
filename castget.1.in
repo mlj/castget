@@ -12,6 +12,7 @@ RSS feeds are assigned channel identifiers in the configuration file \fB.castget
 .TP
 If run without any options, \fBcastget\fR will perform the default action on all channels to be processed. The default action is to download any enclosure not already downloaded. Other actions may be performed by supplying one or more options as arguments.
 .SH OPTIONS
+.SS Operations
 .TP
 \fB\-c\fR, \fB\-\-catchup\fR
 catch up with channels and exit
@@ -19,11 +20,28 @@ catch up with channels and exit
 \fB\-l\fR, \fB\-\-list\fR
 list available enclosures that have not yet been downloaded, and exit
 .TP
+\fB\-h\fR, \fB\-\-help\fR
+display help and exit
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+output version information and exit
+.SS Operation filters
+.TP
 \fB\-n\fR, \fB\-\-new-only\fR
-operate on new channels only, i.e. on channels that have never been downloaded from or been caught up with before. Note that if a channel is added to the configuration and subsequently removed, its download history is preserved so that the channel will not be considered as `new' if re-added to the configuration at a later time.
+restrict operation to new channels only, i.e. to channels that have never been
+downloaded from or been caught up with before. Note that if a channel is added
+to the configuration and subsequently removed, its download history is
+preserved. This means that a channel that has been removed from the
+configuration file will not be considered as `new' if it is added to the
+configuration again at a later time.
 .TP
 \fB\-1\fR, \fB\-\-first-only\fR
-operate on the most recent enclosure in each channel only.
+restrict operation to the most recent item in each channel only.
+.TP
+\fB\-f\fR pattern, \fB\-\-filter=pattern\fR
+restrict operation to items whose enclosures have names matching the regular
+expression \fBpattern\fR.
+.SS Global options
 .TP
 \fB\-r\fR, \fB\-\-resume\fR
 resume aborted downloads
@@ -36,12 +54,6 @@ print detailed progress information
 .TP
 \fB\-C\fR filename, \fB\-\-rcfile\fR=filename
 override the default filename for the configuration file
-.TP
-\fB\-h\fR, \fB\-\-help\fR
-display help and exit
-.TP
-\fB\-V\fR, \fB\-\-version\fR
-output version information and exit
 .SH EXAMPLES
 .TP
 \fBcastget\fR
@@ -55,12 +67,24 @@ list all enclosures not already downloaded
 .TP
 \fBcastget -c foobar\fR
 catch up with channel \fBfoobar\fR
+.TP
+\fBcastget -1 -n -l
+list the first available enclosure in all new channels
+.TP
+\fBcastget -c -f "Freddies0[67]" frederator
+catch up with items that match the regular expression \fBFreddies0[67]\fB in the
+channel \fBfrederator\fR
 .SH SEE ALSO
 \fBcastgetrc\fR(5)
-.SH AUTHOR
-Marius L. Jøhndal.
+.SH BUGS
+Please see the castget home page http://www.nongnu.org/castget/ for
+instructions on how to submit bug reports.
+.SH AUTHORS
+Marius L. Jøhndal, Jick Nan.
 .SH COPYRIGHT
-Copyright \(co 2005 Marius L. Jøhndal.
+Copyright \(co 2005, 2006, 2007 Marius L. Jøhndal.
+.br
+Copyright \(co 2007 Jick Nan.
 .br
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
