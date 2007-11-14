@@ -1,5 +1,7 @@
 2007-11-14  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* configure.ac: Switched to bzip2 for dist files.
+
 	* castget.1.in, configure.ac, src/castget.c, src/channel.c,
 	src/channel.h: Added support for restricting operations to
 	enclosures matching a regex given on the command line.
