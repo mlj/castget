@@ -15,6 +15,19 @@
 
 	* src/castget.c: Add --rcfile <path/to/rcfile> option.
 
+2007-09-20  Marius Larsen Jøhndal  <mariuslj@ifi.uio.no>
+
+	* src/Makefile.am, src/castget.c, src/channel.c, src/channel.h,
+	src/libcastget.h, src/rss.h, src/urlget.c, src/urlget.h,
+	src/utils.c, src/utils.h: Eliminated libcastget.h.
+	
+	* configure.ac, src/Makefile.am, src/castget.c,
+	src/configuration.c, src/htmlent.h, src/rss.c, src/urlget.h,
+	src/channel.c, src/configuration.h, src/libxmlutil.c, src/rss.h,
+	src/utils.c, src/channel.h, src/htmlent.c, src/libxmlutil.h,
+	src/urlget.c, src/utils.h: Moved all source files into a single
+	subdirectory src/ in order to remove libcastget.
+
 2007-02-15  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* configure.ac: Bumped version number to 0.9.6.
