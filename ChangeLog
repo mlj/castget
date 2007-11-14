@@ -1,5 +1,7 @@
 2007-11-14  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* README: Added details about dependencies.
+
 	* configure.ac: Switched to bzip2 for dist files.
 
 	* castget.1.in, configure.ac, src/castget.c, src/channel.c,

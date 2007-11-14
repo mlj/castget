@@ -1,7 +1,14 @@
 INSTALLATION AND CONFIGURATION
 ==============================
 
-Please see INSTALL for installation instructions.
+Please see INSTALL for detailed installation instructions.
+
+castget requires glib2 and libcurl. 
+
+For ID3 tag support, id3lib is also required. For support for regular
+expression filters, glib2 version 2.14 or higher is required. See
+configure --help for instructions on how to disable these features
+should any of these libraries be unavailable.
 
 You will find a sample configuration file castgetrc.example in
 the top level directory of the distribution. You should copy
