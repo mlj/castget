@@ -1,4 +1,4 @@
-.TH CASTGETRC "5" "July 2006" "@PACKAGE_STRING@" "User Commands"
+.TH CASTGETRC "5" "November 2007" "@PACKAGE_STRING@" "User Commands"
 .SH NAME
 castgetrc \- configuration file for castget
 .SH DESCRIPTION
@@ -29,34 +29,38 @@ Key-value pairs in a channel definition define the behaviour of \fBcastget\fR wh
 for example, instructs \fBcastget\fR to use \fB/home/joe/podcasts\fR as a download directory when processing the channel \fBdf\fR.
 .SH KEYS
 .TP
-url
+\fBurl\fR
 retrieve RSS feed from this URL. The field is mandatory for all channel definitions.
 .TP
-spool
+\fBspool\fR
 download enclosures to this directory.
 .TP
-playlist
+\fBplaylist\fR
 write the fully qualified file names of all downloaded enclosures to an m3u style playlist file with this name.
 .TP
-id3leadartist
+\fBfilter\fR
+restrict operation to items whose enclosures have names matching this regular
+expression.
+.TP
+\fBid3leadartist\fR
 add or overwrite the `lead artist' (TPE1) ID3v2 tag in enclosures that support this.
 .TP
-id3contentgroup
+\fBid3contentgroup\fR
 add or overwrite the `content group' (TIT1) ID3v2 tag in enclosures that support this.
 .TP
-id3title
+\fBid3title\fR
 add or overwrite the `title' (TIT2) ID3v2 tag in enclosures that support this.
 .TP
-id3album
+\fBid3album\fR
 add or overwrite the `album' (TALB) ID3v2 tag in enclosures that support this.
 .TP
-id3contenttype
+\fBid3contenttype\fR
 add or overwrite the `content type' (TCON) ID3v2 tag in enclosures that support this.
 .TP
-id3year
+\fBid3year\fR
 add or overwrite the `year' (TYER) ID3v2 tag in enclosures that support this.
 .TP
-id3comment
+\fBid3comment\fR
 add or overwrite the `comment' (COMM) ID3v2 tag in enclosures that support this.
 .SH GLOBAL CONFIGURATION
 A channel definition with the channel identifier `*' will define a global configuration affecting all channels. The global configuration

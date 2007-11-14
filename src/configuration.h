@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005 Marius L. Jøhndal
+  Copyright (C) 2005, 2007 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: configuration.h,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
+  $Id: configuration.h,v 1.2 2007/11/14 15:39:41 mariuslj Exp $
   
 */
 
@@ -36,11 +36,13 @@ struct channel_configuration {
   gchar *id3_content_type;
   gchar *id3_year;
   gchar *id3_comment;
+  gchar *regex_filter;
 };
 
 struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gchar *identifier,
                                                         struct channel_configuration *defaults);
 void channel_configuration_free(struct channel_configuration *c);
+int channel_configuration_verify_keys(GKeyFile *kf, const char *identifier);
 
 #endif /* CONFIGURATION_H */
 

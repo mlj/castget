@@ -1,4 +1,4 @@
-.TH CASTGET "1" "July 2006" "@PACKAGE_STRING@" "User Commands"
+.TH CASTGET "1" "November 2007" "@PACKAGE_STRING@" "User Commands"
 .SH NAME
 castget \- download RSS enclosures
 .SH SYNOPSIS
@@ -39,8 +39,9 @@ configuration again at a later time.
 restrict operation to the most recent item in each channel only.
 .TP
 \fB\-f\fR pattern, \fB\-\-filter=pattern\fR
-restrict operation to items whose enclosures have names matching the regular
-expression \fBpattern\fR.
+restrict operation to items whose enclosures have names matching the
+regular expression \fBpattern\fR. Note that this will override any
+regular expression filters given in the configuration file.
 .SS Global options
 .TP
 \fB\-r\fR, \fB\-\-resume\fR

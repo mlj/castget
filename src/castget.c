@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.6 2007/11/14 15:05:19 mariuslj Exp $
+  $Id: castget.c,v 1.7 2007/11/14 15:39:41 mariuslj Exp $
   
 */
 
@@ -44,7 +44,6 @@ enum op {
   OP_LIST
 };
 
-static int _verify_keys(GKeyFile *kf, const char *identifier);
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier,
                             enum op op, struct channel_configuration *defaults,
                             enclosure_filter *filter);
@@ -115,9 +114,7 @@ int main(int argc, char **argv)
 
     case 'f':
 #ifdef ENABLE_GREGEX
-      filter = g_malloc(sizeof(struct _enclosure_filter));
-      filter->pattern = g_strdup(optarg);
-      filter->caseless = FALSE; /* TODO */
+      filter = enclosure_filter_new(optarg, FALSE);
 #else
       fprintf(stderr, "Regular expression filters not supported by this build of castget.\nPlease rebuild with support for GRegex.\n");
       return 1;
@@ -192,7 +189,7 @@ int main(int argc, char **argv)
     /* Read defaults. */
     if (g_key_file_has_group(kf, "*")) {
       /* Verify the keys in the global configuration. */
-      if (_verify_keys(kf, "*") < 0)
+      if (channel_configuration_verify_keys(kf, "*") < 0)
         return -1;
 
       defaults = channel_configuration_new(kf, "*", NULL);
@@ -225,7 +222,7 @@ int main(int argc, char **argv)
   g_free(channeldir);
 
   if (filter)
-    g_free(filter);
+    enclosure_filter_free(filter);
 
   g_free(rcfile);
 
@@ -404,40 +401,6 @@ static void list_callback(void *user_data, channel_action action, channel_info *
   }
 }
 
-static int _verify_keys(GKeyFile *kf, const char *identifier)
-{
-  int i;
-  gchar **key_list;
-
-  key_list = g_key_file_get_keys(kf, identifier, NULL, NULL);
-
-  if (!key_list) {
-    fprintf(stderr, "Error reading keys in configuration of channel %s.\n", identifier);
-
-    return -1;
-  }
-
-  for (i = 0; key_list[i]; i++) {
-    if (! (!strcmp(key_list[i], "url") ||
-           !strcmp(key_list[i], "spool") ||
-           !strcmp(key_list[i], "playlist") ||
-           !strcmp(key_list[i], "id3leadartist") ||
-           !strcmp(key_list[i], "id3contentgroup") ||
-           !strcmp(key_list[i], "id3title") ||
-           !strcmp(key_list[i], "id3album") ||
-           !strcmp(key_list[i], "id3contenttype") ||
-           !strcmp(key_list[i], "id3year") ||
-           !strcmp(key_list[i], "id3comment"))) {
-      fprintf(stderr, "Invalid key %s in configuration of channel %s.\n", key_list[i], identifier);
-      return -1;
-    }
-  }
-
-  g_strfreev(key_list);
-
-  return 0;
-}
-
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier, 
                             enum op op, struct channel_configuration *defaults,
                             enclosure_filter *filter)
@@ -445,6 +408,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   channel *c;
   gchar *channel_filename, *channel_file;
   struct channel_configuration *channel_configuration;
+  enclosure_filter *per_channel_filter = NULL;
 
   /* Check channel identifier and read channel configuration. */
   if (!g_key_file_has_group(kf, identifier)) {
@@ -454,7 +418,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   }
 
   /* Verify the keys in the channel configuration. */
-  if (_verify_keys(kf, identifier) < 0)
+  if (channel_configuration_verify_keys(kf, identifier) < 0)
     return -1;
 
   channel_configuration = channel_configuration_new(kf, identifier, defaults);
@@ -497,6 +461,15 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
     channel_configuration_free(channel_configuration);
     return -1;
   }
+
+  /* Set up per-channel filter unless overridden on the command
+     line. */
+  if (!filter && channel_configuration->regex_filter) {
+    per_channel_filter = 
+      enclosure_filter_new(channel_configuration->regex_filter, FALSE);
+
+    filter = per_channel_filter;
+  }
     
   switch (op) {
   case OP_UPDATE:
@@ -514,7 +487,11 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
                    0, filter);
     break;
   }
-          
+
+  /* Clean-up. */
+  if (per_channel_filter)
+    enclosure_filter_free(per_channel_filter);
+
   channel_free(c);
   channel_configuration_free(channel_configuration);
 

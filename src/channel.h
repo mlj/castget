@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.h,v 1.3 2007/11/14 14:25:21 mariuslj Exp $
+  $Id: channel.h,v 1.4 2007/11/14 15:39:41 mariuslj Exp $
   
 */
 
@@ -52,7 +52,7 @@ typedef struct _enclosure {
 } enclosure;
 
 typedef struct _enclosure_filter {
-  const gchar *pattern;
+  gchar *pattern;
   gboolean caseless;
 } enclosure_filter;
 
@@ -68,6 +68,10 @@ void channel_free(channel *c);
 int channel_update(channel *c, void *user_data, channel_callback cb, int no_download, 
                    int no_mark_read, int first_only, int resume, 
                    enclosure_filter *filter);
+
+enclosure_filter *enclosure_filter_new(const gchar *pattern, 
+                                       gboolean caseless);
+void enclosure_filter_free(enclosure_filter *e);
 
 #endif /* CHANNEL_H */
 

@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: channel.c,v 1.3 2007/11/14 14:25:21 mariuslj Exp $
+  $Id: channel.c,v 1.4 2007/11/14 15:39:41 mariuslj Exp $
   
 */
 
@@ -350,6 +350,25 @@ static gboolean _enclosure_pattern_match(enclosure_filter *filter,
 #else
   return FALSE;
 #endif
+}
+
+enclosure_filter *enclosure_filter_new(const gchar *pattern, 
+                                       gboolean caseless)
+{
+  enclosure_filter *e = g_malloc(sizeof(struct _enclosure_filter));
+
+  g_assert(pattern);
+
+  e->pattern = g_strdup(pattern);
+  e->caseless = caseless;
+
+  return e;
+}
+    
+void enclosure_filter_free(enclosure_filter *e)
+{
+  g_free(e->pattern);
+  g_free(e);
 }
 
 /* 

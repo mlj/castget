@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005 Marius L. Jøhndal
+  Copyright (C) 2005, 2007 Marius L. Jøhndal
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -15,13 +15,14 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: configuration.c,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
+  $Id: configuration.c,v 1.2 2007/11/14 15:39:41 mariuslj Exp $
   
 */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
+#include <glib/gstdio.h>
 
 #include "configuration.h"
 
@@ -70,6 +71,9 @@ void channel_configuration_free(struct channel_configuration *c)
   if (c->id3_comment)
     g_free(c->id3_comment);
 
+  if (c->regex_filter)
+    g_free(c->regex_filter);
+
   g_free(c);
 }
 
@@ -96,6 +100,7 @@ struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gcha
   c->id3_content_type = _read_channel_configuration_key(kf, identifier, "id3contenttype");
   c->id3_year = _read_channel_configuration_key(kf, identifier, "id3year");
   c->id3_comment = _read_channel_configuration_key(kf, identifier, "id3comment");
+  c->regex_filter = _read_channel_configuration_key(kf, identifier, "filter");
 
   /* Populate with defaults if necessary. */
   if (defaults) {
@@ -128,9 +133,47 @@ struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gcha
 
     if (!c->id3_comment && defaults->id3_comment)
       c->id3_comment = g_strdup(defaults->id3_comment);
+
+    if (!c->regex_filter && defaults->regex_filter)
+      c->regex_filter = g_strdup(defaults->regex_filter);
   }
 
   return c;
+}
+
+int channel_configuration_verify_keys(GKeyFile *kf, const char *identifier)
+{
+  int i;
+  gchar **key_list;
+
+  key_list = g_key_file_get_keys(kf, identifier, NULL, NULL);
+
+  if (!key_list) {
+    fprintf(stderr, "Error reading keys in configuration of channel %s.\n", identifier);
+
+    return -1;
+  }
+
+  for (i = 0; key_list[i]; i++) {
+    if (! (!strcmp(key_list[i], "url") ||
+           !strcmp(key_list[i], "spool") ||
+           !strcmp(key_list[i], "playlist") ||
+           !strcmp(key_list[i], "id3leadartist") ||
+           !strcmp(key_list[i], "id3contentgroup") ||
+           !strcmp(key_list[i], "id3title") ||
+           !strcmp(key_list[i], "id3album") ||
+           !strcmp(key_list[i], "id3contenttype") ||
+           !strcmp(key_list[i], "id3year") ||
+           !strcmp(key_list[i], "id3comment") ||
+           !strcmp(key_list[i], "filter"))) {
+      fprintf(stderr, "Invalid key %s in configuration of channel %s.\n", key_list[i], identifier);
+      return -1;
+    }
+  }
+
+  g_strfreev(key_list);
+
+  return 0;
 }
 
 /*

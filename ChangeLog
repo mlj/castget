@@ -1,5 +1,9 @@
 2007-11-14  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* castget.1.in, castgetrc.5.in, src/castget.c, src/channel.c,
+	src/channel.h, src/configuration.c, src/configuration.h: Added
+	support for per-channel enclosure regex filters.
+
 	* src/castget.c: Made rcfile non-global. Synchronised help message
 	with man page.
 
