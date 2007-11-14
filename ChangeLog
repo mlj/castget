@@ -1,6 +1,7 @@
 2007-11-14  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
-	* src/castget.c: Made rcfile non-global.
+	* src/castget.c: Made rcfile non-global. Synchronised help message
+	with man page.
 
 	* README: Added details about dependencies.
 

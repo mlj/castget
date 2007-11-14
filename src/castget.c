@@ -15,7 +15,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
-  $Id: castget.c,v 1.5 2007/11/14 14:54:32 mariuslj Exp $
+  $Id: castget.c,v 1.6 2007/11/14 15:05:19 mariuslj Exp $
   
 */
 
@@ -240,16 +240,20 @@ int main(int argc, char **argv)
 static void usage(void)
 {
   g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [-r] [-1] [-n] [identifier(s)]\n\n");
-  g_printf("  --catchup     -c    Catch up with channels.\n");
-  g_printf("  --list        -l    List available enclosures.\n");
-  g_printf("  --first-only  -1    Only operate on the most recent enclosure in each channel.\n");
-  g_printf("  --new-only    -n    Only operate on new channel(s).\n");
-  g_printf("  --resume      -r    Resume aborted downloads.\n");
-  g_printf("  --version     -V    Print version number.\n");
-  g_printf("  --help        -h    Print usage information.\n");
+  g_printf("  --catchup     -c    catch up with channels and exit.\n");
+  g_printf("  --list        -l    list available enclosures that have not yet been\n                      downloaded, and exit.\n");
+  g_printf("  --help        -h    display help and exit.\n");
+  g_printf("  --version     -V    output version information and exit.\n");
   g_printf("\n");
-  g_printf("  --verbose     -v    Verbose mode.\n");
-  g_printf("  --quiet       -q    Quiet mode.\n\n");
+  g_printf("  --new-only    -n    restrict operation to new channels only.\n");
+  g_printf("  --first-only  -1    restrict operation to the most recent item in each channel\n                      only.\n");
+  g_printf("  --filter      -f    restrict operation to items whose enclosures have names\n                      matching the regular expression pattern.\n");
+  g_printf("\n");
+  g_printf("  --resume      -r    resume aborted downloads.\n");
+  g_printf("  --quiet       -q    do not print anything except error messages.\n");
+  g_printf("  --verbose     -v    print detailed progress information.\n");
+  g_printf("  --rcfile      -C    override the default filename for the configuration file.\n");
+  g_printf("\n");
   g_printf("The identifiers identifies the channels affected by the selected operation.\n");
   g_printf("If no identifier is supplied all channels are affect.\n");
 }
