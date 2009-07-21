@@ -15,6 +15,20 @@
 	src/channel.h: Added support for restricting operations to
 	enclosures matching a regex given on the command line.
 
+2007-11-14  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* configure.ac: Bumped version number to 1.0.1.
+
+2007-11-13  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* libcastget/utils.c: Improved handling of out of disk space
+	errors. Removed superfluous close().
+
+2007-10-18  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* libcastget/urlget.c: Added custom User-Agent header.
+
+	* castget/castget.c: Updated banner copyright.
 
 2007-10-12  Marius Larsen Jøhndal  <mariuslj@ifi.uio.no>
 
@@ -23,6 +37,12 @@
 2007-10-12  Jick Nan  <jick.nan@gmail.com>
 
 	* src/castget.c: Add --rcfile <path/to/rcfile> option.
+
+2007-09-20  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* configure.ac: Bumped version number to 1.0.0.
+
+	* castgetrc.5.in: Minor language clean-up.
 
 2007-09-20  Marius Larsen Jøhndal  <mariuslj@ifi.uio.no>
 

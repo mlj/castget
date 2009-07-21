@@ -25,6 +25,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <glib.h>
 #include <curl/curl.h>
 #include "urlget.h"
 
@@ -41,7 +42,12 @@ int urlget_buffer(const char *url, void *user_data,
   CURLcode success;
   char errbuf[CURL_ERROR_SIZE];
   int ret = 0;
+  gchar *user_agent;
 
+  /* Construct user agent string. */
+  user_agent = g_strdup_printf("%s (%s rss enclosure downloader)", PACKAGE_STRING, PACKAGE);
+
+  /* Initialise curl. */
   easyhandle = curl_easy_init();
   
   if (easyhandle) {
@@ -50,6 +56,7 @@ int urlget_buffer(const char *url, void *user_data,
     curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, write_buffer);
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, user_data);
     curl_easy_setopt(easyhandle, CURLOPT_FOLLOWLOCATION, 1);
+    curl_easy_setopt(easyhandle, CURLOPT_USERAGENT, user_agent);
 
     if (resume_from)
       curl_easy_setopt(easyhandle, CURLOPT_RESUME_FROM_LARGE, (curl_off_t)resume_from);
@@ -64,6 +71,8 @@ int urlget_buffer(const char *url, void *user_data,
     }
   } else
     ret = 1;
+
+  g_free(user_agent);
   
   return ret;
 }

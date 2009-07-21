@@ -258,7 +258,7 @@ static void usage(void)
 static void version(void)
 {
   g_printf("%s %s\n", PACKAGE, VERSION);
-  g_printf("Copyright (C) 2005, 2006 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
+  g_printf("Copyright (C) 2005, 2006, 2007 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
 }
 
 static void update_callback(void *user_data, channel_action action, 

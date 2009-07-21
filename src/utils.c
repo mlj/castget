@@ -73,9 +73,15 @@ int write_by_temporary_file(const gchar *filename,
   retval = writer(f, user_data);
     
   fclose(f);
-  close(fd);
-  
-  if (filename) {
+
+  if (errno == ENOSPC) {
+    fprintf(stderr, "No space left on device.\n");
+    unlink(tmp_filename_used);
+    g_free(tmp_filename_used);
+    return -1;
+  }
+
+  if (retval == 0 && filename) {
     if (g_rename(tmp_filename_used, filename) < 0) {
       fprintf(stderr, "Error renaming temporary file %s to %s: %s.\n",
               tmp_filename_used, filename, strerror(errno));

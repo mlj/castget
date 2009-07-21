@@ -9,3 +9,11 @@ Version 1.1.0:
   by supplying --disable-gregex to configure.
 
   * Distribution files are compressed with bzip2.
+
+Version 1.0.1:
+
+  * castget now identifies itself using the HTTP User-Agent header.
+
+Version 1.0.0:
+
+  * First stable release.
