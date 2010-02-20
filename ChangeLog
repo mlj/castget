@@ -1,3 +1,7 @@
+2010-02-20  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* configure.ac: Bumped version number to 1.1.0.
+
 2007-11-14  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* castget.1.in, castgetrc.5.in, src/castget.c, src/channel.c,
