@@ -21,7 +21,7 @@
       <h1>castget</h1>
 
       <h2>A command-line podcast downloader</h2>
-      
+
       <p>
 	<span class="application">castget</span> is a simple,
 	command-line based <acronym title="Really Simple Syndication or Rich Site Summary">RSS</acronym> enclosure downloader. It
@@ -37,27 +37,16 @@
       <h3 id="news">News</h3>
 
       <ul>
+        <li><b>20 February 2010</b>: Version 1.1.0 is available. This
+        release adds support for regular expression filters on
+        enclosure file name and for overriding the location of the
+        configuration file.</li>
+
         <li><b>14 November 2007</b>: Version 1.0.1 is available. This
         release fixes a major issue that can lead to loss of the
         entire download history for a channel. Starting with this
         release, castget will also identify itself using the
         User-Agent field in HTTP requests.</li>
-
-        <li><b>20 September 2007</b>: Version 1.0.0 is
-        available. There are only minor documentation updates in this
-        release, but, more importantly, it is the first officially
-        stable release of castget! We will start implementing new
-        features in a new series of unstable releases. Please contact
-        us if you have features that you would like to see
-        included!</li>
-
-	<li><b>16 February 2007</b>: Version 0.9.6 is available. This
-	release adds an option to restrict actions to the most recent
-	enclosure available from a channel, an option to restrict
-	actions to new channels only, and an option to resume any
-	downloads that have been aborted.  The release also fixes
-	problems with ID3 tags not being written in some cases and
-	problems with linking with the id3lib library.</li>
       </ul>
 
       <h3 id="features">Features</h3>
@@ -77,8 +66,9 @@
       <p>
 	The latest stable release
 	of <span class="application">castget</span>
-	is <a href="http://savannah.nongnu.org/download/castget/castget-1.0.1.tar.gz">castget-1.0.1.tar.gz</a>. An
-	unstable release is not yet available.
+        is <a href="http://savannah.nongnu.org/download/castget/castget-1.0.1.tar.gz">castget-1.0.1.tar.gz</a>.
+        The latest unstable release is
+        is <a href="http://savannah.nongnu.org/download/castget/castget-1.1.0.tar.bz2">castget-1.1.0.tar.bz2</a>.
       </p>
 
       <p>
@@ -96,7 +86,7 @@
       </p>
 
       <h3 id="configuration">Configuration</h3>
-      
+
       <p>
 	<span class="application">castget</span> is configured using a
 	configuration file called <span
@@ -112,7 +102,7 @@
 
       <pre>[df]
 url=http://digitalflotsam.org/rss.xml
-spool=/home/joe/podcasts</pre>    
+spool=/home/joe/podcasts</pre>
 
       <p>
 	Each such section is referred to as a <span
@@ -128,7 +118,7 @@ spool=/home/joe/podcasts</pre>
       </p>
 
       <pre>[*]
-id3contenttype=Podcast</pre>    
+id3contenttype=Podcast</pre>
 
       <p>
 	The source distribution includes a sample configuration file
@@ -178,7 +168,7 @@ id3contenttype=Podcast</pre>
       <h3 id="bugs">Bugs</h3>
 
       <p>
-        Please report any bugs using the project's 
+        Please report any bugs using the project's
         <a href="https://savannah.nongnu.org/bugs/?func=additem&group=castget">bug tracker</a>
         on Savannah.
       </p>
@@ -188,7 +178,7 @@ id3contenttype=Podcast</pre>
       <p>
 	Development of <span class="application">castget</span> takes
 	place on <a
-	href="http://savannah.nongnu.org/projects/castget/">Savannah</a>. 
+	href="http://savannah.nongnu.org/projects/castget/">Savannah</a>.
       </p>
 
       <div id="footer">
