@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-# Copyright (C) 2005, 2006, 2007 Marius L. Jøhndal
+# Copyright (C) 2005, 2006, 2007, 2011 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,8 +17,6 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-#
-
 AC_PREREQ(2.59)
 AC_INIT(castget, 1.1.0, mariuslj@ifi.uio.no)
 AM_INIT_AUTOMAKE([1.8 dist-bzip2 no-dist-gzip])
@@ -55,7 +53,7 @@ dnl AC_SUBST(GLIB_REQUIRED_VERSION)
 
 PKG_CHECK_MODULES(GLIBS, [
   glib-2.0 >= $GLIB_REQUIRED_VERSION
-  libxml-2.0 
+  libxml-2.0
 ])
 
 AC_PATH_PROG(CURL_CONFIG, curl-config, no)
@@ -64,7 +62,7 @@ if test "$CURL_CONFIG" = "no" ; then
 else
   CURL_CFLAGS=`$CURL_CONFIG --cflags`
   CURL_LIBS=`$CURL_CONFIG --libs`
-  
+
   AC_SUBST(CURL_CFLAGS)
   AC_SUBST(CURL_LIBS)
 fi
@@ -72,7 +70,7 @@ fi
 if test "x$configure_enable_id3lib" = "xyes"; then
   AC_SEARCH_LIBS(ID3Tag_Link,
     "id3" "id3 -lstdc++" "id3 -lz" "id3 -lz -lstdc++",
-    , 
+    ,
     AC_MSG_ERROR(Required library id3lib not found))
 
   dnl Needed to link correctly with id3lib 3.8.0

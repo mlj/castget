@@ -1,22 +1,20 @@
 /*
-  Copyright (C) 2005, 2006, 2007 Marius L. Jøhndal
- 
+  Copyright (C) 2005, 2006, 2007, 2011 Marius L. Jøhndal
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
- 
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- 
-  $Id: channel.c,v 1.4 2007/11/14 15:39:41 mariuslj Exp $
-  
+
 */
 
 #ifdef HAVE_CONFIG_H
@@ -35,14 +33,14 @@
 #include "utils.h"
 
 static int _enclosure_pattern_match(enclosure_filter *filter,
-                                    const enclosure *enclosure); 
+                                    const enclosure *enclosure);
 
 static void _enclosure_iterator(const void *user_data, int i, const xmlNode *node)
 {
   const char *downloadtime;
 
   channel *c = (channel *)user_data;
-  
+
   downloadtime = libxmlutil_attr_as_string(node, "downloadtime");
 
   if (downloadtime)
@@ -50,12 +48,12 @@ static void _enclosure_iterator(const void *user_data, int i, const xmlNode *nod
   else
     downloadtime = get_rfc822_time();
 
-  g_hash_table_insert(c->downloaded_enclosures, 
-                      (gpointer)libxmlutil_attr_as_string(node, "url"), 
+  g_hash_table_insert(c->downloaded_enclosures,
+                      (gpointer)libxmlutil_attr_as_string(node, "url"),
                       (gpointer)downloadtime);
 }
 
-channel *channel_new(const char *url, const char *channel_file, 
+channel *channel_new(const char *url, const char *channel_file,
                      const char *spool_directory, int resume)
 {
   channel *c;
@@ -73,17 +71,17 @@ channel *channel_new(const char *url, const char *channel_file,
 
   if (g_file_test(c->channel_filename, G_FILE_TEST_EXISTS)) {
     doc = xmlReadFile(c->channel_filename, NULL, 0);
-    
+
     if (!doc) {
       g_fprintf(stderr, "Error parsing channel file %s.\n", c->channel_filename);
       return NULL;
     }
-    
+
     root_element = xmlDocGetRootElement(doc);
-    
+
     if (!root_element)  {
       xmlFreeDoc(doc);
-      
+
       g_fprintf(stderr, "Error parsing channel file %s.\n", c->channel_filename);
       return NULL;
     }
@@ -96,7 +94,7 @@ channel *channel_new(const char *url, const char *channel_file,
 
     /* Iterate encolsure elements. */
     libxmlutil_iterate_by_tag_name(root_element, "enclosure", c, _enclosure_iterator);
-    
+
     xmlFreeDoc(doc);
   }
 
@@ -110,7 +108,7 @@ static void _cast_channel_save_downloaded_enclosure(gpointer key, gpointer value
   gchar *escaped_key = g_markup_escape_text(key, -1);
 
   if (value)
-    g_fprintf(f, "  <enclosure url=\"%s\" downloadtime=\"%s\"/>\n", 
+    g_fprintf(f, "  <enclosure url=\"%s\" downloadtime=\"%s\"/>\n",
               escaped_key, (gchar *)value);
   else
     g_fprintf(f, "  <enclosure url=\"%s\"/>\n", escaped_key);
@@ -175,7 +173,7 @@ static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb)
   return f;
 }
 
-static int _do_download(channel *c, channel_info *channel_info, rss_item *item, 
+static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
                         void *user_data, channel_callback cb, int resume)
 {
   int download_failed;
@@ -197,7 +195,7 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
     /* We're told to continue from where we are now. Get the
      * size of the file as it is now and open it for append instead.
      * Stolen from curl. */
-    
+
     if (0 == stat(enclosure_full_filename, &fileinfo))
       /* Set offset to current file size. */
       resume_from = fileinfo.st_size;
@@ -210,27 +208,27 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
 
   if (!enclosure_file) {
     g_free(enclosure_full_filename);
-    
+
     g_fprintf(stderr, "Error opening enclosure file %s.\n", enclosure_full_filename);
     return 1;
   }
-  
+
   if (cb)
     cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, enclosure_full_filename);
-  
+
   if (urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb, resume_from)) {
     g_fprintf(stderr, "Error downloading enclosure from %s.\n", item->enclosure->url);
 
     download_failed = 1;
   } else
     download_failed = 0;
-  
+
   fclose(enclosure_file);
-  
+
   if (cb)
     cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, channel_info, item->enclosure, enclosure_full_filename);
-  
-  g_free(enclosure_full_filename); 
+
+  g_free(enclosure_full_filename);
 
   return download_failed;
 }
@@ -240,15 +238,15 @@ static int _do_catchup(channel *c, channel_info *channel_info, rss_item *item,
 {
   if (cb) {
     cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, NULL);
-  
+
     cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, channel_info, item->enclosure, NULL);
   }
 
   return 0;
-}  
+}
 
 int channel_update(channel *c, void *user_data, channel_callback cb,
-                   int no_download, int no_mark_read, int first_only, 
+                   int no_download, int no_mark_read, int first_only,
                    int resume, enclosure_filter *filter)
 {
   int i, download_failed;
@@ -280,7 +278,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
           if (!no_mark_read) {
             /* Mark enclosure as downloaded and immediately save channel
                file to ensure that it reflects the change. */
-            g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url, 
+            g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url,
                                 (gpointer)get_rfc822_time());
 
             _cast_channel_save(c);
@@ -312,7 +310,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
 
 /* Match the (file) name of an enclosure against a regexp. Letters
    in the pattern match both upper and lower case letters if
-   'caseless' is TRUE. Returns TRUE if the pattern matches, FALSE 
+   'caseless' is TRUE. Returns TRUE if the pattern matches, FALSE
    otherwise. */
 static gboolean _enclosure_pattern_match(enclosure_filter *filter,
                                          const enclosure *enclosure)
@@ -331,17 +329,17 @@ static gboolean _enclosure_pattern_match(enclosure_filter *filter,
   if (filter->caseless)
     compile_options |= G_REGEX_CASELESS;
 
-  regex = g_regex_new(filter->pattern, compile_options, match_options, 
+  regex = g_regex_new(filter->pattern, compile_options, match_options,
                       &error);
 
   if (error) {
-    fprintf(stderr, "Error compiling regular expression %s: %s\n", 
+    fprintf(stderr, "Error compiling regular expression %s: %s\n",
             filter->pattern, error->message);
     g_error_free(error);
     return FALSE;
   }
-        
-  match = g_regex_match(regex, enclosure->filename, match_options, 
+
+  match = g_regex_match(regex, enclosure->filename, match_options,
                         NULL);
 
   g_regex_unref(regex);
@@ -352,7 +350,7 @@ static gboolean _enclosure_pattern_match(enclosure_filter *filter,
 #endif
 }
 
-enclosure_filter *enclosure_filter_new(const gchar *pattern, 
+enclosure_filter *enclosure_filter_new(const gchar *pattern,
                                        gboolean caseless)
 {
   enclosure_filter *e = g_malloc(sizeof(struct _enclosure_filter));
@@ -364,18 +362,9 @@ enclosure_filter *enclosure_filter_new(const gchar *pattern,
 
   return e;
 }
-    
+
 void enclosure_filter_free(enclosure_filter *e)
 {
   g_free(e->pattern);
   g_free(e);
 }
-
-/* 
-   Local Variables:
-   mode:c
-   indent-tabs-mode:nil
-   c-basic-offset:2
-   coding:utf-8
-   End:
-*/

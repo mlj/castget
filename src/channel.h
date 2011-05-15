@@ -1,22 +1,20 @@
 /*
-  Copyright (C) 2005, 2007 Marius L. Jøhndal
- 
+  Copyright (C) 2005, 2007, 2011 Marius L. Jøhndal
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
- 
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- 
-  $Id: channel.h,v 1.4 2007/11/14 15:39:41 mariuslj Exp $
-  
+
 */
 
 #ifndef CHANNEL_H
@@ -56,30 +54,21 @@ typedef struct _enclosure_filter {
   gboolean caseless;
 } enclosure_filter;
 
-typedef void (*channel_callback)(void *user_data, 
-                                 channel_action action, 
-                                 channel_info *channel_info, 
+typedef void (*channel_callback)(void *user_data,
+                                 channel_action action,
+                                 channel_info *channel_info,
                                  enclosure *enclosure,
                                  const char *filename);
 
-channel *channel_new(const char *url, const char *channel_file, 
+channel *channel_new(const char *url, const char *channel_file,
                      const char *spool_directory, int resume);
 void channel_free(channel *c);
-int channel_update(channel *c, void *user_data, channel_callback cb, int no_download, 
-                   int no_mark_read, int first_only, int resume, 
+int channel_update(channel *c, void *user_data, channel_callback cb, int no_download,
+                   int no_mark_read, int first_only, int resume,
                    enclosure_filter *filter);
 
-enclosure_filter *enclosure_filter_new(const gchar *pattern, 
+enclosure_filter *enclosure_filter_new(const gchar *pattern,
                                        gboolean caseless);
 void enclosure_filter_free(enclosure_filter *e);
 
 #endif /* CHANNEL_H */
-
-/* 
-   Local Variables:
-   mode:c
-   indent-tabs-mode:nil
-   c-basic-offset:2
-   coding:utf-8
-   End:
-*/

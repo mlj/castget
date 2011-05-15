@@ -2,13 +2,13 @@
 .SH NAME
 castget \- download RSS enclosures
 .SH SYNOPSIS
-.B castget 
+.B castget
 [\fIOPTION\fR]... [\fICHANNEL IDENTIFIER\fR]...
 .SH DESCRIPTION
 .PP
 The program downloads RSS enclosures, for example podcasts, from RSS feeds.
 .TP
-RSS feeds are assigned channel identifiers in the configuration file \fB.castgetrc\fR. Channels to be processed by \fBcastget\fR are indicated by supplying the channel identifiers as arguments. If no channel identifiers are provided, all available channels are processed. 
+RSS feeds are assigned channel identifiers in the configuration file \fB.castgetrc\fR. Channels to be processed by \fBcastget\fR are indicated by supplying the channel identifiers as arguments. If no channel identifiers are provided, all available channels are processed.
 .TP
 If run without any options, \fBcastget\fR will perform the default action on all channels to be processed. The default action is to download any enclosure not already downloaded. Other actions may be performed by supplying one or more options as arguments.
 .SH OPTIONS
@@ -83,7 +83,7 @@ instructions on how to submit bug reports.
 .SH AUTHORS
 Marius L. Jøhndal, Jick Nan.
 .SH COPYRIGHT
-Copyright \(co 2005, 2006, 2007 Marius L. Jøhndal.
+Copyright \(co 2005, 2006, 2007, 2011 Marius L. Jøhndal.
 .br
 Copyright \(co 2007 Jick Nan.
 .br

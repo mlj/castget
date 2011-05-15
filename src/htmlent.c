@@ -1,22 +1,20 @@
 /*
-  Copyright (C) 2006 Marius L. Jøhndal
- 
+  Copyright (C) 2006, 2011 Marius L. Jøhndal
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
- 
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- 
-  $Id: htmlent.c,v 1.1 2007/09/20 17:49:23 mariuslj Exp $
-  
+
 */
 
 #ifdef HAVE_CONFIG_H
@@ -131,7 +129,7 @@ GHashTable *htmlent_hash_new(void)
   g_hash_table_insert(h, "amp", "&#38;#38;");
   g_hash_table_insert(h, "lt", "&#38;#60;");
   g_hash_table_insert(h, "gt", "&#62;");
-  g_hash_table_insert(h, "apos	", "&#39;");
+  g_hash_table_insert(h, "apos  ", "&#39;");
   g_hash_table_insert(h, "OElig", "&#338;");
   g_hash_table_insert(h, "oelig", "&#339;");
   g_hash_table_insert(h, "Scaron", "&#352;");
@@ -292,12 +290,3 @@ void htmlent_hash_destroy(GHashTable *h)
 {
   g_hash_table_destroy(h);
 }
-
-/* 
-   Local Variables:
-   mode:c
-   indent-tabs-mode:nil
-   c-basic-offset:2
-   coding:utf-8
-   End:
-*/

@@ -3,7 +3,7 @@ INSTALLATION AND CONFIGURATION
 
 Please see INSTALL for detailed installation instructions.
 
-castget requires glib2 and libcurl. 
+castget requires glib2 and libcurl.
 
 For ID3 tag support, id3lib is also required. For support for regular
 expression filters, glib2 version 2.14 or higher is required. See
@@ -27,4 +27,4 @@ Please see the castget home page for information about updates
 and how to report bugs
 
   http://www.nongnu.org/castget/
-  
+

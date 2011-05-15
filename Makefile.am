@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2005, 2006, 2007 Marius L. Jøhndal
+# Copyright (C) 2005, 2006, 2007, 2011 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -14,8 +14,6 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
-#   $Id: Makefile.am,v 1.8 2007/11/14 15:26:01 mariuslj Exp $
 #
 SUBDIRS = src
 

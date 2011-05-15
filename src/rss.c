@@ -1,22 +1,20 @@
 /*
-  Copyright (C) 2005, 2006, 2007 Marius L. Jøhndal
- 
+  Copyright (C) 2005, 2006, 2007, 2011 Marius L. Jøhndal
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
- 
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- 
-  $Id: rss.c,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
-  
+
 */
 
 #ifdef HAVE_CONFIG_H
@@ -40,7 +38,7 @@
 static char *_dup_child_node_value(const xmlNode *node, const gchar *tag)
 {
   const xmlNode *n;
-  
+
   n = libxmlutil_child_node_by_name(node, NULL, tag);
 
   if (n)
@@ -67,15 +65,15 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
   /* Look for mrss information first, if there is any. It may be
      located either directly under the "item" tag, or inside an mrss
      "group" tag. */
-  mrss_content = libxmlutil_child_node_by_name(node, MRSS_NAMESPACE, 
+  mrss_content = libxmlutil_child_node_by_name(node, MRSS_NAMESPACE,
                                                "content");
 
   if (!mrss_content) {
-    mrss_group = libxmlutil_child_node_by_name(node, MRSS_NAMESPACE, 
+    mrss_group = libxmlutil_child_node_by_name(node, MRSS_NAMESPACE,
                                                "group");
 
     if (mrss_group)
-      mrss_content = libxmlutil_child_node_by_name(mrss_group, 
+      mrss_content = libxmlutil_child_node_by_name(mrss_group,
                                                    MRSS_NAMESPACE, "content");
   }
 
@@ -122,7 +120,7 @@ static rss_file *rss_parse(const gchar *url, const xmlNode *root_element, gchar 
 
   /* Do some sanity checking and extract the RSS version number. */
   if (strcmp((char *)root_element->name, "rss")) {
-    fprintf(stderr, "Error parsing RSS file %s: Unrecognized top-level element %s.\n", 
+    fprintf(stderr, "Error parsing RSS file %s: Unrecognized top-level element %s.\n",
             url, (char *)root_element->name);
     return NULL;
   }
@@ -231,7 +229,7 @@ rss_file *rss_open_file(const char *filename)
 
   /* Establish the time the RSS file was 'fetched'. */
   fetched_time = get_rfc822_time();
-  
+
   if (!fetched_time) {
     xmlFreeDoc(doc);
     xmlFreeParserCtxt(ctxt);
@@ -241,7 +239,7 @@ rss_file *rss_open_file(const char *filename)
   }
 
   f = rss_parse(filename, root_element, fetched_time);
- 
+
   xmlFreeDoc(doc);
   xmlFreeParserCtxt(ctxt);
   g_free(fetched_time);
@@ -276,14 +274,14 @@ void rss_close(rss_file *f)
 {
   int i;
   rss_item *item;
-  
+
   for (i = 0; i < f->num_items; i++) {
     item = f->items[i];
 
     if (item->enclosure) {
       if (item->enclosure->url)
         free(item->enclosure->url);
-      
+
       if (item->enclosure->type)
         free(item->enclosure->type);
 
@@ -315,15 +313,6 @@ long rss_total_enclosure_size(rss_file *f)
   for (i = 0; i < f->num_items; i++)
     if (f->items[i]->enclosure)
       n += f->items[i]->enclosure->length;
-    
+
   return n;
 }
-
-/* 
-   Local Variables:
-   mode:c
-   indent-tabs-mode:nil
-   c-basic-offset:2
-   coding:utf-8
-   End:
-*/

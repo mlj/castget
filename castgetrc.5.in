@@ -16,7 +16,7 @@ the user and is used for all subsequent operations on the
 channel. Following this are one or more key-value pairs on the form
 \fBkey=value\fR that define \fBcastget\fR's behaviour when operating
 on the channel. A channel definition ends when another
-channel definition is started or at the end of the file. 
+channel definition is started or at the end of the file.
 .PP
 Lines beginning with a hash character (`#') and blank lines are considered comments. All identifiers, keys and values should be UTF-8 encoded.
 .PP
@@ -74,7 +74,7 @@ Key-value pairs in channel definitions override the global configuration.
 .SH CHANNEL REMOVAL
 If a channel configuration is removed, the channel status remains the same so that if the channel is subsequently re-added, any enclosures marked as already downloaded will not be downloaded again.
 .SH NOTE
-The source distribution includes a sample configuration file demonstrating all supported settings. 
+The source distribution includes a sample configuration file demonstrating all supported settings.
 .SH SEE ALSO
 \fBcastget\fR(1)
 .SH AUTHOR

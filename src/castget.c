@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -50,8 +50,8 @@ static void version(void);
 static GKeyFile *_configuration_file_open(const gchar *rcfile);
 static void _configuration_file_close(GKeyFile *kf);
 #ifdef ENABLE_ID3LIB
-static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist, 
-                    const gchar *content_group, const gchar *title, 
+static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist,
+                    const gchar *content_group, const gchar *title,
                     const gchar *album, const gchar *content_type, const gchar *year,
                     const gchar *comment);
 static int _id3_check_and_set(const gchar *filename,
@@ -165,7 +165,7 @@ int main(int argc, char **argv)
   }
 
   LIBXML_TEST_VERSION;
-        
+
   /* Build the channel directory path and ensure that it exists. */
   channeldir = g_build_filename(g_get_home_dir(), ".castget", NULL);
 
@@ -197,19 +197,19 @@ int main(int argc, char **argv)
     /* Perform actions. */
     if (optind < argc) {
       while (optind < argc)
-        _process_channel(channeldir, kf, argv[optind++], op, defaults, 
+        _process_channel(channeldir, kf, argv[optind++], op, defaults,
                          filter);
     } else {
       groups = g_key_file_get_groups(kf, NULL);
-      
+
       for (i = 0; groups[i]; i++)
         if (strcmp(groups[i], "*"))
-          _process_channel(channeldir, kf, groups[i], op, defaults, 
+          _process_channel(channeldir, kf, groups[i], op, defaults,
                            filter);
-      
+
       g_strfreev(groups);
     }
-  
+
     /* Clean up defaults. */
     if (defaults)
       channel_configuration_free(defaults);
@@ -226,7 +226,7 @@ int main(int argc, char **argv)
 
   if (kf)
     _configuration_file_close(kf);
-  
+
   xmlCleanupParser();
 
   return ret;
@@ -259,8 +259,8 @@ static void version(void)
   g_printf("Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
 }
 
-static void update_callback(void *user_data, channel_action action, 
-                            channel_info *channel_info, enclosure *enclosure, 
+static void update_callback(void *user_data, channel_action action,
+                            channel_info *channel_info, enclosure *enclosure,
                             const gchar *filename)
 {
   struct channel_configuration *c = (struct channel_configuration *)user_data;
@@ -270,29 +270,29 @@ static void update_callback(void *user_data, channel_action action,
     if (!quiet)
       g_printf("Updating channel %s...\n", c->identifier);
     break;
-    
+
   case CCA_RSS_DOWNLOAD_END:
     break;
-    
+
   case CCA_ENCLOSURE_DOWNLOAD_START:
     g_assert(channel_info);
     g_assert(enclosure);
-    
+
     if (verbose) {
       if (enclosure->length > 1024*1024*1024) {
-        g_printf(" * Downloading %s (%.1f GB) from %s\n", 
-                 enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0), 
+        g_printf(" * Downloading %s (%.1f GB) from %s\n",
+                 enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0),
                  channel_info->title);
       } else if (enclosure->length > 1024*1024) {
-        g_printf(" * Downloading %s (%.1f MB) from %s\n", 
+        g_printf(" * Downloading %s (%.1f MB) from %s\n",
                  enclosure->filename, (float)enclosure->length / (1024.0*1024.0),
                  channel_info->title);
       } else if (enclosure->length > 1024) {
-        g_printf(" * Downloading %s (%.1f kB) from %s\n", 
+        g_printf(" * Downloading %s (%.1f kB) from %s\n",
                  enclosure->filename, (float)enclosure->length / 1024.0,
                  channel_info->title);
       } else if (enclosure->length > 0) {
-        g_printf(" * Downloading %s (%ld bytes) from %s\n", 
+        g_printf(" * Downloading %s (%ld bytes) from %s\n",
                  enclosure->filename, enclosure->length,
                  channel_info->title);
       } else {
@@ -302,12 +302,12 @@ static void update_callback(void *user_data, channel_action action,
       }
     }
     break;
-    
+
   case CCA_ENCLOSURE_DOWNLOAD_END:
     g_assert(channel_info);
     g_assert(enclosure);
     g_assert(filename);
-    
+
     /* Set media tags. */
     if (enclosure->type && !strcmp(enclosure->type, "audio/mpeg")) {
 #ifdef ENABLE_ID3LIB
@@ -315,13 +315,13 @@ static void update_callback(void *user_data, channel_action action,
         fprintf(stderr, "Error setting ID3 tag for file %s.\n", filename);
 #endif /* ENABLE_ID3LIB */
     }
-    
+
     /* Update playlist. */
     if (c->playlist) {
       playlist_add(c->playlist, filename);
-      
+
       if (verbose)
-        printf(" * Added downloaded enclosure %s to playlist %s.\n", 
+        printf(" * Added downloaded enclosure %s to playlist %s.\n",
                filename, c->playlist);
     }
     break;
@@ -338,19 +338,19 @@ static void catchup_callback(void *user_data, channel_action action, channel_inf
     if (!quiet)
       g_printf("Catching up with channel %s...\n", c->identifier);
     break;
-    
+
   case CCA_RSS_DOWNLOAD_END:
     break;
 
   case CCA_ENCLOSURE_DOWNLOAD_START:
     g_assert(channel_info);
     g_assert(enclosure);
-    
+
     if (verbose)
       g_printf("Catching up on %s (%ld bytes) from %s\n", enclosure->url, enclosure->length,
                channel_info->title);
     break;
-    
+
   case CCA_ENCLOSURE_DOWNLOAD_END:
     break;
   }
@@ -365,41 +365,41 @@ static void list_callback(void *user_data, channel_action action, channel_info *
   case CCA_RSS_DOWNLOAD_START:
     g_printf("Listing channel %s...\n", c->identifier);
     break;
-    
+
   case CCA_RSS_DOWNLOAD_END:
     break;
-    
+
   case CCA_ENCLOSURE_DOWNLOAD_START:
     g_assert(channel_info);
     g_assert(enclosure);
-    
+
     if (enclosure->length > 1024*1024*1024) {
-      g_printf(" * %s (%.1f GB) from %s\n", 
-               enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0), 
+      g_printf(" * %s (%.1f GB) from %s\n",
+               enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0),
                channel_info->title);
     } else if (enclosure->length > 1024*1024) {
-      g_printf(" * %s (%.1f MB) from %s\n", 
+      g_printf(" * %s (%.1f MB) from %s\n",
                enclosure->filename, (float)enclosure->length / (1024.0*1024.0),
                channel_info->title);
     } else if (enclosure->length > 1024) {
-      g_printf(" * %s (%.1f kB) from %s\n", 
+      g_printf(" * %s (%.1f kB) from %s\n",
                enclosure->filename, (float)enclosure->length / 1024.0,
                channel_info->title);
     } else if (enclosure->length > 0) {
-      g_printf(" * %s (%ld bytes) from %s\n", 
+      g_printf(" * %s (%ld bytes) from %s\n",
                enclosure->filename, enclosure->length, channel_info->title);
     } else {
       g_printf(" * %s from %s\n", enclosure->filename, channel_info->title);
     }
-    
+
     break;
-    
+
   case CCA_ENCLOSURE_DOWNLOAD_END:
     break;
   }
 }
 
-static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier, 
+static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier,
                             enum op op, struct channel_configuration *defaults,
                             enclosure_filter *filter)
 {
@@ -424,7 +424,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   /* Check that mandatory keys were set. */
   if (!channel_configuration->url) {
     fprintf(stderr, "No feed URL set for channel %s.\n", identifier);
-      
+
     channel_configuration_free(channel_configuration);
     return -1;
   }
@@ -449,7 +449,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
     return 0;
   }
 
-  c = channel_new(channel_configuration->url, channel_file, 
+  c = channel_new(channel_configuration->url, channel_file,
                   channel_configuration->spool_directory, resume);
   g_free(channel_file);
 
@@ -463,25 +463,25 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   /* Set up per-channel filter unless overridden on the command
      line. */
   if (!filter && channel_configuration->regex_filter) {
-    per_channel_filter = 
+    per_channel_filter =
       enclosure_filter_new(channel_configuration->regex_filter, FALSE);
 
     filter = per_channel_filter;
   }
-    
+
   switch (op) {
   case OP_UPDATE:
-    channel_update(c, channel_configuration, update_callback, 0, 0, 
+    channel_update(c, channel_configuration, update_callback, 0, 0,
                    first_only, resume, filter);
     break;
-            
+
   case OP_CATCHUP:
-    channel_update(c, channel_configuration, catchup_callback, 1, 0, 
+    channel_update(c, channel_configuration, catchup_callback, 1, 0,
                    first_only, 0, filter);
     break;
-            
+
   case OP_LIST:
-    channel_update(c, channel_configuration, list_callback, 1, 1, first_only, 
+    channel_update(c, channel_configuration, list_callback, 1, 1, first_only,
                    0, filter);
     break;
   }
@@ -531,11 +531,11 @@ static int _id3_find_and_set_frame(ID3Tag *tag, ID3_FrameID id, const char *valu
   if (value && strlen(value) > 0) {
     frame = ID3Frame_NewID(id);
     g_assert(frame);
-    
+
     ID3Tag_AttachFrame(tag, frame);
-    
+
     field = ID3Frame_GetField(frame, ID3FN_TEXT);
-    
+
     if (field)
       ID3Field_SetASCII(field, value); //TODO: UTF8
     else
@@ -545,8 +545,8 @@ static int _id3_find_and_set_frame(ID3Tag *tag, ID3_FrameID id, const char *valu
   return 0;
 }
 
-static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist, 
-                    const gchar *content_group, const gchar *title, const gchar *album, 
+static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist,
+                    const gchar *content_group, const gchar *title, const gchar *album,
                     const gchar *content_type, const gchar *year, const gchar *comment)
 {
   int errors = 0;
@@ -622,10 +622,10 @@ static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist,
 static int _id3_check_and_set(const gchar *filename,
                               const struct channel_configuration *cfg)
 {
-  if (cfg->id3_lead_artist || cfg->id3_content_group || cfg->id3_title || 
+  if (cfg->id3_lead_artist || cfg->id3_content_group || cfg->id3_title ||
       cfg->id3_album || cfg->id3_content_type || cfg->id3_year || cfg->id3_comment)
-    return _id3_set(filename, 0, cfg->id3_lead_artist, cfg->id3_content_group, 
-                    cfg->id3_title, cfg->id3_album, cfg->id3_content_type, 
+    return _id3_set(filename, 0, cfg->id3_lead_artist, cfg->id3_content_group,
+                    cfg->id3_title, cfg->id3_album, cfg->id3_content_type,
                     cfg->id3_year, cfg->id3_comment);
   else
     return 0;
@@ -646,17 +646,7 @@ static int playlist_add(const gchar *playlist_file,
     return -1;
   }
 
-  fprintf(f, "%s\n", media_file); 
+  fprintf(f, "%s\n", media_file);
   fclose(f);
   return 0;
 }
-
-
-/* 
-   Local Variables:
-   mode:c
-   indent-tabs-mode:nil
-   c-basic-offset:2
-   coding:utf-8
-   End:
-*/

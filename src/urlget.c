@@ -1,22 +1,20 @@
 /*
-  Copyright (C) 2005, 2007 Marius L. Jøhndal
- 
+  Copyright (C) 2005, 2007, 2011 Marius L. Jøhndal
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
- 
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
- 
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- 
-  $Id: urlget.c,v 1.2 2007/09/20 18:10:51 mariuslj Exp $
-  
+
 */
 
 #ifdef HAVE_CONFIG_H
@@ -49,7 +47,7 @@ int urlget_buffer(const char *url, void *user_data,
 
   /* Initialise curl. */
   easyhandle = curl_easy_init();
-  
+
   if (easyhandle) {
     curl_easy_setopt(easyhandle, CURLOPT_URL, url);
     curl_easy_setopt(easyhandle, CURLOPT_ERRORBUFFER, errbuf);
@@ -60,11 +58,11 @@ int urlget_buffer(const char *url, void *user_data,
 
     if (resume_from)
       curl_easy_setopt(easyhandle, CURLOPT_RESUME_FROM_LARGE, (curl_off_t)resume_from);
-    
+
     success = curl_easy_perform(easyhandle);
-    
+
     curl_easy_cleanup(easyhandle);
-    
+
     if (success) {
       fprintf(stderr, "Error retrieving %s: %s\n", url, errbuf);
       ret = 1;
@@ -73,15 +71,6 @@ int urlget_buffer(const char *url, void *user_data,
     ret = 1;
 
   g_free(user_agent);
-  
+
   return ret;
 }
-
-/* 
-   Local Variables:
-   mode:c
-   indent-tabs-mode:nil
-   c-basic-offset:2
-   coding:utf-8
-   End:
-*/
