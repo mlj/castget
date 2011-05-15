@@ -19,7 +19,7 @@ aclocal.m4
 castget.1
 castgetrc.5
 po
-.deps
-.libs
-*.o
-castget
+src/.deps
+src/.libs
+src/*.o
+src/castget
