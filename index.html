@@ -1,180 +1,198 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-UK" lang="en-UK">
-  <head>
-    <title>castget</title>
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>castget</title>
+        <meta name="description" content="castget: A command-line podcast downloader">
+        <meta name="author" content="Marius L. Jøhndal">
+        <meta name="keywords" content="castget,podcast,command-line,command line,CLI,linux,podcast downloader,podcast fetcher,rss,enclosure,Marius Johndal,Marius L. Johndal,Marius Jøhndal,Marius L. Jøhndal">
+        <meta name="viewport" content="width=device-width">
 
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="Content-Style-Type" content="text/css" />
-    <meta http-equiv="Content-Language" content="en-GB" />
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen">
+        <link rel="stylesheet" href="css/print.css" type="text/css" media="print">
+        <script src="js/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+        <div id="content">
+          <h1>castget</h1>
 
-    <meta name="author" content="Marius L. Jøhndal" />
-    <meta name="keywords" content="castget, podcast, podcatcher, command-line, command line, linux, podcast downloader, podcast fetcher, rss, enclosure, Marius Johndal, Marius L. Johndal, Marius Jøhndal, Marius L. Jøhndal" />
-    <meta name="description" content="castget: A command-line podcast downloader" />
-    <link rel="stylesheet" href="screen.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="print.css" type="text/css" media="print" />
-  </head>
+          <h2>A command-line podcast downloader</h2>
 
-  <body>
-    <div id="content">
-      <h1>castget</h1>
+          <p>
+            <span class="application">castget</span> is a simple, command-line
+            based <acronym title="Really Simple Syndication or Rich Site
+              Summary">RSS</acronym> enclosure downloader. It is primarily intended
+            for automatic, unattended downloading of podcasts.
+          </p>
 
-      <h2>A command-line podcast downloader</h2>
+          <p>
+            <span class="application">castget</span> is written and maintained by Marius L. Jøhndal.
+          </p>
 
-      <p>
-        <span class="application">castget</span> is a simple, command-line
-        based <acronym title="Really Simple Syndication or Rich Site
-          Summary">RSS</acronym> enclosure downloader. It is primarily intended
-        for automatic, unattended downloading of podcasts.
-      </p>
+          <h3 id="news">News</h3>
 
-      <p>
-        <span class="application">castget</span> is written and maintained by Marius L. Jøhndal.
-      </p>
+          <ul>
+            <li><b>20 February 2010</b>: Version 1.1.0 is available. This
+            release adds support for regular expression filters on
+            enclosure file name and for overriding the location of the
+            configuration file.</li>
 
-      <h3 id="news">News</h3>
+            <li><b>14 November 2007</b>: Version 1.0.1 is available. This
+            release fixes a major issue that can lead to loss of the
+            entire download history for a channel. Starting with this
+            release, castget will also identify itself using the
+            User-Agent field in HTTP requests.</li>
+          </ul>
 
-      <ul>
-        <li><b>20 February 2010</b>: Version 1.1.0 is available. This
-        release adds support for regular expression filters on
-        enclosure file name and for overriding the location of the
-        configuration file.</li>
+          <h3 id="features">Features</h3>
 
-        <li><b>14 November 2007</b>: Version 1.0.1 is available. This
-        release fixes a major issue that can lead to loss of the
-        entire download history for a channel. Starting with this
-        release, castget will also identify itself using the
-        User-Agent field in HTTP requests.</li>
-      </ul>
+          <ul>
+            <li>Simple configuration.</li>
+            <li>Per-channel tagging of downloaded MP3 files using ID3v2.</li>
+            <li>Per-channel download directories.</li>
+            <li>Supports all RSS versions (to the extent <a
+              href="https://github.com/dpk/diveintomark/blob/master/archive-html/e78d1e572e8d73d45dbd7da9040d7e8b901fffea.html">this
+              is possible</a>) and <a href="http://www.rssboard.org/media-rss">Media
+              RSS</a>.</li>
+          </ul>
 
-      <h3 id="features">Features</h3>
+          <h3 id="download">Download</h3>
 
-      <ul>
-        <li>Simple configuration.</li>
-        <li>Per-channel tagging of downloaded MP3 files using ID3v2.</li>
-        <li>Per-channel download directories.</li>
-        <li>Supports all RSS versions (to the extent <a
-          href="https://github.com/dpk/diveintomark/blob/master/archive-html/e78d1e572e8d73d45dbd7da9040d7e8b901fffea.html">this
-          is possible</a>) and <a href="http://www.rssboard.org/media-rss">Media
-          RSS</a>.</li>
-      </ul>
+          <p>
+            The latest stable release
+            of <span class="application">castget</span>
+            is <a href="http://savannah.nongnu.org/download/castget/castget-1.0.1.tar.gz">castget-1.0.1.tar.gz</a>.
+            The latest unstable release is
+            is <a href="http://savannah.nongnu.org/download/castget/castget-1.1.0.tar.bz2">castget-1.1.0.tar.bz2</a>.
+          </p>
 
-      <h3 id="download">Download</h3>
+          <p>
+            Older releases can be found in the
+            <a href="http://savannah.nongnu.org/download/castget/">release directory on Savannah</a>.
+          </p>
 
-      <p>
-        The latest stable release
-        of <span class="application">castget</span>
-        is <a href="http://savannah.nongnu.org/download/castget/castget-1.0.1.tar.gz">castget-1.0.1.tar.gz</a>.
-        The latest unstable release is
-        is <a href="http://savannah.nongnu.org/download/castget/castget-1.1.0.tar.bz2">castget-1.1.0.tar.bz2</a>.
-      </p>
+          <p>
+            Pre-built binaries or packages may be available for some operating systems and distributions. The <span class="application">castget</span> maintainers are aware of the following:
+            <ul>
+              <li><a href="https://www.archlinux.org/packages/community/i686/castget/">Arch Linux</a></li>
+              <li><a href="http://pkgsrc.se/wip/castget">NetBSD port</a></li>
+              <li><a href="http://ports.openbsd.nu/net/castget">OpenBSD port</a></li>
+              <li><a href="http://www.nslu2-linux.org/wiki/Optware/Castget">ipkg for NSLU2-Linux</a></li>
+            </ul>
+          </p>
 
-      <p>
-        Older releases can be found in the
-        <a href="http://savannah.nongnu.org/download/castget/">release directory on Savannah</a>.
-      </p>
+          <h3 id="configuration">Configuration</h3>
 
-      <p>
-        Pre-built binaries or packages may be available for some operating systems and distributions. The <span class="application">castget</span> maintainers are aware of the following:
-        <ul>
-          <li><a href="https://www.archlinux.org/packages/community/i686/castget/">Arch Linux</a></li>
-          <li><a href="http://pkgsrc.se/wip/castget">NetBSD port</a></li>
-          <li><a href="http://ports.openbsd.nu/net/castget">OpenBSD port</a></li>
-          <li><a href="http://www.nslu2-linux.org/wiki/Optware/Castget">ipkg for NSLU2-Linux</a></li>
-        </ul>
-      </p>
+          <p>
+            <span class="application">castget</span> is configured using a
+            configuration file called <span class="filename">.castgetrc</span>
+            located in the user's home directory.
+          </p>
 
-      <h3 id="configuration">Configuration</h3>
+          <p>
+            The format of this configuration file is very simple: There
+            should be one section for each RSS feed that you want to
+            subscribe to, for example:
+          </p>
 
-      <p>
-        <span class="application">castget</span> is configured using a
-        configuration file called <span class="filename">.castgetrc</span>
-        located in the user's home directory.
-      </p>
-
-      <p>
-        The format of this configuration file is very simple: There
-        should be one section for each RSS feed that you want to
-        subscribe to, for example:
-      </p>
-
-      <pre>[df]
+          <pre>[df]
 url=http://downloads.bbc.co.uk/podcasts/radio4/fooc/rss.xml
 spool=/home/joe/podcasts</pre>
 
-      <p>
-  Each such section is referred to as a <span
-  class="definition">channel</span>. For each channel
-  you may adjust individual settings by adding key-value-pairs
-  like the the two <span class="variable">url</span> and <span
-  class="variable">spool</span> settings above.
-      </p>
+          <p>
+            Each such section is referred to as a <span
+            class="definition">channel</span>. For each channel
+            you may adjust individual settings by adding key-value-pairs
+            like the the two <span class="variable">url</span> and <span
+            class="variable">spool</span> settings above.
+          </p>
 
-      <p>
-  You may also add a global section specifying overridable
-  defaults that affect all channels:
-      </p>
+          <p>
+            You may also add a global section specifying overridable
+            defaults that affect all channels:
+          </p>
 
-      <pre>[*]
+          <pre>[*]
 id3contenttype=Podcast</pre>
 
-      <p>
-  The source distribution includes a sample configuration file
-  demonstrating all supported settings. Please see the manual
-  pages <span class="application">castget(1)</span> and <span
-  class="application">castgetrc(5)</span> for further
-  information.
-      </p>
+          <p>
+            The source distribution includes a sample configuration file
+            demonstrating all supported settings. Please see the manual
+            pages <span class="application">castget(1)</span> and <span
+            class="application">castgetrc(5)</span> for further
+            information.
+          </p>
 
-      <h3 id="screenshots">Screenshots</h3>
+          <h3 id="screenshots">Screenshots</h3>
 
-      <p>
-        The mandatory screenshot:
-      </p>
+          <p>
+            The mandatory screenshot:
+          </p>
 
-      <p>
-        <a href="screenshot.png"><img src="screenshot.png" alt="Screenshot of castget"
-          width="90%" /></a>
-      </p>
+          <p>
+            <a href="img/screenshot.png"><img src="img/screenshot.png" alt="Screenshot of castget"
+              width="90%" /></a>
+          </p>
 
-      <h3 id="binaries">Dependencies</h3>
+          <h3 id="binaries">Dependencies</h3>
 
-      <p>
-        To build <span class="application">castget</span> you will need
-      </p>
+          <p>
+            To build <span class="application">castget</span> you will need
+          </p>
 
-      <ul>
-        <li>glib2</li>
-        <li>libxml2</li>
-        <li>libcurl</li>
-        <li>id3lib (optional)</li>
-      </ul>
+          <ul>
+            <li>glib2</li>
+            <li>libxml2</li>
+            <li>libcurl</li>
+            <li>id3lib (optional)</li>
+          </ul>
 
-      <p>
-        <span class="application">castget</span> has only been tested
-        on Linux, but should work on other UNIX-like systems.
-      </p>
+          <p>
+            <span class="application">castget</span> has only been tested
+            on Linux, but should work on other UNIX-like systems.
+          </p>
 
-      <h3 id="bugs">Bugs</h3>
+          <h3 id="bugs">Bugs</h3>
 
-      <p>
-        Please report any bugs using the project's
-        <a href="https://savannah.nongnu.org/bugs/?func=additem&group=castget">bug tracker</a>
-        on Savannah.
-      </p>
+          <p>
+            Please report any bugs using the project's
+            <a href="https://savannah.nongnu.org/bugs/?func=additem&group=castget">bug tracker</a>
+            on Savannah.
+          </p>
 
-      <h3 id="development">Development</h3>
+          <h3 id="development">Development</h3>
 
-      <p>
-        Development of <span class="application">castget</span> takes
-        place on <a
-        href="http://savannah.nongnu.org/projects/castget/">Savannah</a>.
-      </p>
+          <p>
+            Development of <span class="application">castget</span> takes
+            place on <a
+            href="http://savannah.nongnu.org/projects/castget/">Savannah</a>.
+          </p>
 
-      <div id="footer">
-        <span class="application">castget</span> is available under the LGPL license.<br/>
-        Copyright (c) Marius L. Jøhndal, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013.
-      </div>
-    </div>
-  </body>
+          <div id="footer">
+            <span class="application">castget</span> is available under the LGPL license.<br/>
+            Copyright (c) Marius L. Jøhndal, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013.
+          </div>
+        </div>
+
+        <!-- script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script -->
+
+        <script>
+            var _gaq=[['_setAccount','UA-41787940-1'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src='//www.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
 </html>
