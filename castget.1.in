@@ -75,6 +75,10 @@ list the first available enclosure in all new channels
 \fBcastget -c -f "Freddies0[67]" frederator
 catch up with items that match the regular expression \fBFreddies0[67]\fB in the
 channel \fBfrederator\fR
+.SH HTTP PROXY
+To use a HTTP proxy, set the environment variable \fBhttp_proxy\fR, for example
+.PP
+  \fBhttp_proxy=http://your.proxy.server:port/ castget\fR
 .SH SEE ALSO
 \fBcastgetrc\fR(5)
 .SH BUGS
