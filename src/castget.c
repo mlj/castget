@@ -60,121 +60,99 @@ static int _id3_check_and_set(const gchar *filename,
 static int playlist_add(const gchar *playlist_file,
                         const gchar *media_file);
 
-static int verbose = 0;
-static int quiet = 0;
-static int new = 0;
-static int first_only = 0;
-static int resume = 0;
-static int debug = 0;
-static int show_progress_bar = 0;
+static gboolean verbose = FALSE;
+static gboolean quiet = FALSE;
+static gboolean first_only = FALSE;
+static gboolean resume = FALSE;
+static gboolean debug = FALSE;
+static gboolean show_progress_bar = FALSE;
+static gboolean show_version = FALSE;
+static gboolean show_debug_info = FALSE;
+static gboolean new_only = FALSE;
+static gboolean list = FALSE;
+static gboolean catchup = FALSE;
+static gchar *rcfile = NULL;
+static gchar *filter_regex = NULL;
 
 int main(int argc, char **argv)
 {
-  char *rcfile = NULL;
   enum op op = OP_UPDATE;
-  int c, i, len;
+  int i, len;
   int ret = 0;
   gchar **groups;
   gchar *channeldir;
   GKeyFile *kf;
   struct channel_configuration *defaults;
   enclosure_filter *filter = NULL;
+  GError *error = NULL;
+  GOptionContext *context;
 
-  for (;;) {
-    int option_index = 0;
+  static GOptionEntry options[] =
+  {
+    {"catchup",      'c', 0, G_OPTION_ARG_NONE,     &catchup,           "catch up with channels and exit"},
+    {"list",         'l', 0, G_OPTION_ARG_NONE,     &list,              "list available enclosures that have not yet been downloaded and exit"},
+    {"version",      'V', 0, G_OPTION_ARG_NONE,     &show_version,      "print version and exit"},
 
-    static struct option long_options[] = {
-      {"catchup", 0, 0, 'c'},
-      {"rcfile", 1, 0, 'C'},
-      {"filter", 1, 0, 'f'},
-      {"first-only", 0, 0, '1'},
-      {"help", 0, 0, 'h'},
-      {"list", 0, 0, 'l'},
-      {"new-only", 0, 0, 'n'},
-      {"progress-bar", 0, 0, 'p'},
-      {"resume", 0, 0, 'r'},
-      {"verbose", 0, 0, 'v'},
-      {"version", 0, 0, 'V'},
-      {"quiet", 0, 0, 'q'},
-      {"debug", 0, 0, 'd'},
-      {0, 0, 0, 0}
-    };
+    {"resume",       'r', 0, G_OPTION_ARG_NONE,     &resume,            "resume aborted downloads"},
+    {"rcfile",       'C', 0, G_OPTION_ARG_FILENAME, &rcfile,            "override the default configuration file name"},
 
-    c = getopt_long(argc, argv, "1cC:df:hlnpqrvV", long_options, &option_index);
+    {"debug",        'd', 0, G_OPTION_ARG_NONE,     &show_debug_info,   "print connection debug information"},
+    {"verbose",      'v', 0, G_OPTION_ARG_NONE,     &verbose,           "print detailed progress information"},
+    {"progress-bar", 'p', 0, G_OPTION_ARG_NONE,     &show_progress_bar, "print progress bar"},
 
-    if (c == -1)
-      break;
-
-    switch (c) {
-    case 'c':
-      op = OP_CATCHUP;
-      break;
-
-    case 'C':
-      rcfile = g_strdup(optarg);
-      break;
-
-    case 'd':
-      debug = 1;
-      break;
-
-    case 'f':
+    {"new-only",     'n', 0, G_OPTION_ARG_NONE,     &new_only,          "only process new channels"},
+    {"quiet",        'q', 0, G_OPTION_ARG_NONE,     &quiet,             "only print error messages"},
+    {"first-only",   '1', 0, G_OPTION_ARG_NONE,     &first_only,        "only process the most recent item from each channel"},
 #ifdef ENABLE_GREGEX
-      filter = enclosure_filter_new(optarg, FALSE);
-#else
-      fprintf(stderr, "Regular expression filters not supported by this build of castget.\nPlease rebuild with support for GRegex.\n");
-      return 1;
-#endif
-      break;
+    {"filter",       'f', 0, G_OPTION_ARG_STRING,   &filter_regex,      "only process items whose enclosure names match a regular expression"},
+#endif /* ENABLE_GREGEX */
 
-    case 'l':
-      op = OP_LIST;
-      break;
+    { NULL }
+  };
 
-    case 'n':
-      new = 1;
-      break;
+  context = g_option_context_new("CHANNELS");
+  g_option_context_add_main_entries(context, options, NULL);
 
-    case 'p':
-      show_progress_bar = 1;
-      break;
-
-    case 'r':
-      resume = 1;
-      break;
-
-    case '1':
-      first_only = 1;
-      break;
-
-    case 'v':
-      verbose = 1;
-      break;
-
-    case 'V':
-      version();
-      return 1;
-
-    case 'q':
-      quiet = 1;
-      break;
-
-    case 'h':
-    default:
-      usage();
-      return 1;
-    }
+  if (!g_option_context_parse(context, &argc, &argv, &error)) {
+    g_print("option parsing failed: %s\n", error->message);
+    exit(1);
   }
 
   /* Do some additional sanity checking of options. */
-  if (verbose && quiet) {
-    usage();
-    return 1;
+  if ((verbose && quiet) || (show_progress_bar && quiet)) {
+    g_print("option parsing failed: options are incompatible.\n");
+    exit(1);
   }
 
-  if (verbose && new) {
-    printf("Fetching new channels only...\n");
+  if ((catchup && list) || (catchup && show_version) || (list && show_version)) {
+    g_print("option parsing failed: --catchup, --list and --version options are incompatible.\n");
+    exit(1);
   }
+
+  /* Decide on the action to take */
+  if (show_version) {
+    version();
+    exit(0);
+  }
+
+  if (catchup)
+    op = OP_CATCHUP;
+
+  if (list)
+    op = OP_LIST;
+
+  if (filter_regex) {
+#ifdef ENABLE_GREGEX
+    filter = enclosure_filter_new(filter_regex, FALSE);
+    g_free(filter_regex);
+#else /* !ENABLE_GREGEX */
+    g_print("option parsing failed: filters not supported by this build.\n");
+    exit(1);
+#endif /* ENABLE_GREGEX */
+  }
+
+  if (verbose && new_only)
+    g_print("Fetching new channels only...\n");
 
   LIBXML_TEST_VERSION;
 
@@ -244,33 +222,10 @@ int main(int argc, char **argv)
   return ret;
 }
 
-static void usage(void)
-{
-  g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [-d] [-p] [-r] [-1] [-n] [identifier(s)]\n\n");
-  g_printf("  --catchup      -c    catch up with channels and exit.\n");
-  g_printf("  --list         -l    list available enclosures that have not yet been\n                       downloaded, and exit.\n");
-  g_printf("  --help         -h    display help and exit.\n");
-  g_printf("  --version      -V    output version information and exit.\n");
-  g_printf("\n");
-  g_printf("  --new-only     -n    restrict operation to new channels only.\n");
-  g_printf("  --first-only   -1    restrict operation to the most recent item in each channel\n                       only.\n");
-  g_printf("  --filter       -f    restrict operation to items whose enclosures have names\n                       matching the regular expression pattern.\n");
-  g_printf("\n");
-  g_printf("  --resume       -r    resume aborted downloads.\n");
-  g_printf("  --quiet        -q    do not print anything except error messages.\n");
-  g_printf("  --verbose      -v    print detailed progress information.\n");
-  g_printf("  --debug        -d    print (lots of) connection debug information.\n");
-  g_printf("  --progress-bar -p    print a progress bar when downloading enclosures.\n");
-  g_printf("  --rcfile       -C    override the default filename for the configuration file.\n");
-  g_printf("\n");
-  g_printf("The identifiers identifies the channels affected by the selected operation.\n");
-  g_printf("If no identifier is supplied all channels are affect.\n");
-}
-
 static void version(void)
 {
   g_printf("%s %s\n", PACKAGE, VERSION);
-  g_printf("Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
+  g_printf("Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
 }
 
 static void update_callback(void *user_data, channel_action action,
@@ -455,7 +410,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   channel_file = g_build_filename(channel_directory, channel_filename, NULL);
   g_free(channel_filename);
 
-  if (new && access(channel_file, F_OK) == 0) {
+  if (new_only && access(channel_file, F_OK) == 0) {
     /* If we are only fetching new channels, skip the channel if there is
        already a channel file present. */
 
