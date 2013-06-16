@@ -8,9 +8,8 @@
     <meta http-equiv="Content-Style-Type" content="text/css" />
     <meta http-equiv="Content-Language" content="en-GB" />
 
-    <meta name="author" content="Marius L. J&oslash;hndal" />
-    <meta name="keywords" content="castget, podcast, podcatcher, command-line, command line, linux, podcast downloader, podcast fetcher, rss, enclosure" />
-    <meta name="verify-v1" content="+eUy+Guu6oSDiTgeS4c59sf8ws68UcpRPWwQOy8Vf5I=" />
+    <meta name="author" content="Marius L. Jøhndal" />
+    <meta name="keywords" content="castget, podcast, podcatcher, command-line, command line, linux, podcast downloader, podcast fetcher, rss, enclosure, Marius Johndal, Marius L. Johndal, Marius Jøhndal, Marius L. Jøhndal" />
     <meta name="description" content="castget: A command-line podcast downloader" />
     <link rel="stylesheet" href="screen.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="print.css" type="text/css" media="print" />
@@ -23,15 +22,14 @@
       <h2>A command-line podcast downloader</h2>
 
       <p>
-	<span class="application">castget</span> is a simple,
-	command-line based <acronym title="Really Simple Syndication or Rich Site Summary">RSS</acronym> enclosure downloader. It
-	is primarily intended for automatic, unattended downloading of
-	podcasts.
+        <span class="application">castget</span> is a simple, command-line
+        based <acronym title="Really Simple Syndication or Rich Site
+          Summary">RSS</acronym> enclosure downloader. It is primarily intended
+        for automatic, unattended downloading of podcasts.
       </p>
 
       <p>
-	<span class="application">castget</span> is
-	maintained by Marius L. Jøhndal and Jick Nan.
+        <span class="application">castget</span> is written and maintained by Marius L. Jøhndal.
       </p>
 
       <h3 id="news">News</h3>
@@ -52,117 +50,109 @@
       <h3 id="features">Features</h3>
 
       <ul>
-	<li>Simple configuration.</li>
-	<li>Per-channel tagging of downloaded MP3 files using ID3v2.</li>
-	<li>Per-channel download directories.</li>
-	<li>Supports all RSS versions (to the extent <a
-	href="http://diveintomark.org/archives/2004/02/04/incompatible-rss">this
-	is possible</a>) and <a
-	href="http://search.yahoo.com/mrss">Media RSS</a>.</li>
+        <li>Simple configuration.</li>
+        <li>Per-channel tagging of downloaded MP3 files using ID3v2.</li>
+        <li>Per-channel download directories.</li>
+        <li>Supports all RSS versions (to the extent <a
+          href="https://github.com/dpk/diveintomark/blob/master/archive-html/e78d1e572e8d73d45dbd7da9040d7e8b901fffea.html">this
+          is possible</a>) and <a href="http://www.rssboard.org/media-rss">Media
+          RSS</a>.</li>
       </ul>
 
       <h3 id="download">Download</h3>
 
       <p>
-	The latest stable release
-	of <span class="application">castget</span>
+        The latest stable release
+        of <span class="application">castget</span>
         is <a href="http://savannah.nongnu.org/download/castget/castget-1.0.1.tar.gz">castget-1.0.1.tar.gz</a>.
         The latest unstable release is
         is <a href="http://savannah.nongnu.org/download/castget/castget-1.1.0.tar.bz2">castget-1.1.0.tar.bz2</a>.
       </p>
 
       <p>
-	You can
-	also <a href="http://savannah.nongnu.org/download/castget/">browse
-	the release directory</a> for previous releases.
+        Older releases can be found in the
+        <a href="http://savannah.nongnu.org/download/castget/">release directory on Savannah</a>.
       </p>
 
       <p>
         Pre-built binaries or packages may be available for some operating systems and distributions. The <span class="application">castget</span> maintainers are aware of the following:
         <ul>
+          <li><a href="https://www.archlinux.org/packages/community/i686/castget/">Arch Linux</a></li>
           <li><a href="http://pkgsrc.se/wip/castget">NetBSD port</a></li>
-          <li><a href="http://ports.openbsd.nu/net/castget">OpenBSD port</a></li> 
+          <li><a href="http://ports.openbsd.nu/net/castget">OpenBSD port</a></li>
+          <li><a href="http://www.nslu2-linux.org/wiki/Optware/Castget">ipkg for NSLU2-Linux</a></li>
         </ul>
       </p>
 
       <h3 id="configuration">Configuration</h3>
 
       <p>
-	<span class="application">castget</span> is configured using a
-	configuration file called <span
-	class="filename">.castgetrc</span> located in the user's home
-	directory.
+        <span class="application">castget</span> is configured using a
+        configuration file called <span class="filename">.castgetrc</span>
+        located in the user's home directory.
       </p>
 
       <p>
-	The format of this configuration file is very simple: There
-	should be one section for each RSS feed that you want to
-	subscribe to, for example:
+        The format of this configuration file is very simple: There
+        should be one section for each RSS feed that you want to
+        subscribe to, for example:
       </p>
 
       <pre>[df]
-url=http://digitalflotsam.org/rss.xml
+url=http://downloads.bbc.co.uk/podcasts/radio4/fooc/rss.xml
 spool=/home/joe/podcasts</pre>
 
       <p>
-	Each such section is referred to as a <span
-	class="definition">channel</span>. For each channel
-	you may adjust individual settings by adding key-value-pairs
-	like the the two <span class="variable">url</span> and <span
-	class="variable">spool</span> settings above.
+  Each such section is referred to as a <span
+  class="definition">channel</span>. For each channel
+  you may adjust individual settings by adding key-value-pairs
+  like the the two <span class="variable">url</span> and <span
+  class="variable">spool</span> settings above.
       </p>
 
       <p>
-	You may also add a global section specifying overridable
-	defaults that affect all channels:
+  You may also add a global section specifying overridable
+  defaults that affect all channels:
       </p>
 
       <pre>[*]
 id3contenttype=Podcast</pre>
 
       <p>
-	The source distribution includes a sample configuration file
-	demonstrating all supported settings. Please see the manual
-	pages <span class="application">castget(1)</span> and <span
-	class="application">castgetrc(5)</span> for further
-	information.
+  The source distribution includes a sample configuration file
+  demonstrating all supported settings. Please see the manual
+  pages <span class="application">castget(1)</span> and <span
+  class="application">castgetrc(5)</span> for further
+  information.
       </p>
 
       <h3 id="screenshots">Screenshots</h3>
 
       <p>
-	The mandatory screenshot:
+        The mandatory screenshot:
       </p>
 
       <p>
-	<a href="screenshot.png"><img src="screenshot.png" alt="Screenshot of castget"
-	     width="90%" /></a>
+        <a href="screenshot.png"><img src="screenshot.png" alt="Screenshot of castget"
+          width="90%" /></a>
       </p>
 
       <h3 id="binaries">Dependencies</h3>
 
       <p>
-	To build <span class="application">castget</span> you will
-	need
+        To build <span class="application">castget</span> you will need
       </p>
 
       <ul>
-	<li>glib2</li>
-	<li>libxml2</li>
-	<li>libcurl</li>
+        <li>glib2</li>
+        <li>libxml2</li>
+        <li>libcurl</li>
+        <li>id3lib (optional)</li>
       </ul>
 
       <p>
-	and optionally
-      </p>
-
-      <ul>
-	<li>id3lib</li>
-      </ul>
-
-      <p>
-	<span class="application">castget</span> has only been tested
-	on Linux, but should work on other UNIX-like systems.
+        <span class="application">castget</span> has only been tested
+        on Linux, but should work on other UNIX-like systems.
       </p>
 
       <h3 id="bugs">Bugs</h3>
@@ -176,13 +166,14 @@ id3contenttype=Podcast</pre>
       <h3 id="development">Development</h3>
 
       <p>
-	Development of <span class="application">castget</span> takes
-	place on <a
-	href="http://savannah.nongnu.org/projects/castget/">Savannah</a>.
+        Development of <span class="application">castget</span> takes
+        place on <a
+        href="http://savannah.nongnu.org/projects/castget/">Savannah</a>.
       </p>
 
       <div id="footer">
-	Copyright (c) Marius L. Jøhndal, 2005, 2006, 2007, 2008.
+        <span class="application">castget</span> is available under the LGPL license.<br/>
+        Copyright (c) Marius L. Jøhndal, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013.
       </div>
     </div>
   </body>
