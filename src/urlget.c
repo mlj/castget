@@ -26,15 +26,16 @@
 #include <glib.h>
 #include <curl/curl.h>
 #include "urlget.h"
+#include "progress.h"
 
 int urlget_file(const char *url, FILE *f, int debug)
 {
-  return urlget_buffer(url, (void *)f, NULL, 0, debug);
+  return urlget_buffer(url, (void *)f, NULL, 0, debug, NULL);
 }
 
 int urlget_buffer(const char *url, void *user_data,
                   size_t (*write_buffer)(void *buffer, size_t size, size_t nmemb, void *user_data),
-                  long resume_from, int debug)
+                  long resume_from, int debug, progress_bar *pb)
 {
   CURL *easyhandle;
   CURLcode success;
@@ -55,6 +56,13 @@ int urlget_buffer(const char *url, void *user_data,
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, user_data);
     curl_easy_setopt(easyhandle, CURLOPT_FOLLOWLOCATION, 1);
     curl_easy_setopt(easyhandle, CURLOPT_USERAGENT, user_agent);
+
+    if (pb) {
+      curl_easy_setopt(easyhandle, CURLOPT_NOPROGRESS, 0);
+      curl_easy_setopt(easyhandle, CURLOPT_PROGRESSFUNCTION, progress_bar_cb);
+      curl_easy_setopt(easyhandle, CURLOPT_PROGRESSDATA, pb);
+    } else
+      curl_easy_setopt(easyhandle, CURLOPT_NOPROGRESS, 1);
 
     if (resume_from)
       curl_easy_setopt(easyhandle, CURLOPT_RESUME_FROM_LARGE, (curl_off_t)resume_from);

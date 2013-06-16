@@ -66,6 +66,7 @@ static int new = 0;
 static int first_only = 0;
 static int resume = 0;
 static int debug = 0;
+static int show_progress_bar = 0;
 
 int main(int argc, char **argv)
 {
@@ -90,6 +91,7 @@ int main(int argc, char **argv)
       {"help", 0, 0, 'h'},
       {"list", 0, 0, 'l'},
       {"new-only", 0, 0, 'n'},
+      {"progress-bar", 0, 0, 'p'},
       {"resume", 0, 0, 'r'},
       {"verbose", 0, 0, 'v'},
       {"version", 0, 0, 'V'},
@@ -98,7 +100,7 @@ int main(int argc, char **argv)
       {0, 0, 0, 0}
     };
 
-    c = getopt_long(argc, argv, "1cC:df:hlnqrvV", long_options, &option_index);
+    c = getopt_long(argc, argv, "1cC:df:hlnpqrvV", long_options, &option_index);
 
     if (c == -1)
       break;
@@ -131,6 +133,10 @@ int main(int argc, char **argv)
 
     case 'n':
       new = 1;
+      break;
+
+    case 'p':
+      show_progress_bar = 1;
       break;
 
     case 'r':
@@ -240,21 +246,22 @@ int main(int argc, char **argv)
 
 static void usage(void)
 {
-  g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [-d] [-r] [-1] [-n] [identifier(s)]\n\n");
-  g_printf("  --catchup     -c    catch up with channels and exit.\n");
-  g_printf("  --list        -l    list available enclosures that have not yet been\n                      downloaded, and exit.\n");
-  g_printf("  --help        -h    display help and exit.\n");
-  g_printf("  --version     -V    output version information and exit.\n");
+  g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [-d] [-p] [-r] [-1] [-n] [identifier(s)]\n\n");
+  g_printf("  --catchup      -c    catch up with channels and exit.\n");
+  g_printf("  --list         -l    list available enclosures that have not yet been\n                       downloaded, and exit.\n");
+  g_printf("  --help         -h    display help and exit.\n");
+  g_printf("  --version      -V    output version information and exit.\n");
   g_printf("\n");
-  g_printf("  --new-only    -n    restrict operation to new channels only.\n");
-  g_printf("  --first-only  -1    restrict operation to the most recent item in each channel\n                      only.\n");
-  g_printf("  --filter      -f    restrict operation to items whose enclosures have names\n                      matching the regular expression pattern.\n");
+  g_printf("  --new-only     -n    restrict operation to new channels only.\n");
+  g_printf("  --first-only   -1    restrict operation to the most recent item in each channel\n                       only.\n");
+  g_printf("  --filter       -f    restrict operation to items whose enclosures have names\n                       matching the regular expression pattern.\n");
   g_printf("\n");
-  g_printf("  --resume      -r    resume aborted downloads.\n");
-  g_printf("  --quiet       -q    do not print anything except error messages.\n");
-  g_printf("  --verbose     -v    print detailed progress information.\n");
-  g_printf("  --debug       -d    print (lots of) connection debug information.\n");
-  g_printf("  --rcfile      -C    override the default filename for the configuration file.\n");
+  g_printf("  --resume       -r    resume aborted downloads.\n");
+  g_printf("  --quiet        -q    do not print anything except error messages.\n");
+  g_printf("  --verbose      -v    print detailed progress information.\n");
+  g_printf("  --debug        -d    print (lots of) connection debug information.\n");
+  g_printf("  --progress-bar -p    print a progress bar when downloading enclosures.\n");
+  g_printf("  --rcfile       -C    override the default filename for the configuration file.\n");
   g_printf("\n");
   g_printf("The identifiers identifies the channels affected by the selected operation.\n");
   g_printf("If no identifier is supplied all channels are affect.\n");
@@ -479,17 +486,17 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   switch (op) {
   case OP_UPDATE:
     channel_update(c, channel_configuration, update_callback, 0, 0,
-                   first_only, resume, filter, debug);
+                   first_only, resume, filter, debug, show_progress_bar);
     break;
 
   case OP_CATCHUP:
     channel_update(c, channel_configuration, catchup_callback, 1, 0,
-                   first_only, 0, filter, debug);
+                   first_only, 0, filter, debug, show_progress_bar);
     break;
 
   case OP_LIST:
     channel_update(c, channel_configuration, list_callback, 1, 1, first_only,
-                   0, filter, debug);
+                   0, filter, debug, show_progress_bar);
     break;
   }
 

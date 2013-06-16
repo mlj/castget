@@ -1,5 +1,7 @@
 2013-06-16  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
+	* src/*.c, src/*.h: Added optional download progress bar.
+
 	* src/*.c, src/*.h: Added debug option for connection debugging.
 
 	* castget.1.in: Added example of HTTP proxy configuration.

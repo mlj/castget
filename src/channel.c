@@ -31,6 +31,7 @@
 #include "channel.h"
 #include "rss.h"
 #include "utils.h"
+#include "progress.h"
 
 static int _enclosure_pattern_match(enclosure_filter *filter,
                                     const enclosure *enclosure);
@@ -175,13 +176,14 @@ static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb, int 
 
 static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
                         void *user_data, channel_callback cb, int resume,
-                        int debug)
+                        int debug, int show_progress_bar)
 {
   int download_failed;
   long resume_from = 0;
   gchar *enclosure_full_filename;
   FILE *enclosure_file;
   struct stat fileinfo;
+  progress_bar *pb;
 
   /* Check that the spool directory exists. */
   if (!g_file_test(c->spool_directory, G_FILE_TEST_IS_DIR)) {
@@ -217,12 +219,20 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
   if (cb)
     cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, enclosure_full_filename);
 
-  if (urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb, resume_from, debug)) {
+  if (show_progress_bar)
+    pb = progress_bar_new(resume_from);
+  else
+    pb = NULL;
+
+  if (urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb, resume_from, debug, pb)) {
     g_fprintf(stderr, "Error downloading enclosure from %s.\n", item->enclosure->url);
 
     download_failed = 1;
   } else
     download_failed = 0;
+
+  if (pb)
+    progress_bar_free(pb);
 
   fclose(enclosure_file);
 
@@ -248,7 +258,8 @@ static int _do_catchup(channel *c, channel_info *channel_info, rss_item *item,
 
 int channel_update(channel *c, void *user_data, channel_callback cb,
                    int no_download, int no_mark_read, int first_only,
-                   int resume, enclosure_filter *filter, int debug)
+                   int resume, enclosure_filter *filter, int debug,
+                   int show_progress_bar)
 {
   int i, download_failed;
   rss_file *f;
@@ -271,7 +282,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
           if (no_download)
             download_failed = _do_catchup(c, &(f->channel_info), item, user_data, cb);
           else
-            download_failed = _do_download(c, &(f->channel_info), item, user_data, cb, resume, debug);
+            download_failed = _do_download(c, &(f->channel_info), item, user_data, cb, resume, debug, show_progress_bar);
 
           if (download_failed)
             break;

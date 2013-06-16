@@ -56,6 +56,9 @@ print detailed progress information
 \fB\-d\fR, \fB\-\-debug\fR
 print (lots of) connection debug information
 .TP
+\fB\-p\fR, \fB\-\-progress\-bar\fR
+print a progress bar when downloading enclosures
+.TP
 \fB\-C\fR filename, \fB\-\-rcfile\fR=filename
 override the default filename for the configuration file
 .SH EXAMPLES

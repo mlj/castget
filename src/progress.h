@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+  Copyright (C) 2005, 2007, 2011 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -17,14 +17,18 @@
 
 */
 
-#ifndef URLGET_H
-#define URLGET_H
+#ifndef PROGRESS_H
+#define PROGRESS_H
 
-#include "progress.h"
+typedef struct _progress_bar {
+  FILE *f;
+  long resume_from;
+  int width;
+  long previous_block;
+} progress_bar;
 
-int urlget_file(const char *url, FILE *f, int debug);
-int urlget_buffer(const char *url, void *user_data,
-                  size_t (*write_buffer)(void *buffer, size_t size, size_t nmemb, void *user_data),
-                  long resume_from, int debug, progress_bar *pb);
+progress_bar *progress_bar_new(long resume_from);
+void progress_bar_end(progress_bar *pb);
+int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow);
 
-#endif /* URLGET_H */
+#endif /* PROGRESS_H */
