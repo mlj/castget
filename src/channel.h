@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2007, 2011 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -65,7 +65,7 @@ channel *channel_new(const char *url, const char *channel_file,
 void channel_free(channel *c);
 int channel_update(channel *c, void *user_data, channel_callback cb, int no_download,
                    int no_mark_read, int first_only, int resume,
-                   enclosure_filter *filter);
+                   enclosure_filter *filter, int debug);
 
 enclosure_filter *enclosure_filter_new(const gchar *pattern,
                                        gboolean caseless);

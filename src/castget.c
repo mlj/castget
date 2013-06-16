@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -65,6 +65,7 @@ static int quiet = 0;
 static int new = 0;
 static int first_only = 0;
 static int resume = 0;
+static int debug = 0;
 
 int main(int argc, char **argv)
 {
@@ -93,10 +94,11 @@ int main(int argc, char **argv)
       {"verbose", 0, 0, 'v'},
       {"version", 0, 0, 'V'},
       {"quiet", 0, 0, 'q'},
+      {"debug", 0, 0, 'd'},
       {0, 0, 0, 0}
     };
 
-    c = getopt_long(argc, argv, "1cC:f:hlnqrvV", long_options, &option_index);
+    c = getopt_long(argc, argv, "1cC:df:hlnqrvV", long_options, &option_index);
 
     if (c == -1)
       break;
@@ -108,6 +110,10 @@ int main(int argc, char **argv)
 
     case 'C':
       rcfile = g_strdup(optarg);
+      break;
+
+    case 'd':
+      debug = 1;
       break;
 
     case 'f':
@@ -234,7 +240,7 @@ int main(int argc, char **argv)
 
 static void usage(void)
 {
-  g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [-r] [-1] [-n] [identifier(s)]\n\n");
+  g_printf("Usage: castget [-c|-l|-V|-h] [-v|-q] [-d] [-r] [-1] [-n] [identifier(s)]\n\n");
   g_printf("  --catchup     -c    catch up with channels and exit.\n");
   g_printf("  --list        -l    list available enclosures that have not yet been\n                      downloaded, and exit.\n");
   g_printf("  --help        -h    display help and exit.\n");
@@ -247,6 +253,7 @@ static void usage(void)
   g_printf("  --resume      -r    resume aborted downloads.\n");
   g_printf("  --quiet       -q    do not print anything except error messages.\n");
   g_printf("  --verbose     -v    print detailed progress information.\n");
+  g_printf("  --debug       -d    print (lots of) connection debug information.\n");
   g_printf("  --rcfile      -C    override the default filename for the configuration file.\n");
   g_printf("\n");
   g_printf("The identifiers identifies the channels affected by the selected operation.\n");
@@ -472,17 +479,17 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   switch (op) {
   case OP_UPDATE:
     channel_update(c, channel_configuration, update_callback, 0, 0,
-                   first_only, resume, filter);
+                   first_only, resume, filter, debug);
     break;
 
   case OP_CATCHUP:
     channel_update(c, channel_configuration, catchup_callback, 1, 0,
-                   first_only, 0, filter);
+                   first_only, 0, filter, debug);
     break;
 
   case OP_LIST:
     channel_update(c, channel_configuration, list_callback, 1, 1, first_only,
-                   0, filter);
+                   0, filter, debug);
     break;
   }
 

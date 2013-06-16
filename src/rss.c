@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2011 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -247,19 +247,19 @@ rss_file *rss_open_file(const char *filename)
   return f;
 }
 
-static int _rss_open_url_cb(FILE *f, gpointer user_data)
+static int _rss_open_url_cb(FILE *f, gpointer user_data, int debug)
 {
   gchar *url = (gchar *)user_data;
 
-  return urlget_file(url, f);
+  return urlget_file(url, f, debug);
 }
 
-rss_file *rss_open_url(const char *url)
+rss_file *rss_open_url(const char *url, int debug)
 {
   rss_file *f;
   gchar *rss_filename;
 
-  if (write_by_temporary_file(NULL, _rss_open_url_cb, (gpointer)url, &rss_filename))
+  if (write_by_temporary_file(NULL, _rss_open_url_cb, (gpointer)url, &rss_filename, debug))
     return NULL;
 
   f = rss_open_file(rss_filename);

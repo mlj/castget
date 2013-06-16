@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2011 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -116,7 +116,7 @@ static void _cast_channel_save_downloaded_enclosure(gpointer key, gpointer value
   g_free(escaped_key);
 }
 
-static int _cast_channel_save_channel(FILE *f, gpointer user_data)
+static int _cast_channel_save_channel(FILE *f, gpointer user_data, int debug)
 {
   channel *c = (channel *)user_data;
 
@@ -134,9 +134,9 @@ static int _cast_channel_save_channel(FILE *f, gpointer user_data)
   return 0;
 }
 
-static void _cast_channel_save(channel *c)
+static void _cast_channel_save(channel *c, int debug)
 {
-  write_by_temporary_file(c->channel_filename, _cast_channel_save_channel, c, NULL);
+  write_by_temporary_file(c->channel_filename, _cast_channel_save_channel, c, NULL, debug);
 }
 
 void channel_free(channel *c)
@@ -155,7 +155,7 @@ static size_t _enclosure_urlget_cb(void *buffer, size_t size, size_t nmemb, void
   return fwrite(buffer, size, nmemb, f);
 }
 
-static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb)
+static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb, int debug)
 {
   rss_file *f;
 
@@ -163,7 +163,7 @@ static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb)
     cb(user_data, CCA_RSS_DOWNLOAD_START, NULL, NULL, NULL);
 
   if (!strncmp("http://", c->url, strlen("http://")))
-    f = rss_open_url(c->url);
+    f = rss_open_url(c->url, debug);
   else
     f = rss_open_file(c->url);
 
@@ -174,7 +174,8 @@ static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb)
 }
 
 static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
-                        void *user_data, channel_callback cb, int resume)
+                        void *user_data, channel_callback cb, int resume,
+                        int debug)
 {
   int download_failed;
   long resume_from = 0;
@@ -216,7 +217,7 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
   if (cb)
     cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, enclosure_full_filename);
 
-  if (urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb, resume_from)) {
+  if (urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb, resume_from, debug)) {
     g_fprintf(stderr, "Error downloading enclosure from %s.\n", item->enclosure->url);
 
     download_failed = 1;
@@ -247,13 +248,13 @@ static int _do_catchup(channel *c, channel_info *channel_info, rss_item *item,
 
 int channel_update(channel *c, void *user_data, channel_callback cb,
                    int no_download, int no_mark_read, int first_only,
-                   int resume, enclosure_filter *filter)
+                   int resume, enclosure_filter *filter, int debug)
 {
   int i, download_failed;
   rss_file *f;
 
   /* Retrieve the RSS file. */
-  f = _get_rss(c, user_data, cb);
+  f = _get_rss(c, user_data, cb, debug);
 
   if (!f)
     return 1;
@@ -270,7 +271,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
           if (no_download)
             download_failed = _do_catchup(c, &(f->channel_info), item, user_data, cb);
           else
-            download_failed = _do_download(c, &(f->channel_info), item, user_data, cb, resume);
+            download_failed = _do_download(c, &(f->channel_info), item, user_data, cb, resume, debug);
 
           if (download_failed)
             break;
@@ -281,7 +282,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
             g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url,
                                 (gpointer)get_rfc822_time());
 
-            _cast_channel_save(c);
+            _cast_channel_save(c, debug);
           }
 
           /* If we have been instructed to deal only with the first
@@ -300,7 +301,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
 
     c->rss_last_fetched = g_strdup(f->fetched_time);
 
-    _cast_channel_save(c);
+    _cast_channel_save(c, debug);
   }
 
   rss_close(f);

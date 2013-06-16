@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2007, 2011 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -27,14 +27,14 @@
 #include <curl/curl.h>
 #include "urlget.h"
 
-int urlget_file(const char *url, FILE *f)
+int urlget_file(const char *url, FILE *f, int debug)
 {
-  return urlget_buffer(url, (void *)f, NULL, 0);
+  return urlget_buffer(url, (void *)f, NULL, 0, debug);
 }
 
 int urlget_buffer(const char *url, void *user_data,
                   size_t (*write_buffer)(void *buffer, size_t size, size_t nmemb, void *user_data),
-                  long resume_from)
+                  long resume_from, int debug)
 {
   CURL *easyhandle;
   CURLcode success;
@@ -58,6 +58,8 @@ int urlget_buffer(const char *url, void *user_data,
 
     if (resume_from)
       curl_easy_setopt(easyhandle, CURLOPT_RESUME_FROM_LARGE, (curl_off_t)resume_from);
+
+    curl_easy_setopt(easyhandle, CURLOPT_VERBOSE, debug);
 
     success = curl_easy_perform(easyhandle);
 

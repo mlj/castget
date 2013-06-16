@@ -53,6 +53,9 @@ do not print anything except error messages
 \fB\-v\fR, \fB\-\-verbose\fR
 print detailed progress information
 .TP
+\fB\-d\fR, \fB\-\-debug\fR
+print (lots of) connection debug information
+.TP
 \fB\-C\fR filename, \fB\-\-rcfile\fR=filename
 override the default filename for the configuration file
 .SH EXAMPLES

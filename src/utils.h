@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2007, 2011 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -24,9 +24,9 @@
 #include <glib.h>
 
 int write_by_temporary_file(const gchar *filename,
-                            int(*writer)(FILE *f, gpointer user_data),
-                            gpointer user_data, gchar
-                            **used_filename);
+                            int(*writer)(FILE *f, gpointer user_data, int debug),
+                            gpointer user_data, gchar **used_filename,
+                            int debug);
 gchar *get_rfc822_time(void);
 
 #endif /* UTILS_H */

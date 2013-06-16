@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2007, 2011 Marius L. Jøhndal
+  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. JÃ¸hndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ typedef struct _rss_file {
 } rss_file;
 
 rss_file *rss_open_file(const char *filename);
-rss_file *rss_open_url(const char *url);
+rss_file *rss_open_url(const char *url, int debug);
 void rss_close(rss_file *f);
 
 #endif /* RSS_H */
