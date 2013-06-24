@@ -102,5 +102,6 @@ progress_bar *progress_bar_new(long resume_from)
 
 void progress_bar_free(progress_bar *pb)
 {
+  fprintf(pb->f, "\n"); /* Make sure that we will start output on a new line. */
   g_free(pb);
 }
