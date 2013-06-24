@@ -8,7 +8,7 @@ body {
 
 h1 {
   margin: 0;
-  color: #e06000;
+  color: #f57600;
   font-size: 4em;
   letter-spacing: -4px;
   text-align: center;
@@ -26,7 +26,7 @@ h2 {
 
 h3 {
   margin: 10px 0 10px 0;
-  color: #e06000;
+  color: #f57600;
   font-weight: normal;
   font-size: 2em;
 }
@@ -36,7 +36,7 @@ p {
 }
 
 a {
-  color: #e06000;
+  color: #f57600;
   font-weight: bold;
   text-decoration: none;
 }
