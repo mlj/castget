@@ -210,9 +210,8 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
   enclosure_file = fopen(enclosure_full_filename, resume_from ? "ab" : "wb");
 
   if (!enclosure_file) {
-    g_free(enclosure_full_filename);
-
     g_fprintf(stderr, "Error opening enclosure file %s.\n", enclosure_full_filename);
+    g_free(enclosure_full_filename);
     return 1;
   }
 
