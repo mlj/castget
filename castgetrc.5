@@ -79,6 +79,10 @@ add or overwrite the `year\' (TYER) ID3v2 tag in enclosures that support this\.
 \fBid3comment\fR
 add or overwrite the `comment\' (COMM) ID3v2 tag in enclosures that support this\.
 .
+.TP
+\fBfilename\fR
+save downloads using the given filename pattern instead of deriving it from the URL of the enclosure\. See FILENAME PATTERNS\.
+.
 .SH "GLOBAL CONFIGURATION"
 A channel definition with the channel identifier \fB*\fR will define a global configuration affecting all channels\. The global configuration
 .
@@ -98,6 +102,26 @@ for example, is equivalent to adding the key\-value pair \fBid3contenttype=Podca
 .
 .P
 Key\-value pairs in channel definitions override the global configuration\.
+.
+.SH "FILENAME PATTERNS"
+Filename patterns can contain patterns on the form \fB%(parameter)\fR\. The following patterns are supported:
+.
+.IP "\(bu" 4
+\fB%(date)\fR: date of the item in the RSS feed (on the format DD\-MM\-YY)
+.
+.IP "\(bu" 4
+\fB%(title)\fR: title of the item in the RSS feed
+.
+.IP "" 0
+.
+.P
+Anything that is not a pattern is as a literal that will be reproduced verbatim (subject to some sanity checking) in the filename\.
+.
+.P
+Patterns are expanded once for each enclosure and can therefore be used to generate filenames that are unique to each download\.
+.
+.P
+The complete pathname is determined by concatenating the channel\'s spool directory with the filename\.
 .
 .SH "CHANNEL REMOVAL"
 If a channel configuration is removed, the channel status remains the same so that if the channel is subsequently re\-added, any enclosures marked as already downloaded will not be downloaded again\.

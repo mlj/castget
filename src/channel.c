@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+  Copyright (C) 2005-2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -32,6 +32,7 @@
 #include "rss.h"
 #include "utils.h"
 #include "progress.h"
+#include "filename_pattern.h"
 
 static int _enclosure_pattern_match(enclosure_filter *filter,
                                     const enclosure *enclosure);
@@ -55,7 +56,9 @@ static void _enclosure_iterator(const void *user_data, int i, const xmlNode *nod
 }
 
 channel *channel_new(const char *url, const char *channel_file,
-                     const char *spool_directory, int resume)
+                     const char *spool_directory,
+                     const char *filename_pattern,
+                     int resume)
 {
   channel *c;
   xmlDocPtr doc;
@@ -66,6 +69,7 @@ channel *channel_new(const char *url, const char *channel_file,
   c->url = g_strdup(url);
   c->channel_filename = g_strdup(channel_file);
   c->spool_directory = g_strdup(spool_directory);
+  c->filename_pattern = g_strdup(filename_pattern);
   //  c->resume = resume;
   c->rss_last_fetched = NULL;
   c->downloaded_enclosures = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, g_free);
@@ -146,6 +150,7 @@ void channel_free(channel *c)
   g_free(c->spool_directory);
   g_free(c->channel_filename);
   g_free(c->url);
+  g_free(c->filename_pattern);
   free(c);
 }
 
@@ -193,7 +198,7 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
   }
 
   /* Build enclosure file name and open file. */
-  enclosure_full_filename = g_build_filename(c->spool_directory, item->enclosure->filename, NULL);
+  enclosure_full_filename = build_enclosure_filename(c->spool_directory, c->filename_pattern, item);
 
   if (resume) {
     /* We're told to continue from where we are now. Get the

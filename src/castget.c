@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005-2016 Marius L. Jøhndal
+  Copyright (C) 2005-2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -430,7 +430,9 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   }
 
   c = channel_new(channel_configuration->url, channel_file,
-                  channel_configuration->spool_directory, resume);
+                  channel_configuration->spool_directory,
+                  channel_configuration->filename_pattern,
+                  resume);
   g_free(channel_file);
 
   if (!c) {

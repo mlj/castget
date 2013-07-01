@@ -1,5 +1,6 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+  Copyright (C) 2010 Tony Armitstead
+  Copyright (C) 2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -17,36 +18,13 @@
 
 */
 
-#ifndef RSS_H
-#define RSS_H
+#ifndef FILENAME_PATTERN_H
+#define FILENAME_PATTERN_H
 
-#include "channel.h"
+#include "rss.h"
 
-typedef struct _rss_item {
-  char *title;
-  char *link;
-  char *description;
-  char *pub_date;
-  enclosure *enclosure;
-} rss_item;
+gchar *build_enclosure_filename(const char *spool_directory,
+                                const char *filename_pattern,
+                                const rss_item *item);
 
-enum rss_version {
-  RSS_UNKNOWN,
-  RSS_VERSION_0_91,
-  RSS_VERSION_0_92,
-  RSS_VERSION_2_0
-};
-
-typedef struct _rss_file {
-  enum rss_version version;
-  int num_items;
-  rss_item **items;
-  channel_info channel_info;
-  gchar *fetched_time;
-} rss_file;
-
-rss_file *rss_open_file(const char *filename);
-rss_file *rss_open_url(const char *url, int debug);
-void rss_close(rss_file *f);
-
-#endif /* RSS_H */
+#endif /* FILENAME_PATTERN_H */

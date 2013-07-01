@@ -25,6 +25,10 @@ castget_SOURCES = \
   channel.h \
   configuration.h \
   configuration.c \
+  date_parsing.c \
+  date_parsing.h \
+  filename_pattern.c \
+  filename_pattern.h \
   htmlent.c \
   htmlent.h \
   libxmlutil.c \

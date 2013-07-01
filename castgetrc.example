@@ -36,3 +36,16 @@ id3comment=
 id3title=Yeast Radio
 id3year=2005
 
+# castget will by default download files using the original filename in the RSS
+# feed. This does not always work, e.g. if the RSS feed uses the same filename
+# for all files or if they include broken filenames, or you may prefer your own
+# way of naming downloads.
+#
+# The following configures the channel with filename patterns so that downloads
+# use the date and title from the RSS as filenames. See castgetrc(5) for
+# a list of supported patterns.
+[scientific_american]
+url=http://rss.sciam.com/sciam/science-talk
+spool=/home/joe/podcasts
+id3album=Scientific American
+filename=%(date)-%(title).mp3

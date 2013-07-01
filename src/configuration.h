@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2007, 2011 Marius L. Jøhndal
+  Copyright (C) 2005-2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -26,6 +26,7 @@ struct channel_configuration {
   gchar *identifier;
   gchar *url;
   gchar *spool_directory;
+  gchar *filename_pattern;
   gchar *playlist;
   gchar *id3_lead_artist;
   gchar *id3_content_group;

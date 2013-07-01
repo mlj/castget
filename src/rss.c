@@ -61,6 +61,7 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
   f->items[i]->title = _dup_child_node_value(node, "title");
   f->items[i]->link = _dup_child_node_value(node, "link");
   f->items[i]->description = _dup_child_node_value(node, "description");
+  f->items[i]->pub_date = _dup_child_node_value(node, "pubDate");
 
   /* Look for mrss information first, if there is any. It may be
      located either directly under the "item" tag, or inside an mrss
@@ -307,6 +308,9 @@ void rss_close(rss_file *f)
 
     if (item->title)
       free(item->title);
+
+    if (item->pub_date)
+      free(item->pub_date);
 
     free(item);
   }
