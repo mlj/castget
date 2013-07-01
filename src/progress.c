@@ -22,6 +22,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
+#include <math.h>
 #include <glib.h>
 #include "progress.h"
 
@@ -34,8 +35,6 @@ int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal,
   double fraction;
   int num;
   int i;
-  long total;
-  long position;
 
   progress_bar *pb = (progress_bar *)clientp;
 
@@ -43,24 +42,32 @@ int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal,
   g_assert(ultotal == 0);
   g_assert(ulnow == 0);
 
-  total = (long)dltotal + pb->resume_from;
-  position = MIN((long)dlnow + pb->resume_from, total);
+  if (pb->width > 0) {
+    if (dltotal == 0.0) {
+      fraction = 0.0;
+      num = 0;
+    } else {
+      long total;
+      long position;
 
-  if (position != pb->previous_block) {
-    if (pb->width > 0) {
+      total = (long)dltotal + pb->resume_from;
+      position = MIN((long)dlnow + pb->resume_from, total);
+
       fraction = (double)position/(double)total;
-      num = (int)(((double)pb->width) * fraction);
+      num = (int)((double)pb->width * fraction);
+    }
 
+    if (num != pb->previous_num) {
       for (i = 0; i < pb->width; i++)
         pb->buffer[i] = (i < num ? '#' : ' ');
 
       pb->buffer[pb->width] = 0;
 
-      fprintf(pb->f, "\r%s %3d%%", pb->buffer, (int)(fraction * 100.0f));
+      fprintf(pb->f, "\r%s %3d%%", pb->buffer, (int)(fraction * 100.0));
       fflush(pb->f);
-    }
 
-    pb->previous_block = position;
+      pb->previous_num = num;
+    }
   }
 
   return 0;
@@ -76,7 +83,7 @@ progress_bar *progress_bar_new(long resume_from)
   pb->resume_from = resume_from;
   pb->f = stdout;
   pb->width = 79;
-  pb->previous_block = 0;
+  pb->previous_num = -1;
 
   /* Try to grab the COLUMNS environment variable to initialize pb->with with a suitable value. */
   environ = g_get_environ();
