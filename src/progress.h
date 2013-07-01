@@ -25,6 +25,7 @@ typedef struct _progress_bar {
   long resume_from;
   int width;
   long previous_block;
+  char *buffer;
 } progress_bar;
 
 progress_bar *progress_bar_new(long resume_from);

@@ -32,7 +32,6 @@
 int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow)
 {
   double fraction;
-  int bar_width;
   int num;
   int i;
   long total;
@@ -48,21 +47,16 @@ int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal,
   position = MIN((long)dlnow + pb->resume_from, total);
 
   if (position != pb->previous_block) {
-    bar_width = pb->width - 5; /* Leave a margin for us to print percentages (the longest string is " 100%") */
-
-    if (bar_width > 0) {
+    if (pb->width > 0) {
       fraction = (double)position/(double)total;
-      num = (int)(((double)bar_width) * fraction);
+      num = (int)(((double)pb->width) * fraction);
 
-      fprintf(pb->f, "\r");
+      for (i = 0; i < pb->width; i++)
+        pb->buffer[i] = (i < num ? '#' : ' ');
 
-      for (i = 0; i < bar_width; i++)
-        if (i < num)
-          fprintf(pb->f, "#");
-        else
-          fprintf(pb->f, " ");
+      pb->buffer[pb->width] = 0;
 
-      fprintf(pb->f, " %3d%%", (int)(fraction * 100.0f));
+      fprintf(pb->f, "\r%s %3d%%", pb->buffer, (int)(fraction * 100.0f));
       fflush(pb->f);
     }
 
@@ -91,11 +85,18 @@ progress_bar *progress_bar_new(long resume_from)
   if (columns) {
     char *endptr;
     long num = strtol(columns, &endptr, 10);
-    if ((endptr != columns) && (endptr == columns + g_strlen(columns)) && (num > 0))
-      pb->width = (int)num;
+    if ((endptr != columns) && (endptr == columns + g_strlen(columns)) && (num > 0)) {
+      pb->width = MIN(pb->width, (int)num); /* restrict width of progress bar to avoid insane values */
+    }
   }
 
   g_strfreev(environ);
+
+  /* Leave a margin for printing the percentages (the longest string is " 100%") */
+  pb->width = MAX(0, pb->width - 5);
+
+  /* Allocate space for progress bar string + terminating zero. */
+  pb->buffer = g_malloc(pb->width + 1);
 
   return pb;
 }
@@ -103,5 +104,6 @@ progress_bar *progress_bar_new(long resume_from)
 void progress_bar_free(progress_bar *pb)
 {
   fprintf(pb->f, "\n"); /* Make sure that we will start output on a new line. */
+  g_free(pb->buffer);
   g_free(pb);
 }
