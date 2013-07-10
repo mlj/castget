@@ -91,3 +91,8 @@ img {
 a img {
   border: none;
 }
+
+.tinynote {
+  text-align: center;
+  font-size: 75%;
+}
