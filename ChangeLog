@@ -1,12 +1,28 @@
+2013-07-02  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* Avoid updating progress bar unless actually changed.
+
+2013-07-01  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* Limit the number of prints when updating the progess bar.
+
+2013-06-24  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
+
+	* Fixed incorrect freeing of enclosure_full_filename on enclosure write failure.
+	* Ensure that output starts on new line after download with progress bar enabled.
+
 2013-06-16  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
-	* src/castget.c: Switched to glib's option parsing.
+	* Switched to glib's options parsing.
+	* Corrected location of binaries in gitignore file.
+	* Added optional download progress bar.
+	* Added --debug option for connection debugging.
+	* Added short section on HTTP proxy use to castget(1).
+	* Updated links in documentation.
 
-	* src/*.c, src/*.h: Added optional download progress bar.
+2011-05-15  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
-	* src/*.c, src/*.h: Added debug option for connection debugging.
-
-	* castget.1.in: Added example of HTTP proxy configuration.
+	* Copyright update and whitespace removal.
 
 2010-02-20  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
