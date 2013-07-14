@@ -1,0 +1,127 @@
+# castget(1) -- download RSS enclosures
+
+## SYNOPSIS
+
+`castget` [<OPTION>...] [<CHANNEL IDENTIFIER>...]
+
+## DESCRIPTION
+
+**castget** downloads RSS enclosures, for example podcasts, from RSS feeds.
+
+RSS feeds are assigned <channel identifier>s in the configuration file
+`.castgetrc`. Channels to be processed by `castget` are indicated by supplying
+the channel identifiers as arguments. If no channel identifiers are provided,
+all available channels are processed.
+
+If run without any options, `castget` will perform the default action on all
+channels to be processed. The default action is to download any enclosure not
+already downloaded. Other actions may be performed by supplying one or more
+options as arguments.
+
+## OPTIONS
+
+### Operations
+
+  * `-c`, `--catchup`:
+    catch up with channels and exit
+
+  * `-l`, `--list`:
+    list available enclosures that have not yet been downloaded, and exit
+
+  * `-h`, `--help`:
+    display help and exit
+
+  * `-V`, `--version`:
+    output version information and exit
+
+### Operation filters
+
+  * `-n`, `--new-only`:
+    restrict operation to new channels only, i.e. to channels that have never been
+    downloaded from or been caught up with before. Note that if a channel is added
+    to the configuration and subsequently removed, its download history is
+    preserved. This means that a channel that has been removed from the
+    configuration file will not be considered as 'new' if it is added to the
+    configuration again at a later time.
+
+  * `-1`, `--first-only`:
+    restrict operation to the most recent item in each channel only.
+
+  * `-f` <pattern>, `--filter`=<pattern>:
+    restrict operation to items whose enclosures have names matching the
+    regular expression `pattern`. Note that this will override any
+    regular expression filters given in the configuration file.
+
+### Global options
+
+  * `-r`, `--resume`:
+    resume aborted downloads
+
+  * `-q`, `--quiet`:
+    do not print anything except error messages
+
+  * `-v`, `--verbose`:
+    print detailed progress information
+
+  * `-d`, `--debug`:
+    print (lots of) connection debug information
+
+  * `-p`, `--progress-bar`:
+    print a progress bar when downloading enclosures
+
+  * `-C` <filename>, `--rcfile`=<filename>:
+    override the default filename for the configuration file
+
+## EXAMPLES
+
+  * Download all enclosures not already downloaded:
+
+    $ castget
+
+  * Download all enclosures not already downloaded from channel `foobar` and be verbose:
+
+    $ castget -v foobar
+
+  * List all enclosures not already downloaded:
+
+    $ castget -l
+
+  * Catch up with channel `foobar`:
+
+    $ castget -c foobar
+
+  * List the first available enclosure in all new channels:
+
+    $ castget -1 -n -l
+
+  * Catch up with items that match the regular expression `Freddies0[67]` in the channel `frederator`:
+
+    $ castget -c -f "Freddies0[67]" frederator
+
+## HTTP PROXY
+
+  * To use a HTTP proxy, set the environment variable `http_proxy`:
+
+    http_proxy=http://your.proxy.server:port/ castget
+
+## SEE ALSO
+
+castgetrc(5)
+
+## BUGS
+
+Please see the castget home page <http://mlj.github.io/castget> for
+instructions on how to submit bug reports.
+
+## AUTHORS
+
+Marius L. Jøhndal, Jick Nan.
+
+## COPYRIGHT
+
+Castget is Copyright (C) 2005-2013 Marius L. Jøhndal.
+
+Castget is Copyright (C) 2007 Jick Nan.
+
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.

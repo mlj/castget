@@ -19,13 +19,12 @@ SUBDIRS = src
 
 EXTRA_DIST = \
   castgetrc.example \
-  castget.1.in \
-  castgetrc.5.in
+  castget.1.ronn \
+  castgetrc.5.ronn
 
 man_MANS = \
   castget.1 \
   castgetrc.5
 
-preview-man: castget.1 castgetrc.5
-	groff -Tutf8 -man castget.1 | less
-	groff -Tutf8 -man castgetrc.5 | less
+%: %.ronn
+	ronn --manual="User Commands" --organization="castget @VERSION@" --roff $< > $@

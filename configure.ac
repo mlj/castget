@@ -93,7 +93,5 @@ AC_CHECK_FUNCS([strdup strtol])
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
-  castget.1
-  castgetrc.5
 ])
 AC_OUTPUT
