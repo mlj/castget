@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv='content-type' value='text/html;charset=utf8'>
+  <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
+  <title>castget(1) - download RSS enclosures</title>
+  <style type='text/css' media='all'>
+  /* style: man */
+  body#manpage {margin:0}
+  .mp {max-width:100ex;padding:0 9ex 1ex 4ex}
+  .mp p,.mp pre,.mp ul,.mp ol,.mp dl {margin:0 0 20px 0}
+  .mp h2 {margin:10px 0 0 0}
+  .mp > p,.mp > pre,.mp > ul,.mp > ol,.mp > dl {margin-left:8ex}
+  .mp h3 {margin:0 0 0 4ex}
+  .mp dt {margin:0;clear:left}
+  .mp dt.flush {float:left;width:8ex}
+  .mp dd {margin:0 0 0 9ex}
+  .mp h1,.mp h2,.mp h3,.mp h4 {clear:left}
+  .mp pre {margin-bottom:20px}
+  .mp pre+h2,.mp pre+h3 {margin-top:22px}
+  .mp h2+pre,.mp h3+pre {margin-top:5px}
+  .mp img {display:block;margin:auto}
+  .mp h1.man-title {display:none}
+  .mp,.mp code,.mp pre,.mp tt,.mp kbd,.mp samp,.mp h3,.mp h4 {font-family:monospace;font-size:14px;line-height:1.42857142857143}
+  .mp h2 {font-size:16px;line-height:1.25}
+  .mp h1 {font-size:20px;line-height:2}
+  .mp {text-align:justify;background:#fff}
+  .mp,.mp code,.mp pre,.mp pre code,.mp tt,.mp kbd,.mp samp {color:#131211}
+  .mp h1,.mp h2,.mp h3,.mp h4 {color:#030201}
+  .mp u {text-decoration:underline}
+  .mp code,.mp strong,.mp b {font-weight:bold;color:#131211}
+  .mp em,.mp var {font-style:italic;color:#232221;text-decoration:none}
+  .mp a,.mp a:link,.mp a:hover,.mp a code,.mp a pre,.mp a tt,.mp a kbd,.mp a samp {color:#0000ff}
+  .mp b.man-ref {font-weight:normal;color:#434241}
+  .mp pre {padding:0 4ex}
+  .mp pre code {font-weight:normal;color:#434241}
+  .mp h2+pre,h3+pre {padding-left:0}
+  ol.man-decor,ol.man-decor li {margin:3px 0 10px 0;padding:0;float:left;width:33%;list-style-type:none;text-transform:uppercase;color:#999;letter-spacing:1px}
+  ol.man-decor {width:100%}
+  ol.man-decor li.tl {text-align:left}
+  ol.man-decor li.tc {text-align:center;letter-spacing:4px}
+  ol.man-decor li.tr {text-align:right;float:right}
+  </style>
+  <style type='text/css' media='all'>
+  /* style: toc */
+  .man-navigation {display:block !important;position:fixed;top:0;left:113ex;height:100%;width:100%;padding:48px 0 0 0;border-left:1px solid #dbdbdb;background:#eee}
+  .man-navigation a,.man-navigation a:hover,.man-navigation a:link,.man-navigation a:visited {display:block;margin:0;padding:5px 2px 5px 30px;color:#999;text-decoration:none}
+  .man-navigation a:hover {color:#111;text-decoration:underline}
+  </style>
+</head>
+<!--
+  The following styles are deprecated and will be removed at some point:
+  div#man, div#man ol.man, div#man ol.head, div#man ol.man.
+
+  The .man-page, .man-decor, .man-head, .man-foot, .man-title, and
+  .man-navigation should be used instead.
+-->
+<body id='manpage'>
+  <div class='mp' id='man'>
+
+  <div class='man-navigation' style='display:none'>
+    <a href="#NAME">NAME</a>
+    <a href="#SYNOPSIS">SYNOPSIS</a>
+    <a href="#DESCRIPTION">DESCRIPTION</a>
+    <a href="#OPTIONS">OPTIONS</a>
+    <a href="#EXAMPLES">EXAMPLES</a>
+    <a href="#HTTP-PROXY">HTTP PROXY</a>
+    <a href="#SEE-ALSO">SEE ALSO</a>
+    <a href="#BUGS">BUGS</a>
+    <a href="#AUTHORS">AUTHORS</a>
+    <a href="#COPYRIGHT">COPYRIGHT</a>
+  </div>
+
+  <ol class='man-decor man-head man head'>
+    <li class='tl'>castget(1)</li>
+    <li class='tc'></li>
+    <li class='tr'>castget(1)</li>
+  </ol>
+
+  <h2 id="NAME">NAME</h2>
+<p class="man-name">
+  <code>castget</code> - <span class="man-whatis">download RSS enclosures</span>
+</p>
+
+<h2 id="SYNOPSIS">SYNOPSIS</h2>
+
+<p><code>castget</code> [<var>OPTION</var>...] [<var>CHANNEL IDENTIFIER</var>...]</p>
+
+<h2 id="DESCRIPTION">DESCRIPTION</h2>
+
+<p><strong>castget</strong> downloads RSS enclosures, for example podcasts, from RSS feeds.</p>
+
+<p>RSS feeds are assigned <var>channel identifier</var>s in the configuration file
+<code>.castgetrc</code>. Channels to be processed by <code>castget</code> are indicated by supplying
+the channel identifiers as arguments. If no channel identifiers are provided,
+all available channels are processed.</p>
+
+<p>If run without any options, <code>castget</code> will perform the default action on all
+channels to be processed. The default action is to download any enclosure not
+already downloaded. Other actions may be performed by supplying one or more
+options as arguments.</p>
+
+<h2 id="OPTIONS">OPTIONS</h2>
+
+<h3 id="Operations">Operations</h3>
+
+<dl>
+<dt><code>-c</code>, <code>--catchup</code></dt><dd><p>catch up with channels and exit</p></dd>
+<dt><code>-l</code>, <code>--list</code></dt><dd><p>list available enclosures that have not yet been downloaded, and exit</p></dd>
+<dt><code>-h</code>, <code>--help</code></dt><dd><p>display help and exit</p></dd>
+<dt><code>-V</code>, <code>--version</code></dt><dd><p>output version information and exit</p></dd>
+</dl>
+
+
+<h3 id="Operation-filters">Operation filters</h3>
+
+<dl>
+<dt><code>-n</code>, <code>--new-only</code></dt><dd><p>restrict operation to new channels only, i.e. to channels that have never been
+downloaded from or been caught up with before. Note that if a channel is added
+to the configuration and subsequently removed, its download history is
+preserved. This means that a channel that has been removed from the
+configuration file will not be considered as 'new' if it is added to the
+configuration again at a later time.</p></dd>
+<dt><code>-1</code>, <code>--first-only</code></dt><dd><p>restrict operation to the most recent item in each channel only.</p></dd>
+<dt><code>-f</code> <var>pattern</var>, <code>--filter</code>=<var>pattern</var></dt><dd><p>restrict operation to items whose enclosures have names matching the
+regular expression <code>pattern</code>. Note that this will override any
+regular expression filters given in the configuration file.</p></dd>
+</dl>
+
+
+<h3 id="Global-options">Global options</h3>
+
+<dl>
+<dt><code>-r</code>, <code>--resume</code></dt><dd><p>resume aborted downloads</p></dd>
+<dt><code>-q</code>, <code>--quiet</code></dt><dd><p>do not print anything except error messages</p></dd>
+<dt><code>-v</code>, <code>--verbose</code></dt><dd><p>print detailed progress information</p></dd>
+<dt><code>-d</code>, <code>--debug</code></dt><dd><p>print (lots of) connection debug information</p></dd>
+<dt><code>-p</code>, <code>--progress-bar</code></dt><dd><p>print a progress bar when downloading enclosures</p></dd>
+<dt><code>-C</code> <var>filename</var>, <code>--rcfile</code>=<var>filename</var></dt><dd><p>override the default filename for the configuration file</p></dd>
+</dl>
+
+
+<h2 id="EXAMPLES">EXAMPLES</h2>
+
+<dl>
+<dt>Download all enclosures not already downloaded:</dt><dd><p></p>
+
+<p>$ castget</p></dd>
+<dt>Download all enclosures not already downloaded from channel <code>foobar</code> and be verbose:</dt><dd><p></p>
+
+<p>$ castget -v foobar</p></dd>
+<dt>List all enclosures not already downloaded:</dt><dd><p></p>
+
+<p>$ castget -l</p></dd>
+<dt>Catch up with channel <code>foobar</code>:</dt><dd><p></p>
+
+<p>$ castget -c foobar</p></dd>
+<dt>List the first available enclosure in all new channels:</dt><dd><p></p>
+
+<p>$ castget -1 -n -l</p></dd>
+<dt>Catch up with items that match the regular expression <code>Freddies0[67]</code> in the channel <code>frederator</code>:</dt><dd><p></p>
+
+<p>$ castget -c -f "Freddies0[67]" frederator</p></dd>
+</dl>
+
+
+<h2 id="HTTP-PROXY">HTTP PROXY</h2>
+
+<dl>
+<dt>To use a HTTP proxy, set the environment variable <code>http_proxy</code>:</dt><dd><p></p>
+
+<p>http_proxy=http://your.proxy.server:port/ castget</p></dd>
+</dl>
+
+
+<h2 id="SEE-ALSO">SEE ALSO</h2>
+
+<p><span class="man-ref">castgetrc<span class="s">(5)</span></span></p>
+
+<h2 id="BUGS">BUGS</h2>
+
+<p>Please see the castget home page <a href="http://mlj.github.io/castget" data-bare-link="true">http://mlj.github.io/castget</a> for
+instructions on how to submit bug reports.</p>
+
+<h2 id="AUTHORS">AUTHORS</h2>
+
+<p>Marius L. Jøhndal, Jick Nan.</p>
+
+<h2 id="COPYRIGHT">COPYRIGHT</h2>
+
+<p>Castget is Copyright (C) 2005-2013 Marius L. Jøhndal.</p>
+
+<p>Castget is Copyright (C) 2007 Jick Nan.</p>
+
+<p>This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+
+
+  <ol class='man-decor man-foot man foot'>
+    <li class='tl'></li>
+    <li class='tc'>July 2013</li>
+    <li class='tr'>castget(1)</li>
+  </ol>
+
+  </div>
+</body>
+</html>

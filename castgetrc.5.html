@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv='content-type' value='text/html;charset=utf8'>
+  <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
+  <title>castgetrc(5) - configuration file for castget</title>
+  <style type='text/css' media='all'>
+  /* style: man */
+  body#manpage {margin:0}
+  .mp {max-width:100ex;padding:0 9ex 1ex 4ex}
+  .mp p,.mp pre,.mp ul,.mp ol,.mp dl {margin:0 0 20px 0}
+  .mp h2 {margin:10px 0 0 0}
+  .mp > p,.mp > pre,.mp > ul,.mp > ol,.mp > dl {margin-left:8ex}
+  .mp h3 {margin:0 0 0 4ex}
+  .mp dt {margin:0;clear:left}
+  .mp dt.flush {float:left;width:8ex}
+  .mp dd {margin:0 0 0 9ex}
+  .mp h1,.mp h2,.mp h3,.mp h4 {clear:left}
+  .mp pre {margin-bottom:20px}
+  .mp pre+h2,.mp pre+h3 {margin-top:22px}
+  .mp h2+pre,.mp h3+pre {margin-top:5px}
+  .mp img {display:block;margin:auto}
+  .mp h1.man-title {display:none}
+  .mp,.mp code,.mp pre,.mp tt,.mp kbd,.mp samp,.mp h3,.mp h4 {font-family:monospace;font-size:14px;line-height:1.42857142857143}
+  .mp h2 {font-size:16px;line-height:1.25}
+  .mp h1 {font-size:20px;line-height:2}
+  .mp {text-align:justify;background:#fff}
+  .mp,.mp code,.mp pre,.mp pre code,.mp tt,.mp kbd,.mp samp {color:#131211}
+  .mp h1,.mp h2,.mp h3,.mp h4 {color:#030201}
+  .mp u {text-decoration:underline}
+  .mp code,.mp strong,.mp b {font-weight:bold;color:#131211}
+  .mp em,.mp var {font-style:italic;color:#232221;text-decoration:none}
+  .mp a,.mp a:link,.mp a:hover,.mp a code,.mp a pre,.mp a tt,.mp a kbd,.mp a samp {color:#0000ff}
+  .mp b.man-ref {font-weight:normal;color:#434241}
+  .mp pre {padding:0 4ex}
+  .mp pre code {font-weight:normal;color:#434241}
+  .mp h2+pre,h3+pre {padding-left:0}
+  ol.man-decor,ol.man-decor li {margin:3px 0 10px 0;padding:0;float:left;width:33%;list-style-type:none;text-transform:uppercase;color:#999;letter-spacing:1px}
+  ol.man-decor {width:100%}
+  ol.man-decor li.tl {text-align:left}
+  ol.man-decor li.tc {text-align:center;letter-spacing:4px}
+  ol.man-decor li.tr {text-align:right;float:right}
+  </style>
+  <style type='text/css' media='all'>
+  /* style: toc */
+  .man-navigation {display:block !important;position:fixed;top:0;left:113ex;height:100%;width:100%;padding:48px 0 0 0;border-left:1px solid #dbdbdb;background:#eee}
+  .man-navigation a,.man-navigation a:hover,.man-navigation a:link,.man-navigation a:visited {display:block;margin:0;padding:5px 2px 5px 30px;color:#999;text-decoration:none}
+  .man-navigation a:hover {color:#111;text-decoration:underline}
+  </style>
+</head>
+<!--
+  The following styles are deprecated and will be removed at some point:
+  div#man, div#man ol.man, div#man ol.head, div#man ol.man.
+
+  The .man-page, .man-decor, .man-head, .man-foot, .man-title, and
+  .man-navigation should be used instead.
+-->
+<body id='manpage'>
+  <div class='mp' id='man'>
+
+  <div class='man-navigation' style='display:none'>
+    <a href="#NAME">NAME</a>
+    <a href="#DESCRIPTION">DESCRIPTION</a>
+    <a href="#KEYS">KEYS</a>
+    <a href="#GLOBAL-CONFIGURATION">GLOBAL CONFIGURATION</a>
+    <a href="#CHANNEL-REMOVAL">CHANNEL REMOVAL</a>
+    <a href="#NOTE">NOTE</a>
+    <a href="#SEE-ALSO">SEE ALSO</a>
+    <a href="#AUTHOR">AUTHOR</a>
+  </div>
+
+  <ol class='man-decor man-head man head'>
+    <li class='tl'>castgetrc(5)</li>
+    <li class='tc'></li>
+    <li class='tr'>castgetrc(5)</li>
+  </ol>
+
+  <h2 id="NAME">NAME</h2>
+<p class="man-name">
+  <code>castgetrc</code> - <span class="man-whatis">configuration file for castget</span>
+</p>
+
+<h2 id="DESCRIPTION">DESCRIPTION</h2>
+
+<p>The configuration file <code>.castgetrc</code> should be located in a user's home
+directory. It defines the behaviour of the RSS enclosure downloader <code>castget</code>,
+and in particular the list of channels it operates on.</p>
+
+<p>The file is based on a simple key-value format. It consists of a channel
+definition for each RSS feed <code>castget</code> should process. A channel definition
+starts with a line containing a channel identifier enclosed in brackets. The
+channel identifier can be freely chosen by the user and is used for all
+subsequent operations on the channel. Following this are one or more key-value
+pairs on the form <code>key=value</code> that define <code>castget</code>'s behaviour when operating
+on the channel. A channel definition ends when another channel definition is
+started or at the end of the file.</p>
+
+<p>Lines beginning with a hash character (`#') and blank lines are considered
+comments. All identifiers, keys and values should be UTF-8 encoded.</p>
+
+<p>Key-value pairs in a channel definition define the behaviour of <code>castget</code> when
+processing the channel. The channel definition</p>
+
+<pre><code>[fooc]
+url=http://downloads.bbc.co.uk/podcasts/radio4/fooc/rss.xml
+spool=/home/joe/podcasts
+</code></pre>
+
+<p>for example, instructs <code>castget</code> to use <code>/home/joe/podcasts</code> as a download
+directory when processing the channel <code>fooc</code>.</p>
+
+<h2 id="KEYS">KEYS</h2>
+
+<dl>
+<dt class="flush"><code>url</code></dt><dd><p>retrieve RSS feed from this URL. The field is mandatory for all channel definitions.</p></dd>
+<dt class="flush"><code>spool</code></dt><dd><p>download enclosures to this directory.</p></dd>
+<dt><code>playlist</code></dt><dd><p>write the fully qualified file names of all downloaded enclosures to an m3u style playlist file with this name.</p></dd>
+<dt class="flush"><code>filter</code></dt><dd><p>restrict operation to items whose enclosures have names matching this regular
+expression.</p></dd>
+<dt><code>id3leadartist</code></dt><dd><p>add or overwrite the `lead artist' (TPE1) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>id3contentgroup</code></dt><dd><p>add or overwrite the `content group' (TIT1) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>id3title</code></dt><dd><p>add or overwrite the `title' (TIT2) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>id3album</code></dt><dd><p>add or overwrite the `album' (TALB) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>id3contenttype</code></dt><dd><p>add or overwrite the `content type' (TCON) ID3v2 tag in enclosures that support this.</p></dd>
+<dt class="flush"><code>id3year</code></dt><dd><p>add or overwrite the `year' (TYER) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>id3comment</code></dt><dd><p>add or overwrite the `comment' (COMM) ID3v2 tag in enclosures that support this.</p></dd>
+</dl>
+
+
+<h2 id="GLOBAL-CONFIGURATION">GLOBAL CONFIGURATION</h2>
+
+<p>A channel definition with the channel identifier <code>*</code> will define a global
+configuration affecting all channels. The global configuration</p>
+
+<pre><code>[*]
+id3contenttype=Podcast
+</code></pre>
+
+<p>for example, is equivalent to adding the key-value pair
+<code>id3contenttype=Podcast</code> to all other channel definitions.</p>
+
+<p>Key-value pairs in channel definitions override the global configuration.</p>
+
+<h2 id="CHANNEL-REMOVAL">CHANNEL REMOVAL</h2>
+
+<p>If a channel configuration is removed, the channel status remains the same so that if the channel is subsequently re-added, any enclosures marked as already downloaded will not be downloaded again.</p>
+
+<h2 id="NOTE">NOTE</h2>
+
+<p>The source distribution includes a sample configuration file demonstrating all supported settings.</p>
+
+<h2 id="SEE-ALSO">SEE ALSO</h2>
+
+<p><span class="man-ref">castget<span class="s">(1)</span></span></p>
+
+<h2 id="AUTHOR">AUTHOR</h2>
+
+<p>Marius L. Jøhndal.</p>
+
+
+  <ol class='man-decor man-foot man foot'>
+    <li class='tl'></li>
+    <li class='tc'>July 2013</li>
+    <li class='tr'>castgetrc(5)</li>
+  </ol>
+
+  </div>
+</body>
+</html>
