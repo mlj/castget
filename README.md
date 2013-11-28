@@ -20,13 +20,15 @@ as `.castgetrc` and edit it to suit your preferences.
 
 ## Usage
 
-For usage instructions please see the
+For usage instructions see the
 [castget(1)](http://mlj.github.io/castget/castget.1.html) and
 [castget(5)](http://mlj.github.io/castget/castgetrc.5.html) man pages.
 
-## Updates and bug reports
+## Bug reports
 
-Please see the castget home page for information about updates
-and how to report bugs
+Please use the [github bug tracker](https://github.com/mlj/castget/issues) to
+report bugs.
 
-  http://mlj.github.io/castget
+## License
+
+castget is maintained by Marius L. Jøhndal and is available under the LGPL license.
