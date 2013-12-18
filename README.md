@@ -32,3 +32,7 @@ report bugs.
 ## License
 
 castget is maintained by Marius L. Jøhndal and is available under the LGPL license.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mlj/castget/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
