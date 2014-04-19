@@ -1,14 +1,13 @@
 body {
   margin: 0;
-  padding: 20px 0 20px 0;
-  color: #303030;
-  background-color: #e0e0e0;
+  color: $black;
+  background-color: $silver;
   font-family: sans-serif;
 }
 
 h1 {
   margin: 0;
-  color: #f57600;
+  color: $orange;
   font-size: 4em;
   letter-spacing: -4px;
   text-align: center;
@@ -16,7 +15,7 @@ h1 {
 
 h2 {
   margin: 0;
-  color: #808080;
+  color: $gray;
   font-weight: normal;
   font-size: 2.5em;
   letter-spacing: -2px;
@@ -26,7 +25,7 @@ h2 {
 
 h3 {
   margin: 10px 0 10px 0;
-  color: #f57600;
+  color: $orange;
   font-weight: normal;
   font-size: 2em;
 }
@@ -36,7 +35,7 @@ p {
 }
 
 a {
-  color: #f57600;
+  color: $orange;
   font-weight: bold;
   text-decoration: none;
 }
@@ -54,9 +53,10 @@ li {
 }
 
 #content {
-  border: 2px solid #c0c0c0;
+  border: 2px solid $gray;
   background-color: white;
-  margin: 0 200px 0 200px;
+  margin: 40px auto 40px auto;
+  max-width: 768px;
   padding: 20px 20px 20px 20px;
   height: 100%;
 }
@@ -67,7 +67,7 @@ li {
 
 #footer {
   font-size: small;
-  border-top: 2px solid #e0ac00;
+  border-top: 2px solid $yellow;
   padding-top: 1em;
 }
 
@@ -77,9 +77,9 @@ pre {
   max-width: 100%;
   padding: 0.5em 1em;
   overflow: auto;
-  border: 1px solid #666;
+  border: 1px solid $black;
   color: black;
-  background-color: #e0e0e0;
+  background-color: $silver;
 }
 
 img {
