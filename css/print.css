@@ -5,6 +5,16 @@ body {
   font-size: 12pt;
 }
 
+#content {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+#footer {
+  border-color: black;
+}
+
 .application, .filename {
   font-style: italic;
 }
@@ -28,4 +38,8 @@ pre {
 
 a {
   text-decoration: none;
+}
+
+.forkme {
+  display: none;
 }
