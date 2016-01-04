@@ -1,5 +1,7 @@
-castget
-=======
+# castget
+
+castget is a simple, command-line based RSS enclosure downloader. It is
+primarily intended for automatic, unattended downloading of podcasts.
 
 ## Installation and configuration
 
