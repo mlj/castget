@@ -1,0 +1,15 @@
+language: c
+
+compiler:
+  - clang
+  - gcc
+
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - libid3-3.8.3-dev
+      - libcurl4-gnutls-dev
+
+script: ./autogen.sh --disable-id3lib && make all && make clean

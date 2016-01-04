@@ -16,8 +16,6 @@ config.log
 config.status
 config.sub
 aclocal.m4
-castget.1
-castgetrc.5
 po
 src/.deps
 src/.libs
