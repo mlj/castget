@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-# Copyright (C) 2005, 2006, 2007, 2011, 2012, 2013 Marius L. Jøhndal
+# Copyright (C) 2005-2016 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
 AC_PREREQ(2.59)
-AC_INIT(castget, 1.2.0, mariuslj@ifi.uio.no)
+AC_INIT(castget, 1.2.1, mariuslj@ifi.uio.no)
 AM_INIT_AUTOMAKE([1.8 dist-bzip2 no-dist-gzip])
 AC_CONFIG_SRCDIR([src/castget.c])
 AC_CONFIG_HEADER([config.h])
