@@ -26,5 +26,12 @@ man_MANS = \
   castget.1 \
   castgetrc.5
 
+.PHONY: html
+
+html: castget.1.html castgetrc.5.html
+
+%.html: %.ronn
+	ronn --manual="User Commands" --organization="castget @VERSION@" --html $< > $@
+
 %: %.ronn
 	ronn --manual="User Commands" --organization="castget @VERSION@" --roff $< > $@
