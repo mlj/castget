@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+  Copyright (C) 2005-2016 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -225,7 +225,7 @@ int main(int argc, char **argv)
 static void version(void)
 {
   g_printf("%s %s\n", PACKAGE, VERSION);
-  g_printf("Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
+  g_printf("Copyright (C) 2005-2016 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
 }
 
 static void update_callback(void *user_data, channel_action action,
