@@ -79,12 +79,14 @@
           </p>
 
           <p>
-            Pre-built binaries or packages may be available for some operating systems and distributions. The <span class="application">castget</span> maintainers are aware of the following:
+            Pre-built binaries or packages may be available for some operating systems and distributions:
             <ul>
               <li><a href="https://www.archlinux.org/packages/community/i686/castget/">Arch Linux</a></li>
               <li><a href="http://pkgsrc.se/wip/castget">NetBSD port</a></li>
-              <li><a href="http://ports.openbsd.nu/net/castget">OpenBSD port</a></li>
-              <li><a href="http://www.nslu2-linux.org/wiki/Optware/Castget">ipkg for NSLU2-Linux</a></li>
+              <li><a href="http://ports.su/net/castget">OpenBSD port</a></li>
+              <li><a href="http://www.freebsd.org/cgi/ports.cgi?query=castget">FreeBSD port</a></li>
+              <li><a href="http://www.nslu2-linux.org/wiki/Optware/Castget">Optware package</a></li>
+              <li><a href="http://luetzels.raspiblog.com/wordpress/?p=663">Build instructions for Raspberry Pi</a></li>
             </ul>
           </p>
 
@@ -143,7 +145,18 @@ id3contenttype=Podcast</pre>
           <h3 id="installing">Installing from source</h3>
 
           <p>
-            To install from a released version, extract the tarball, then
+            To build from source you will need
+          </p>
+
+          <ul>
+            <li>glib2</li>
+            <li>libxml2</li>
+            <li>libcurl</li>
+            <li>id3lib (optional)</li>
+          </ul>
+
+          <p>
+            Download the latest version, extract the tarball, then
             <pre>$ cd castget-1.2.1
 $ ./configure
 $ make
@@ -157,24 +170,7 @@ $ cd castget
 $ ./autogen.sh
 $ ./configure
 $ make
-# make install</pre>
-          </p>
-
-          <h3 id="binaries">Dependencies</h3>
-
-          <p>
-            To build <span class="application">castget</span> you will need
-          </p>
-
-          <ul>
-            <li>glib2</li>
-            <li>libxml2</li>
-            <li>libcurl</li>
-            <li>id3lib (optional)</li>
-          </ul>
-
-          <p>
-            <span class="application">castget</span> has only been tested on Linux, but should work on other UNIX-like systems.
+$ make install</pre>
           </p>
 
           <h3 id="bugs">Bugs</h3>
