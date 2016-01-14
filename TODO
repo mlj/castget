@@ -17,5 +17,4 @@ Release 1.x
 * FEATURE: Download to current directory.
 * FEATRUE: On-the-fly RSS checking.
 * FEATURE: Logging.
-* FEATURE: Some sort of progress bar.
 * FEATURE: Threaded downloading and persistent HTTP connections.
