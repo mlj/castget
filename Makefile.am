@@ -26,9 +26,12 @@ man_MANS = \
   castget.1 \
   castgetrc.5
 
-.PHONY: html
+.PHONY: html AUTHORS
 
 html: castget.1.html castgetrc.5.html
+
+AUTHORS:
+	git shortlog -sn | cut -c8- | grep -v Bitdeli > $@
 
 %.html: %.ronn
 	ronn --manual="User Commands" --organization="castget @VERSION@" --html $< > $@
