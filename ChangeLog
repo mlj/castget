@@ -79,7 +79,7 @@
 	* src/Makefile.am, src/castget.c, src/channel.c, src/channel.h,
 	src/libcastget.h, src/rss.h, src/urlget.c, src/urlget.h,
 	src/utils.c, src/utils.h: Eliminated libcastget.h.
-	
+
 	* configure.ac, src/Makefile.am, src/castget.c,
 	src/configuration.c, src/htmlent.h, src/rss.c, src/urlget.h,
 	src/channel.c, src/configuration.h, src/libxmlutil.c, src/rss.h,

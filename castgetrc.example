@@ -9,7 +9,7 @@
 #
 
 # This will set the ID3 tag "content type" to "Podcast"
-# and use the directory /home/tom/podcasts for downloading 
+# and use the directory /home/tom/podcasts for downloading
 # enclosures.
 [*]
 id3contenttype=Podcast
@@ -19,7 +19,7 @@ spool=/home/tom/podcasts
 # Per-channel settings.
 #
 
-# This will define a channel with the identifier "dsc", set the RSS 
+# This will define a channel with the identifier "dsc", set the RSS
 # feed URL for the channel, override the download directory defined
 # in the global settings section, and append file names of downloaded
 # enclosures to /home/tom/podcasts.m3u.
