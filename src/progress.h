@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2007, 2011 Marius L. Jøhndal
+  Copyright (C) 2005-2016 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ typedef struct _progress_bar {
 } progress_bar;
 
 progress_bar *progress_bar_new(long resume_from);
+void progress_bar_free(progress_bar *pb);
 void progress_bar_end(progress_bar *pb);
 int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow);
 
