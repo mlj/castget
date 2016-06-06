@@ -24,6 +24,11 @@ For usage instructions see the
 [castget(1)](http://mlj.github.io/castget/castget.1.html) and
 [castget(5)](http://mlj.github.io/castget/castgetrc.5.html) man pages.
 
+## Development
+
+To rebuild the man pages you will need [ronn](http://rtomayko.github.io/ronn/).
+Prebuilt man pages are included in the distribution.
+
 ## Bug reports
 
 Please use the [github bug tracker](https://github.com/mlj/castget/issues) to
