@@ -31,6 +31,8 @@ For usage instructions see the
 To rebuild the man pages you will need [ronn](http://rtomayko.github.io/ronn/).
 Prebuilt man pages are included in the distribution.
 
+To generate the `configure` script, run `autoreconf -fvi`.
+
 ## Bug reports
 
 Please use the [github bug tracker](https://github.com/mlj/castget/issues) to
