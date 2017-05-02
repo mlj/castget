@@ -87,12 +87,12 @@ progress_bar *progress_bar_new(long resume_from)
 
   /* Try to grab the COLUMNS environment variable to initialize pb->with with a suitable value. */
   environ = g_get_environ();
-  g_environ_getenv(environ, "COLUMNS");
+  columns = g_environ_getenv(environ, "COLUMNS");
 
   if (columns) {
     char *endptr;
     long num = strtol(columns, &endptr, 10);
-    if ((endptr != columns) && (endptr == columns + g_strlen(columns)) && (num > 0)) {
+    if ((endptr != columns) && (endptr == columns + strlen(columns)) && (num > 0)) {
       pb->width = MIN(pb->width, (int)num); /* restrict width of progress bar to avoid insane values */
     }
   }
