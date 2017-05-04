@@ -274,7 +274,7 @@ static void update_callback(void *user_data, channel_action action,
                  enclosure->filename, enclosure->length,
                  channel_info->title);
       } else {
-        g_printf(" * Downloading %s from %s\n",
+        g_printf(" * Downloading %s (unknown length) from %s\n",
                  enclosure->filename,
                  channel_info->title);
       }
@@ -325,8 +325,11 @@ static void catchup_callback(void *user_data, channel_action action, channel_inf
     g_assert(enclosure);
 
     if (verbose)
-      g_printf("Catching up on %s (%ld bytes) from %s\n", enclosure->url, enclosure->length,
-               channel_info->title);
+      if (enclosure->length > 0)
+        g_printf("Catching up on %s (%ld bytes) from %s\n", enclosure->url, enclosure->length,
+                 channel_info->title);
+      else
+        g_printf("Catching up on %s (unknown length) from %s\n", enclosure->url, channel_info->title);
     break;
 
   case CCA_ENCLOSURE_DOWNLOAD_END:
