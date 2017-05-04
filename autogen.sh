@@ -1,10 +1,4 @@
 #! /bin/sh
-#
-# $Id: autogen.sh,v 1.2 2006/03/21 00:56:56 mariuslj Exp $
-#
-# runs autotools to create ./configure and friends
-#
-
 srcdir=`dirname "$0"`
 test -z $srcdir && srcdir=.
 
@@ -35,7 +29,14 @@ $set_option -x
 
 $aclocal $ACLOCAL_FLAGS                  || exit 1
 glib-gettextize --force --copy           || exit 1
-libtoolize --force --copy                || exit 1
+case `uname` in
+  Darwin*)
+    glibtoolize --force --copy || exit 1
+    ;;
+  *)
+    libtoolize --force --copy || exit 1
+    ;;
+esac
 autoheader                               || exit 1
 $automake --foreign --add-missing --copy || exit 1
 autoconf                                 || exit 1
