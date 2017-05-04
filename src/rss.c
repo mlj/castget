@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+  Copyright (C) 2005-2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -82,6 +82,8 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
 
   if (mrss_content || encl) {
     f->items[i]->enclosure = (enclosure *)malloc(sizeof(struct _enclosure));
+
+    /* Set default values */
     f->items[i]->enclosure->url = NULL;
     f->items[i]->enclosure->length = 0;
     f->items[i]->enclosure->type = NULL;
@@ -103,6 +105,10 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
       if (!f->items[i]->enclosure->type)
         f->items[i]->enclosure->type = libxmlutil_dup_attr(encl, "type");
     }
+
+    /* Clean up garbage values from the feed */
+    if (f->items[i]->enclosure->length < 0)
+      f->items[i]->enclosure->length = 0;
   } else
     f->items[i]->enclosure = NULL;
 
