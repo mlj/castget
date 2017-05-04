@@ -73,8 +73,14 @@ int urlget_buffer(const char *url, void *user_data,
 
     curl_easy_cleanup(easyhandle);
 
-    if (success) {
-      fprintf(stderr, "Error retrieving %s: %s\n", url, errbuf);
+    if (success != CURLE_OK) {
+      if (success == CURLE_WRITE_ERROR) {
+        fprintf(stderr, "Error retrieving %s: %s: ", url, errbuf);
+        perror(NULL);
+        fprintf(stderr, "\n");
+      } else
+        fprintf(stderr, "Error retrieving %s: %s\n", url, errbuf);
+
       ret = 1;
     }
   } else
