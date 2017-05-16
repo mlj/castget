@@ -163,7 +163,8 @@ static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb, int 
   if (cb)
     cb(user_data, CCA_RSS_DOWNLOAD_START, NULL, NULL, NULL);
 
-  if (!strncmp("http://", c->url, strlen("http://")))
+  if (!strncmp("http://", c->url, strlen("http://"))
+      || !strncmp("https://", c->url, strlen("https://")))
     f = rss_open_url(c->url, debug);
   else
     f = rss_open_file(c->url);
