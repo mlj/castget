@@ -29,7 +29,7 @@ typedef struct _progress_bar {
 } progress_bar;
 
 progress_bar *progress_bar_new(long resume_from);
-void progress_bar_end(progress_bar *pb);
+void progress_bar_free(progress_bar *pb);
 int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow);
 
 #endif /* PROGRESS_H */
