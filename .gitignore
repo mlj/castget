@@ -3,6 +3,7 @@ configure
 depcomp
 install-sh
 libtool
+test-driver
 ltmain.sh
 Makefile
 Makefile.in
@@ -21,4 +22,6 @@ po
 src/.deps
 src/.libs
 src/*.o
+tests/*.o
 src/castget
+test-suite.log

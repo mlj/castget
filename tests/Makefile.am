@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2005-2017 Marius L. Jøhndal
+# Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,29 +15,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-SUBDIRS = tests src
+INCLUDES = $(GLIBS_CFLAGS) $(CURL_CFLAGS)
 
-EXTRA_DIST = \
-  castgetrc.example \
-  castget.1.ronn \
-  castgetrc.5.ronn \
-  CHANGES \
-  ChangeLog.old \
-  NEWS.old
+AUTOMAKE_OPTIONS = subdir-objects
 
-man_MANS = \
-  castget.1 \
-  castgetrc.5
+TESTS = test_progress
 
-.PHONY: html AUTHORS
+bin_PROGRAMS = test_progress
 
-html: castget.1.html castgetrc.5.html
+test_progress_SOURCES = test_progress.c ../src/progress.c ../src/progress.h
 
-AUTHORS:
-	git shortlog -sn | cut -c8- | grep -v Bitdeli > $@
-
-%.html: %.ronn
-	ronn --manual="User Commands" --organization="castget @VERSION@" --html $< > $@
-
-%: %.ronn
-	ronn --manual="User Commands" --organization="castget @VERSION@" --roff $< > $@
+test_progress_LDADD = $(GLIBS_LIBS) $(CURL_LIBS)
