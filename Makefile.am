@@ -19,7 +19,9 @@ SUBDIRS = src
 
 EXTRA_DIST = \
   castgetrc.example \
+  castget.1 \
   castget.1.ronn \
+  castgetrc.5 \
   castgetrc.5.ronn \
   CHANGES \
   ChangeLog.old \
