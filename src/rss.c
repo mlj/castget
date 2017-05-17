@@ -202,8 +202,8 @@ static xmlEntityPtr _get_entity(void *ctxt, const xmlChar *name)
       entity = (xmlEntityPtr)g_new0(xmlEntity, 1);
       entity->type = XML_ENTITY_DECL;
       entity->name = name;
-      entity->orig = contents;
-      entity->content = contents;
+      entity->orig = (xmlChar *)contents;
+      entity->content = (xmlChar *)contents;
       entity->length = g_utf8_strlen(contents, -1);
       entity->etype = XML_INTERNAL_PREDEFINED_ENTITY;
     }
