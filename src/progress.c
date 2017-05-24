@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2013 Marius L. Jøhndal
+  Copyright (C) 2013-2016 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -22,6 +22,8 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include <math.h>
 #include <glib.h>
 #include "progress.h"

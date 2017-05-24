@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005-2016 Marius L. Jøhndal
+  Copyright (C) 2005-2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,6 @@ enum op {
 static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier,
                             enum op op, struct channel_configuration *defaults,
                             enclosure_filter *filter);
-static void usage(void);
 static void version(void);
 static GKeyFile *_configuration_file_open(const gchar *rcfile);
 static void _configuration_file_close(GKeyFile *kf);
@@ -77,7 +76,7 @@ static gchar *filter_regex = NULL;
 int main(int argc, char **argv)
 {
   enum op op = OP_UPDATE;
-  int i, len;
+  int i;
   int ret = 0;
   gchar **groups;
   gchar *channeldir;
@@ -431,7 +430,9 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
   }
 
   c = channel_new(channel_configuration->url, channel_file,
-                  channel_configuration->spool_directory, resume);
+                  channel_configuration->spool_directory,
+                  channel_configuration->filename_pattern,
+                  resume);
   g_free(channel_file);
 
   if (!c) {

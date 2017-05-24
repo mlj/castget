@@ -55,7 +55,7 @@ options as arguments.
 ### Global options
 
   * `-r`, `--resume`:
-    resume aborted downloads
+    resume aborted downloads. Make sure not to use this option if the RSS feed uses the same filename for multiple enclosures as this will corrupt existing downloads
 
   * `-q`, `--quiet`:
     do not print anything except error messages

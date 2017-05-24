@@ -26,6 +26,7 @@ typedef struct _rss_item {
   char *title;
   char *link;
   char *description;
+  char *pub_date;
   enclosure *enclosure;
 } rss_item;
 

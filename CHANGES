@@ -1,6 +1,16 @@
 This is a summary of changes between each release. See the commit log on
 https://github.com/mlj/castget/commits/master for a details.
 
+Unreleased development version:
+
+  * Add support for filename patterns
+  * Refuse to overwrite existing downloads unless explicitly asked to resume a
+    download
+
+Version 1.2.4 (2017/05/17):
+
+  * Fix build issues involving man pages (issue #20)
+
 Version 1.2.3 (2017/05/16):
 
   * Fix lack of support for https (issue #10, issue #14, PR #15)
