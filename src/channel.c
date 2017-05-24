@@ -32,7 +32,7 @@
 #include "rss.h"
 #include "utils.h"
 #include "progress.h"
-#include "filename_pattern.h"
+#include "filename_patterns.h"
 
 static int _enclosure_pattern_match(enclosure_filter *filter,
                                     const enclosure *enclosure);

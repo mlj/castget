@@ -23,7 +23,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <glib.h>
-#include "filename_pattern.h"
+#include "filename_patterns.h"
 #include "date_parsing.h"
 
 static gchar *remove_bad_filename_chars(const char *filename);
