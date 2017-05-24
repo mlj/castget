@@ -97,6 +97,8 @@ generate filenames that are unique to each download.
 The complete pathname is determined by concatenating the channel's spool
 directory with the filename.
 
+`castget` will refuse to overwrite files that already exist except when it is invoked with the `-r` option to resume downloads. Make sure not to use the `-r` option to resume downloads if the RSS feed uses the same filename for multiple enclosures as this will corrupt existing downloads.
+
 ## CHANNEL REMOVAL
 
 If a channel configuration is removed, the channel status remains the same so that if the channel is subsequently re-added, any enclosures marked as already downloaded will not be downloaded again.
