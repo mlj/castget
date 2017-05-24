@@ -107,21 +107,23 @@ static gchar *form_userspec_filename(const gchar *user_file_spec,
                                      const rss_item *item)
 {
   enum { STATE_COPY, STATE_FIELD, STATE_DONE } state = STATE_COPY;
-  gchar filename_parts[20];
-  int part = 0;
+  GString *filename_parts;
   gchar fieldname[80];
   int fieldname_idx = 0;
-  gchar *processed_filename = NULL;
+  gchar *processed_filename;
+  gchar *expanded_field;
   const gchar *cp_start = user_file_spec;
   const gchar *cp_end = user_file_spec;
+
+  filename_parts = g_string_new(NULL);
+
   while (state != STATE_DONE) {
     switch (state) {
     case STATE_COPY:
       /* Process */
-      if (*cp_end == '\0' || *cp_end == '%') {
-        if (cp_end > cp_start)
-          filename_parts[part++] = g_strndup(cp_start, cp_end-cp_start);
-      }
+      if ((*cp_end == '\0' || *cp_end == '%') && cp_end > cp_start)
+        g_string_append_len(filename_parts, cp_start, cp_end - cp_start);
+
       /* State update */
       if (*cp_end == '%') {
         state = STATE_FIELD;
@@ -134,8 +136,9 @@ static gchar *form_userspec_filename(const gchar *user_file_spec,
       /* Process */
       if (*cp_end == '\0' || *cp_end == ')') {
         fieldname[fieldname_idx] = '\0';
-        if (part < DIM(filename_parts)-1)
-          filename_parts[part++] = form_field_string(item, fieldname);
+        expanded_field = form_field_string(item, fieldname);
+        g_string_append(filename_parts, expanded_field);
+        g_free(expanded_field);
       }
       else if ((*cp_end != '(') && (fieldname_idx < DIM(fieldname)-1))
         fieldname[fieldname_idx++] = *cp_end;
@@ -152,11 +155,9 @@ static gchar *form_userspec_filename(const gchar *user_file_spec,
     }
     ++cp_end;
   }
-  filename_parts[part] = NULL;
-  processed_filename = g_strjoinv(NULL, filename_parts);
 
-  while (part--)
-    g_free(filename_parts[part]);
+  /* Free GString but keep actual string data. Caller must free this using g_free() */
+  processed_filename = g_string_free(filename_parts, FALSE);
 
   return processed_filename;
 }
