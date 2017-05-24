@@ -19,7 +19,7 @@
 #
 AC_PREREQ(2.59)
 AC_INIT(castget, 1.2.4, mariuslj@ifi.uio.no)
-AM_INIT_AUTOMAKE([1.8 dist-bzip2 no-dist-gzip])
+AM_INIT_AUTOMAKE([1.8 dist-bzip2 no-dist-gzip foreign])
 AC_CONFIG_SRCDIR([src/castget.c])
 AC_CONFIG_HEADER([config.h])
 
@@ -93,5 +93,6 @@ AC_CHECK_FUNCS([strdup strtol])
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
+  tests/Makefile
 ])
 AC_OUTPUT

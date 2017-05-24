@@ -3,6 +3,7 @@ configure
 depcomp
 install-sh
 libtool
+test-driver
 ltmain.sh
 Makefile
 Makefile.in
@@ -18,7 +19,11 @@ config.status
 config.sub
 aclocal.m4
 po
-src/.deps
-src/.libs
-src/*.o
+.libs
+*.deps
+*.o
+*.log
+*.trs
+*.dirstamp
 src/castget
+tests/test_progress
