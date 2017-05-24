@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2017 Wilhelm Schuster
+# Copyright (C) 2017 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,10 +20,18 @@ INCLUDES = $(GLIBS_CFLAGS) $(CURL_CFLAGS)
 
 AUTOMAKE_OPTIONS = subdir-objects
 
-TESTS = test_progress
+TESTS = \
+  test_progress \
+  test_filename_patterns
 
-bin_PROGRAMS = test_progress
+bin_PROGRAMS = \
+  test_progress \
+  test_filename_patterns
 
 test_progress_SOURCES = test_progress.c ../src/progress.c ../src/progress.h
 
 test_progress_LDADD = $(GLIBS_LIBS) $(CURL_LIBS)
+
+test_filename_patterns_SOURCES = test_filename_patterns.c ../src/filename_patterns.c ../src/filename_patterns.h ../src/date_parsing.c ../src/date_parsing.h
+
+test_filename_patterns_LDADD = $(GLIBS_LIBS) $(CURL_LIBS)
