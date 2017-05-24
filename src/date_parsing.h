@@ -1,5 +1,6 @@
 /*
-  Copyright (C) 2005-2016 Marius L. Jøhndal
+  Copyright (C) 2010 Tony Armitstead
+  Copyright (C) 2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -17,19 +18,9 @@
 
 */
 
-#ifndef PROGRESS_H
-#define PROGRESS_H
+#ifndef DATE_PARSING_H
+#define DATE_PARSING_H
 
-typedef struct _progress_bar {
-  FILE *f;
-  long resume_from;
-  int width;
-  int previous_num;
-  char *buffer;
-} progress_bar;
+GDate *parse_rfc822_date(const char *rfc822_date_str);
 
-progress_bar *progress_bar_new(long resume_from);
-void progress_bar_free(progress_bar *pb);
-int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow);
-
-#endif /* PROGRESS_H */
+#endif /* DATE_PARSING_H */

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2005-2016 Marius L. Jøhndal
+# Copyright (C) 2005-2017 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,8 +19,13 @@ SUBDIRS = src
 
 EXTRA_DIST = \
   castgetrc.example \
+  castget.1 \
   castget.1.ronn \
-  castgetrc.5.ronn
+  castgetrc.5 \
+  castgetrc.5.ronn \
+  CHANGES \
+  ChangeLog.old \
+  NEWS.old
 
 man_MANS = \
   castget.1 \
@@ -28,12 +33,9 @@ man_MANS = \
 
 AUTOMAKE_OPTIONS = foreign
 
-.PHONY: html AUTHORS
+.PHONY: html
 
 html: castget.1.html castgetrc.5.html
-
-AUTHORS:
-	git shortlog -sn | cut -c8- | grep -v Bitdeli > $@
 
 %.html: %.ronn
 	ronn --manual="User Commands" --organization="castget @VERSION@" --html $< > $@

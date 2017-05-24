@@ -1,3 +1,12 @@
+This changelog is no longer updated.
+
+See the NEWS file for a summary of changes between each release.
+
+See the commit log on https://github.com/mlj/castget/commits/master for a
+detailed breakdown of recent changes.
+
+---
+
 2013-07-02  Marius L. Jøhndal  <mariuslj@ifi.uio.no>
 
 	* Avoid updating progress bar unless actually changed.

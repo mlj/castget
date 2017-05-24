@@ -1,5 +1,6 @@
 /*
-  Copyright (C) 2005, 2007, 2011 Marius L. Jøhndal
+  Copyright (C) 2005-2016 Marius L. Jøhndal
+  Copyright (C) 2010 Tony Armitstead
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -20,6 +21,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
+#include <string.h>
 #include <glib/gstdio.h>
 
 #include "configuration.h"
@@ -44,6 +46,9 @@ void channel_configuration_free(struct channel_configuration *c)
 
   if (c->spool_directory)
     g_free(c->spool_directory);
+
+  if (c->filename_pattern)
+    g_free(c->filename_pattern);
 
   if (c->playlist)
     g_free(c->playlist);
@@ -90,6 +95,7 @@ struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gcha
   /* Read keys from configuration file. */
   c->url = _read_channel_configuration_key(kf, identifier, "url");
   c->spool_directory = _read_channel_configuration_key(kf, identifier, "spool");
+  c->filename_pattern = _read_channel_configuration_key(kf, identifier, "filename");
   c->playlist = _read_channel_configuration_key(kf, identifier, "playlist");
   c->id3_lead_artist = _read_channel_configuration_key(kf, identifier, "id3leadartist");
   c->id3_content_group = _read_channel_configuration_key(kf, identifier, "id3contentgroup");
@@ -108,6 +114,10 @@ struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gcha
     if (!c->spool_directory && defaults->spool_directory)
       c->spool_directory = g_strdup(defaults->spool_directory);
 
+    if (!c->filename_pattern && defaults->filename_pattern)
+      c->filename_pattern = g_strdup(defaults->filename_pattern);
+
+    if (!c->playlist && defaults->playlist)
     if (!c->playlist && defaults->playlist)
       c->playlist = g_strdup(defaults->playlist);
 
@@ -155,6 +165,7 @@ int channel_configuration_verify_keys(GKeyFile *kf, const char *identifier)
   for (i = 0; key_list[i]; i++) {
     if (! (!strcmp(key_list[i], "url") ||
            !strcmp(key_list[i], "spool") ||
+           !strcmp(key_list[i], "filename") ||
            !strcmp(key_list[i], "playlist") ||
            !strcmp(key_list[i], "id3leadartist") ||
            !strcmp(key_list[i], "id3contentgroup") ||

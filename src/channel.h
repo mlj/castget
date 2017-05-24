@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+  Copyright (C) 2005-2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,7 @@ typedef struct _channel {
   gchar *url;
   gchar *channel_filename;
   gchar *spool_directory;
+  gchar *filename_pattern;
   GHashTable *downloaded_enclosures;
   gchar *rss_last_fetched;
 } channel;
@@ -61,7 +62,9 @@ typedef void (*channel_callback)(void *user_data,
                                  const char *filename);
 
 channel *channel_new(const char *url, const char *channel_file,
-                     const char *spool_directory, int resume);
+                     const char *spool_directory,
+                     const char *filename_pattern,
+                     int resume);
 void channel_free(channel *c);
 int channel_update(channel *c, void *user_data, channel_callback cb, int no_download,
                    int no_mark_read, int first_only, int resume,

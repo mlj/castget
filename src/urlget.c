@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+  Copyright (C) 2005-2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -74,6 +74,10 @@ int urlget_buffer(const char *url, void *user_data,
     curl_easy_cleanup(easyhandle);
 
     if (success != CURLE_OK) {
+      if (pb)
+        /* Insert an extra CR on stdout as we may have started printing a progress bar there. */
+        fprintf(stdout, "\n");
+
       if (success == CURLE_WRITE_ERROR) {
         fprintf(stderr, "Error retrieving %s: %s: ", url, errbuf);
         perror(NULL);

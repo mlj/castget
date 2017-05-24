@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013 Marius L. Jøhndal
+  Copyright (C) 2005-2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -32,6 +32,7 @@
 #include "rss.h"
 #include "utils.h"
 #include "progress.h"
+#include "filename_pattern.h"
 
 static int _enclosure_pattern_match(enclosure_filter *filter,
                                     const enclosure *enclosure);
@@ -55,7 +56,9 @@ static void _enclosure_iterator(const void *user_data, int i, const xmlNode *nod
 }
 
 channel *channel_new(const char *url, const char *channel_file,
-                     const char *spool_directory, int resume)
+                     const char *spool_directory,
+                     const char *filename_pattern,
+                     int resume)
 {
   channel *c;
   xmlDocPtr doc;
@@ -66,6 +69,7 @@ channel *channel_new(const char *url, const char *channel_file,
   c->url = g_strdup(url);
   c->channel_filename = g_strdup(channel_file);
   c->spool_directory = g_strdup(spool_directory);
+  c->filename_pattern = g_strdup(filename_pattern);
   //  c->resume = resume;
   c->rss_last_fetched = NULL;
   c->downloaded_enclosures = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, g_free);
@@ -146,6 +150,7 @@ void channel_free(channel *c)
   g_free(c->spool_directory);
   g_free(c->channel_filename);
   g_free(c->url);
+  g_free(c->filename_pattern);
   free(c);
 }
 
@@ -163,7 +168,8 @@ static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb, int 
   if (cb)
     cb(user_data, CCA_RSS_DOWNLOAD_START, NULL, NULL, NULL);
 
-  if (!strncmp("http://", c->url, strlen("http://")))
+  if (!strncmp("http://", c->url, strlen("http://"))
+      || !strncmp("https://", c->url, strlen("https://")))
     f = rss_open_url(c->url, debug);
   else
     f = rss_open_file(c->url);
@@ -191,21 +197,32 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
     return 1;
   }
 
-  /* Build enclosure file name and open file. */
-  enclosure_full_filename = g_build_filename(c->spool_directory, item->enclosure->filename, NULL);
+  /* Build enclosure filename. */
+  enclosure_full_filename = build_enclosure_filename(c->spool_directory, c->filename_pattern, item);
 
-  if (resume) {
-    /* We're told to continue from where we are now. Get the
-     * size of the file as it is now and open it for append instead.
-     * Stolen from curl. */
-
-    if (0 == stat(enclosure_full_filename, &fileinfo))
-      /* Set offset to current file size. */
-      resume_from = fileinfo.st_size;
-    else
-      /* Let offset be 0. */
-      resume_from = 0;
-  }
+  if (g_file_test(enclosure_full_filename, G_FILE_TEST_EXISTS)) {
+    /* A file with the same filename already exists. If the user has asked us
+       to resume downloads, we should append to the file. Otherwise we should
+       refuse to continue. If the feed uses the same filename for each
+       enclosure, running in append mode will corrupt existing files. There is
+       probably no practical way to avoid this, and the issue is documented in
+       castget(1) and castgetrc(5). */
+    if (resume) {
+      /* Set resume offset to the size of the file as it is now (and use
+         non-append mode if the size is zero or stat() fails). */
+      if (0 == stat(enclosure_full_filename, &fileinfo))
+        resume_from = fileinfo.st_size;
+      else
+        resume_from = 0;
+    } else {
+      /* File exists but user does not allow us to append so we have to abort. */
+      g_fprintf(stderr, "Enclosure file %s already exists.\n", enclosure_full_filename);
+      g_free(enclosure_full_filename);
+      return 1;
+    }
+  } else
+    /* By letting the offset be 0 we will write in non-append mode. */
+    resume_from = 0;
 
   enclosure_file = fopen(enclosure_full_filename, resume_from ? "ab" : "wb");
 

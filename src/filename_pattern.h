@@ -1,5 +1,6 @@
 /*
-  Copyright (C) 2005-2016 Marius L. Jøhndal
+  Copyright (C) 2010 Tony Armitstead
+  Copyright (C) 2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -17,19 +18,13 @@
 
 */
 
-#ifndef PROGRESS_H
-#define PROGRESS_H
+#ifndef FILENAME_PATTERN_H
+#define FILENAME_PATTERN_H
 
-typedef struct _progress_bar {
-  FILE *f;
-  long resume_from;
-  int width;
-  int previous_num;
-  char *buffer;
-} progress_bar;
+#include "rss.h"
 
-progress_bar *progress_bar_new(long resume_from);
-void progress_bar_free(progress_bar *pb);
-int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow);
+gchar *build_enclosure_filename(const char *spool_directory,
+                                const char *filename_pattern,
+                                const rss_item *item);
 
-#endif /* PROGRESS_H */
+#endif /* FILENAME_PATTERN_H */
