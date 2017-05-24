@@ -68,7 +68,7 @@ main (int   argc, char *argv[])
   g_test_init(&argc, &argv, NULL);
 
   g_test_add_func("/progress/progress_bar_new", test_progress_bar_new);
-  g_test_add_func("/progress/progress_bar_cp", test_progress_bar_cb);
+  g_test_add_func("/progress/progress_bar_cb", test_progress_bar_cb);
 
   return g_test_run();
 }
