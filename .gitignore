@@ -19,9 +19,11 @@ config.status
 config.sub
 aclocal.m4
 po
-src/.deps
-src/.libs
-src/*.o
-tests/*.o
+.libs
+*.deps
+*.o
+*.log
+*.trs
+*.dirstamp
 src/castget
-test-suite.log
+tests/test_progress
