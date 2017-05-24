@@ -4,6 +4,8 @@ https://github.com/mlj/castget/commits/master for a details.
 Unreleased development version:
 
   * Add support for filename patterns
+  * Refuse to overwrite existing downloads unless explicitly asked to resume a
+    download
 
 Version 1.2.4 (2017/05/17):
 

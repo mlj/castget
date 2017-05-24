@@ -197,21 +197,32 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
     return 1;
   }
 
-  /* Build enclosure file name and open file. */
+  /* Build enclosure filename. */
   enclosure_full_filename = build_enclosure_filename(c->spool_directory, c->filename_pattern, item);
 
-  if (resume) {
-    /* We're told to continue from where we are now. Get the
-     * size of the file as it is now and open it for append instead.
-     * Stolen from curl. */
-
-    if (0 == stat(enclosure_full_filename, &fileinfo))
-      /* Set offset to current file size. */
-      resume_from = fileinfo.st_size;
-    else
-      /* Let offset be 0. */
-      resume_from = 0;
-  }
+  if (g_file_test(enclosure_full_filename, G_FILE_TEST_EXISTS)) {
+    /* A file with the same filename already exists. If the user has asked us
+       to resume downloads, we should append to the file. Otherwise we should
+       refuse to continue. If the feed uses the same filename for each
+       enclosure, running in append mode will corrupt existing files. There is
+       probably no practical way to avoid this, and the issue is documented in
+       castget(1) and castgetrc(5). */
+    if (resume) {
+      /* Set resume offset to the size of the file as it is now (and use
+         non-append mode if the size is zero or stat() fails). */
+      if (0 == stat(enclosure_full_filename, &fileinfo))
+        resume_from = fileinfo.st_size;
+      else
+        resume_from = 0;
+    } else {
+      /* File exists but user does not allow us to append so we have to abort. */
+      g_fprintf(stderr, "Enclosure file %s already exists.\n", enclosure_full_filename);
+      g_free(enclosure_full_filename);
+      return 1;
+    }
+  } else
+    /* By letting the offset be 0 we will write in non-append mode. */
+    resume_from = 0;
 
   enclosure_file = fopen(enclosure_full_filename, resume_from ? "ab" : "wb");
 
