@@ -12,4 +12,8 @@ addons:
       - libid3-3.8.3-dev
       - libcurl4-gnutls-dev
 
-script: gem install mustache -v=0.7.0 && gem install ronn && autoreconf -fvi && ./configure && make all && make check && make clean
+script:
+  - gem install mustache -v=0.7.0 && gem install ronn && autoreconf -fvi && ./configure && make all
+  - make check
+  - $TRAVIS_BUILD_DIR/src/castget -V
+  - make clean
