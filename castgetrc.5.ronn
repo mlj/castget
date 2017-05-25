@@ -82,22 +82,18 @@ Key-value pairs in channel definitions override the global configuration.
 
 ## FILENAME PATTERNS
 
-Filename patterns can contain patterns on the form `%(parameter)`. The
-following patterns are supported:
+Filename patterns can contain patterns on the form `%(parameter)`, which are expanded to form a complete filename. Patterns are expanded once for each enclosure download and can therefore be used to generate filenames that are unique to each download.
 
-  * `%(date)`: date of the item in the RSS feed (on the format YYYY-MM-DD)
-  * `%(title)`: title of the item in the RSS feed
+Anything that is not a pattern is as a literal that will be reproduced verbatim (subject to some sanity checking). The complete pathname of a download is determined by concatenating the channel's spool directory with the filename.
 
-Anything that is not a pattern is as a literal that will be reproduced verbatim
-(subject to some sanity checking) in the filename.
+Note that `castget` will refuse to overwrite files that already exist except when it is invoked with the `-r` option to resume downloads. Some RSS feeds reuse the same filename for all enclosures. In such cases the `-r` option will corrupt existing downloads unless you use filename patterns to construct unique filenames.
 
-Patterns are expanded once for each enclosure and can therefore be used to
-generate filenames that are unique to each download.
+The following patterns take information from the `item` element or the enclosure in the RSS feed:
 
-The complete pathname is determined by concatenating the channel's spool
-directory with the filename.
+  * `%(date)`: date (by default on the format YYYY-MM-DD)
+  * `%(title)`: title
 
-`castget` will refuse to overwrite files that already exist except when it is invoked with the `-r` option to resume downloads. Make sure not to use the `-r` option to resume downloads if the RSS feed uses the same filename for multiple enclosures as this will corrupt existing downloads.
+If any of the information required by a pattern is missing from the RSS feed or is invalid the pattern will be ignored and removed from the resulting filename.
 
 ## CHANNEL REMOVAL
 
