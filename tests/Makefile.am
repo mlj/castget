@@ -25,7 +25,7 @@ TESTS = \
   test_progress \
   test_filenames
 
-bin_PROGRAMS = \
+check_PROGRAMS = \
   test_patterns \
   test_progress \
   test_filenames
