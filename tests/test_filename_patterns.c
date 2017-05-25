@@ -35,8 +35,8 @@ static void test_build_enclosure_filename()
   filename_helper("%(title).mp3", "Test/Title", NULL, "/spool/TestTitle.mp3");
   filename_helper("foo %(title) bar.mp3", "Test Title", NULL, "/spool/foo Test Title bar.mp3");
 
-  filename_helper("%(date).mp3", NULL, "Thu, 01 Oct 2015 09:53:38 GMT", "/spool/01-10-15.mp3");
-  filename_helper("foo %(date) bar.mp3", NULL, "Thu, 01 Oct 2015 09:53:38 GMT", "/spool/foo 01-10-15 bar.mp3");
+  filename_helper("%(date).mp3", NULL, "Thu, 01 Oct 2015 09:53:38 GMT", "/spool/2015-10-01.mp3");
+  filename_helper("foo %(date) bar.mp3", NULL, "Thu, 01 Oct 2015 09:53:38 GMT", "/spool/foo 2015-10-01 bar.mp3");
 }
 
 int main (int argc, char *argv[])

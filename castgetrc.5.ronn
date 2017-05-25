@@ -85,7 +85,7 @@ Key-value pairs in channel definitions override the global configuration.
 Filename patterns can contain patterns on the form `%(parameter)`. The
 following patterns are supported:
 
-  * `%(date)`: date of the item in the RSS feed (on the format DD-MM-YY)
+  * `%(date)`: date of the item in the RSS feed (on the format YYYY-MM-DD)
   * `%(title)`: title of the item in the RSS feed
 
 Anything that is not a pattern is as a literal that will be reproduced verbatim

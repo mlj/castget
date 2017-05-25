@@ -83,7 +83,7 @@ static gchar *form_field_string(const rss_item *item, const gchar *field_name)
       g_get_current_time(&today);
       g_date_set_time_val(rfc822_date, &today);
     }
-    g_date_strftime(str_date, sizeof(str_date), "%d-%m-%y", rfc822_date);
+    g_date_strftime(str_date, sizeof(str_date), "%Y-%m-%d", rfc822_date);
     g_date_free(rfc822_date);
     return g_strdup(str_date);
   } else if (g_ascii_strcasecmp("title", field_name) == 0) {
