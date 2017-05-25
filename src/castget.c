@@ -102,9 +102,7 @@ int main(int argc, char **argv)
     {"new-only",     'n', 0, G_OPTION_ARG_NONE,     &new_only,          "only process new channels"},
     {"quiet",        'q', 0, G_OPTION_ARG_NONE,     &quiet,             "only print error messages"},
     {"first-only",   '1', 0, G_OPTION_ARG_NONE,     &first_only,        "only process the most recent item from each channel"},
-#ifdef ENABLE_GREGEX
     {"filter",       'f', 0, G_OPTION_ARG_STRING,   &filter_regex,      "only process items whose enclosure names match a regular expression"},
-#endif /* ENABLE_GREGEX */
 
     { NULL }
   };
@@ -141,13 +139,8 @@ int main(int argc, char **argv)
     op = OP_LIST;
 
   if (filter_regex) {
-#ifdef ENABLE_GREGEX
     filter = enclosure_filter_new(filter_regex, FALSE);
     g_free(filter_regex);
-#else /* !ENABLE_GREGEX */
-    g_print("option parsing failed: filters not supported by this build.\n");
-    exit(1);
-#endif /* ENABLE_GREGEX */
   }
 
   if (verbose && new_only)
@@ -223,14 +216,11 @@ int main(int argc, char **argv)
 
 static void version(void)
 {
-  g_printf("%s %s\n", PACKAGE, VERSION);
-
+  g_printf("%s %s", PACKAGE, VERSION);
 #ifdef ENABLE_ID3LIB
-  g_printf("with ID3 tag support\n");
-#endif
-
-#ifdef ENABLE_GREGEX
-  g_printf("with --filter support\n");
+  g_printf(" with ID3 tag support\n");
+#else
+  g_printf("\n");
 #endif
 
   g_printf("Copyright (C) 2005-2017 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");

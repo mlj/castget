@@ -30,21 +30,12 @@ AC_ARG_ENABLE(id3lib,
               configure_enable_id3lib=$enableval,
               configure_enable_id3lib=yes)
 
-AH_TEMPLATE([ENABLE_GREGEX], [Define to 1 if you want to enable support for GRegex])
-AC_ARG_ENABLE(gregex,
-              [AC_HELP_STRING([--disable-gregex],
-                              [disable support for GRegex filters [default=no]])],
-              configure_enable_gregex=$enableval,
-              configure_enable_gregex=yes)
-
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
 # Checks for libraries.
-AC_DEFINE(ENABLE_GREGEX, [1], [Define for GRegex support])
-
 PKG_CHECK_MODULES(GLIBS, [
   glib-2.0 >= 2.30
   libxml-2.0

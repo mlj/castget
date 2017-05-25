@@ -343,7 +343,6 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
 static gboolean _enclosure_pattern_match(enclosure_filter *filter,
                                          const enclosure *enclosure)
 {
-#ifdef ENABLE_GREGEX
   GError *error = NULL;
   GRegexCompileFlags compile_options = 0;
   GRegexMatchFlags match_options = 0;
@@ -372,9 +371,6 @@ static gboolean _enclosure_pattern_match(enclosure_filter *filter,
   g_regex_unref(regex);
 
   return match;
-#else
-  return FALSE;
-#endif
 }
 
 enclosure_filter *enclosure_filter_new(const gchar *pattern,
