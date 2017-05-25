@@ -40,8 +40,7 @@ directory when processing the channel `fooc`.
     write the fully qualified file names of all downloaded enclosures to an m3u style playlist file with this name.
 
   * `filter`:
-    restrict operation to items whose enclosures have names matching this regular
-    expression.
+    restrict operation to enclosures whose URLs match this regular expression.
 
   * `id3leadartist`:
     add or overwrite the `lead artist' (TPE1) ID3v2 tag in enclosures that support this.

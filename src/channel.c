@@ -367,8 +367,7 @@ static gboolean _enclosure_pattern_match(enclosure_filter *filter,
     return FALSE;
   }
 
-  match = g_regex_match(regex, enclosure->filename, match_options,
-                        NULL);
+  match = g_regex_match(regex, enclosure->url, match_options, NULL);
 
   g_regex_unref(regex);
 

@@ -48,9 +48,7 @@ options as arguments.
     restrict operation to the most recent item in each channel only.
 
   * `-f` <pattern>, `--filter`=<pattern>:
-    restrict operation to items whose enclosures have names matching the
-    regular expression `pattern`. Note that this will override any
-    regular expression filters given in the configuration file.
+    restrict operation to enclosures whose download URLs match the regular expression `pattern`. Note that this will override any regular expression filters given in the configuration file
 
 ### Global options
 

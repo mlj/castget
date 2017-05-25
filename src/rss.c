@@ -112,18 +112,6 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
       f->items[i]->enclosure->length = 0;
   } else
     f->items[i]->enclosure = NULL;
-
-  /* Determine filename of enclosure. */
-  if (f->items[i]->enclosure && f->items[i]->enclosure->url) {
-    gchar *basename = g_path_get_basename(f->items[i]->enclosure->url);
-
-    /* Chop off ? and # and anything following that from the basename. */
-    gchar **tokens = g_strsplit_set(basename, "?#", 2);
-    f->items[i]->enclosure->filename = g_strdup(tokens[0]);
-
-    g_free(basename);
-    g_strfreev(tokens);
-  }
 }
 
 static rss_file *rss_parse(const gchar *url, const xmlNode *root_element, gchar *fetched_time)
@@ -299,9 +287,6 @@ void rss_close(rss_file *f)
 
       if (item->enclosure->type)
         free(item->enclosure->type);
-
-      if (item->enclosure->filename)
-        free(item->enclosure->filename);
 
       free(item->enclosure);
     }

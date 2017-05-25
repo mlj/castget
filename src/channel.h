@@ -47,7 +47,6 @@ typedef struct _enclosure {
   char *url;
   long length;
   char *type;
-  char *filename;
 } enclosure;
 
 typedef struct _enclosure_filter {

@@ -27,7 +27,22 @@
 #include "patterns.h"
 #include "date_parsing.h"
 
+static gchar *guess_filename_from_url(const gchar *url);
 static gchar *sanitise_filename(const gchar *filename);
+
+/* Determine filename of enclosure. */
+/* Chop off ? and # and anything following that from the basename. */
+static gchar *guess_filename_from_url(const gchar *url)
+{
+  gchar *basename = g_path_get_basename(url);
+  gchar **tokens = g_strsplit_set(basename, "?#", 2);
+  gchar *guess = g_strdup(tokens[0]);
+
+  g_free(basename);
+  g_strfreev(tokens);
+
+  return guess;
+}
 
 /* Removes unsafe and undesirable characters from a filename. The caller
    must free the returned string with g_free(). */
@@ -49,7 +64,7 @@ gchar *build_enclosure_filename(const char *spool_directory, const char *filenam
   if (filename_pattern)
     filename = expand_string_with_patterns(filename_pattern, item);
   else
-    filename = g_strdup(item->enclosure->filename);
+    filename = guess_filename_from_url(item->enclosure->url);
 
   sanitised_filename = sanitise_filename(filename);
   g_free(filename);
