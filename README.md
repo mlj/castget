@@ -28,6 +28,8 @@ For usage instructions see the
 
 ## Development
 
+To build from git, regenerate the `configure` script using `autoreconf -fi`. You will also need [ronn](http://rtomayko.github.io/ronn/), which is used to build the man pages.
+
 To rebuild the man pages you will need [ronn](http://rtomayko.github.io/ronn/).
 Prebuilt man pages are included in the distribution.
 

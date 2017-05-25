@@ -31,6 +31,8 @@ man_MANS = \
   castget.1 \
   castgetrc.5
 
+AUTOMAKE_OPTIONS = foreign
+
 .PHONY: html
 
 html: castget.1.html castgetrc.5.html
