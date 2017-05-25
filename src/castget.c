@@ -233,7 +233,17 @@ static void version(void)
   g_printf("with --filter support\n");
 #endif
 
-  g_printf("Copyright (C) 2005-2016 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
+  g_printf("Copyright (C) 2005-2017 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
+}
+
+static void _print_item_update(const enclosure *enclosure, const gchar *filename)
+{
+  if (enclosure->length > 0) {
+    gchar *size = g_format_size(enclosure->length);
+    g_printf(" * %s (%s)\n", enclosure->url, size);
+    g_free(size);
+  } else
+    g_printf(" * %s (unknown size)\n", filename);
 }
 
 static void update_callback(void *user_data, channel_action action,
@@ -255,29 +265,9 @@ static void update_callback(void *user_data, channel_action action,
     g_assert(channel_info);
     g_assert(enclosure);
 
-    if (verbose) {
-      if (enclosure->length > 1024*1024*1024) {
-        g_printf(" * Downloading %s (%.1f GB) from %s\n",
-                 enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0),
-                 channel_info->title);
-      } else if (enclosure->length > 1024*1024) {
-        g_printf(" * Downloading %s (%.1f MB) from %s\n",
-                 enclosure->filename, (float)enclosure->length / (1024.0*1024.0),
-                 channel_info->title);
-      } else if (enclosure->length > 1024) {
-        g_printf(" * Downloading %s (%.1f kB) from %s\n",
-                 enclosure->filename, (float)enclosure->length / 1024.0,
-                 channel_info->title);
-      } else if (enclosure->length > 0) {
-        g_printf(" * Downloading %s (%ld bytes) from %s\n",
-                 enclosure->filename, enclosure->length,
-                 channel_info->title);
-      } else {
-        g_printf(" * Downloading %s (unknown length) from %s\n",
-                 enclosure->filename,
-                 channel_info->title);
-      }
-    }
+    if (verbose)
+      _print_item_update(enclosure, filename);
+
     break;
 
   case CCA_ENCLOSURE_DOWNLOAD_END:
@@ -324,11 +314,8 @@ static void catchup_callback(void *user_data, channel_action action, channel_inf
     g_assert(enclosure);
 
     if (verbose)
-      if (enclosure->length > 0)
-        g_printf("Catching up on %s (%ld bytes) from %s\n", enclosure->url, enclosure->length,
-                 channel_info->title);
-      else
-        g_printf("Catching up on %s (unknown length) from %s\n", enclosure->url, channel_info->title);
+      _print_item_update(enclosure, filename);
+
     break;
 
   case CCA_ENCLOSURE_DOWNLOAD_END:
@@ -353,24 +340,8 @@ static void list_callback(void *user_data, channel_action action, channel_info *
     g_assert(channel_info);
     g_assert(enclosure);
 
-    if (enclosure->length > 1024*1024*1024) {
-      g_printf(" * %s (%.1f GB) from %s\n",
-               enclosure->filename, (float)enclosure->length / (1024.0*1024.0*1024.0),
-               channel_info->title);
-    } else if (enclosure->length > 1024*1024) {
-      g_printf(" * %s (%.1f MB) from %s\n",
-               enclosure->filename, (float)enclosure->length / (1024.0*1024.0),
-               channel_info->title);
-    } else if (enclosure->length > 1024) {
-      g_printf(" * %s (%.1f kB) from %s\n",
-               enclosure->filename, (float)enclosure->length / 1024.0,
-               channel_info->title);
-    } else if (enclosure->length > 0) {
-      g_printf(" * %s (%ld bytes) from %s\n",
-               enclosure->filename, enclosure->length, channel_info->title);
-    } else {
-      g_printf(" * %s from %s\n", enclosure->filename, channel_info->title);
-    }
+    if (verbose)
+      _print_item_update(enclosure, filename);
 
     break;
 

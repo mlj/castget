@@ -43,16 +43,10 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
 # Checks for libraries.
-if test "x$configure_enable_gregex" = "xyes"; then
-  GLIB_REQUIRED_VERSION=2.14
-  AC_DEFINE(ENABLE_GREGEX, [1], [Define for GRegex support])
-else
-  GLIB_REQUIRED_VERSION=2.0
-fi
-dnl AC_SUBST(GLIB_REQUIRED_VERSION)
+AC_DEFINE(ENABLE_GREGEX, [1], [Define for GRegex support])
 
 PKG_CHECK_MODULES(GLIBS, [
-  glib-2.0 >= $GLIB_REQUIRED_VERSION
+  glib-2.0 >= 2.30
   libxml-2.0
 ])
 

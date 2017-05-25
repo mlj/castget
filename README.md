@@ -9,7 +9,7 @@ Please see INSTALL for detailed installation instructions.
 
 Dependencies:
 
-  * glib2 (version 2.14 or higher for optional regular expression filters)
+  * glib2 >= 2.30
   * libcurl
   * id3lib (optional, for ID3 tag support)
 
