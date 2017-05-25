@@ -12,4 +12,4 @@ addons:
       - libid3-3.8.3-dev
       - libcurl4-gnutls-dev
 
-script: ./autogen.sh --disable-id3lib && make all && make check && make clean
+script: gem install ronn && autoreconf -fvi && ./configure --disable-id3lib && make all && make check && make clean
