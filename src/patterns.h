@@ -1,5 +1,4 @@
 /*
-  Copyright (C) 2010 Tony Armitstead
   Copyright (C) 2017 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
@@ -18,13 +17,11 @@
 
 */
 
-#ifndef FILENAME_PATTERN_H
-#define FILENAME_PATTERN_H
+#ifndef PATTERN_H
+#define PATTERN_H
 
 #include "rss.h"
 
-gchar *build_enclosure_filename(const char *spool_directory,
-                                const char *filename_pattern,
-                                const rss_item *item);
+gchar *expand_string_with_patterns(const gchar *string, const rss_item *item);
 
-#endif /* FILENAME_PATTERN_H */
+#endif /* PATTERN_H */

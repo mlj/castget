@@ -27,12 +27,14 @@ castget_SOURCES = \
   configuration.c \
   date_parsing.c \
   date_parsing.h \
-  filename_patterns.c \
-  filename_patterns.h \
+  filenames.c \
+  filenames.h \
   htmlent.c \
   htmlent.h \
   libxmlutil.c \
   libxmlutil.h \
+  patterns.c \
+  patterns.h \
   progress.c \
   progress.h \
   rss.c \

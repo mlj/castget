@@ -27,4 +27,5 @@ po
 *.dirstamp
 src/castget
 tests/test_progress
-tests/test_filename_patterns
+tests/test_patterns
+tests/test_filenames

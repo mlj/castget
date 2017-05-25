@@ -21,17 +21,23 @@ INCLUDES = $(GLIBS_CFLAGS) $(CURL_CFLAGS)
 AUTOMAKE_OPTIONS = subdir-objects
 
 TESTS = \
+  test_patterns \
   test_progress \
-  test_filename_patterns
+  test_filenames
 
 bin_PROGRAMS = \
+  test_patterns \
   test_progress \
-  test_filename_patterns
+  test_filenames
 
 test_progress_SOURCES = test_progress.c ../src/progress.c ../src/progress.h
 
 test_progress_LDADD = $(GLIBS_LIBS) $(CURL_LIBS)
 
-test_filename_patterns_SOURCES = test_filename_patterns.c ../src/filename_patterns.c ../src/filename_patterns.h ../src/date_parsing.c ../src/date_parsing.h
+test_patterns_SOURCES = test_patterns.c ../src/date_parsing.c ../src/date_parsing.h ../src/patterns.c ../src/patterns.h
 
-test_filename_patterns_LDADD = $(GLIBS_LIBS) $(CURL_LIBS)
+test_patterns_LDADD = $(GLIBS_LIBS) $(CURL_LIBS)
+
+test_filenames_SOURCES = test_filenames.c ../src/filenames.c ../src/filenames.h ../src/date_parsing.c ../src/date_parsing.h ../src/patterns.c ../src/patterns.h
+
+test_filenames_LDADD = $(GLIBS_LIBS) $(CURL_LIBS)
