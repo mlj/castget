@@ -23,21 +23,21 @@ options as arguments.
 ### Operations
 
   * `-c`, `--catchup`:
-    catch up with channels and exit
+    Catch up with channels and exit.
 
   * `-l`, `--list`:
-    list available enclosures that have not yet been downloaded, and exit
+    List available enclosures that have not yet been downloaded, and exit.
 
   * `-h`, `--help`:
-    display help and exit
+    Display help and exit.
 
   * `-V`, `--version`:
-    output version information and exit
+    Output version information and exit.
 
 ### Operation filters
 
   * `-n`, `--new-only`:
-    restrict operation to new channels only, i.e. to channels that have never been
+    Restrict operation to new channels only, i.e. to channels that have never been
     downloaded from or been caught up with before. Note that if a channel is added
     to the configuration and subsequently removed, its download history is
     preserved. This means that a channel that has been removed from the
@@ -45,30 +45,30 @@ options as arguments.
     configuration again at a later time.
 
   * `-1`, `--first-only`:
-    restrict operation to the most recent item in each channel only.
+    Restrict operation to the most recent item in each channel only.
 
   * `-f` <pattern>, `--filter`=<pattern>:
-    restrict operation to enclosures whose download URLs match the regular expression `pattern`. Note that this will override any regular expression filters given in the configuration file
+    Restrict operation to enclosures whose download URLs match the regular expression `pattern`. Note that this will override any regular expression filters given in the configuration file.
 
 ### Global options
 
   * `-r`, `--resume`:
-    resume aborted downloads. Make sure not to use this option if the RSS feed uses the same filename for multiple enclosures as this will corrupt existing downloads
+    Resume aborted downloads. Make sure not to use this option if the RSS feed uses the same filename for multiple enclosures as this will corrupt existing downloads.
 
   * `-q`, `--quiet`:
-    do not print anything except error messages
+    Do not print anything except error messages.
 
   * `-v`, `--verbose`:
-    print detailed progress information
+    Print detailed progress information.
 
   * `-d`, `--debug`:
-    print (lots of) connection debug information
+    Print (lots of) connection debug information.
 
   * `-p`, `--progress-bar`:
-    print a progress bar when downloading enclosures
+    Print a progress bar when downloading enclosures.
 
   * `-C` <filename>, `--rcfile`=<filename>:
-    override the default filename for the configuration file
+    Override the default filename for the configuration file.
 
 ## EXAMPLES
 
@@ -117,7 +117,7 @@ Marius L. Jøhndal, Jick Nan.
 
 ## COPYRIGHT
 
-Castget is Copyright (C) 2005-2013 Marius L. Jøhndal.
+Castget is Copyright (C) 2005-2017 Marius L. Jøhndal.
 
 Castget is Copyright (C) 2007 Jick Nan.
 

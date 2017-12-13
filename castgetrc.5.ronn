@@ -31,40 +31,40 @@ directory when processing the channel `fooc`.
 ## KEYS
 
   * `url`:
-    retrieve RSS feed from this URL. The field is mandatory for all channel definitions.
+    Retrieve RSS feed from this URL. The field is mandatory for all channel definitions.
 
   * `spool`:
-    download enclosures to this directory.
+    Download enclosures to this directory.
 
   * `playlist`:
-    write the fully qualified file names of all downloaded enclosures to an m3u style playlist file with this name.
+    Write the fully qualified file names of all downloaded enclosures to an m3u style playlist file with this name.
 
   * `filter`:
-    restrict operation to enclosures whose URLs match this regular expression.
+    Restrict operation to enclosures whose URLs match this regular expression.
 
   * `id3leadartist`:
-    add or overwrite the `lead artist' (TPE1) ID3v2 tag in enclosures that support this.
+    Add or overwrite the `lead artist' (TPE1) ID3v2 tag in enclosures that support this.
 
   * `id3contentgroup`:
-    add or overwrite the `content group' (TIT1) ID3v2 tag in enclosures that support this.
+    Add or overwrite the `content group' (TIT1) ID3v2 tag in enclosures that support this.
 
   * `id3title`:
-    add or overwrite the `title' (TIT2) ID3v2 tag in enclosures that support this.
+    Add or overwrite the `title' (TIT2) ID3v2 tag in enclosures that support this.
 
   * `id3album`:
-    add or overwrite the `album' (TALB) ID3v2 tag in enclosures that support this.
+    Add or overwrite the `album' (TALB) ID3v2 tag in enclosures that support this.
 
   * `id3contenttype`:
-    add or overwrite the `content type' (TCON) ID3v2 tag in enclosures that support this.
+    Add or overwrite the `content type' (TCON) ID3v2 tag in enclosures that support this.
 
   * `id3year`:
-    add or overwrite the `year' (TYER) ID3v2 tag in enclosures that support this.
+    Add or overwrite the `year' (TYER) ID3v2 tag in enclosures that support this.
 
   * `id3comment`:
-    add or overwrite the `comment' (COMM) ID3v2 tag in enclosures that support this.
+    Add or overwrite the `comment' (COMM) ID3v2 tag in enclosures that support this.
 
   * `filename`:
-    save downloads using the given filename pattern instead of deriving it from the URL of the enclosure. See FILENAME PATTERNS.
+    Save downloads using the given filename pattern instead of deriving it from the URL of the enclosure. See FILENAME PATTERNS.
 
 ## GLOBAL CONFIGURATION
 
