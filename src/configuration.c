@@ -118,7 +118,6 @@ struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gcha
       c->filename_pattern = g_strdup(defaults->filename_pattern);
 
     if (!c->playlist && defaults->playlist)
-    if (!c->playlist && defaults->playlist)
       c->playlist = g_strdup(defaults->playlist);
 
     if (!c->id3_lead_artist && defaults->id3_lead_artist)
