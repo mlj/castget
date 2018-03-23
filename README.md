@@ -5,20 +5,38 @@ primarily intended for automatic, unattended downloading of podcasts.
 
 ## Installation and configuration
 
-Please see INSTALL for detailed installation instructions.
+To build and install from a distribution tarball, do the following:
 
-Dependencies:
+```shell
+./configure
+make
+make install
+```
+
+castget depends on
 
   * glib2 >= 2.30
   * libcurl
   * id3lib (optional, for ID3 tag support)
 
-See `configure --help` for instructions on how to disable these features should
-any of these libraries be unavailable.
+To disable id3lib support, pass `--disable-id3lib` to `configure`;
 
-You will find a sample configuration file castgetrc.example in the top level
-directory of the distribution. You should copy this file to your home directory
-as `.castgetrc` and edit it to suit your preferences.
+```shell
+./configure --disable-id3lib
+```
+
+If building from git, first regenerate the `configure` script using `autoreconf -fi`:
+
+```shell
+autoreconf -fi
+./configure
+make
+make install
+```
+
+You will also need [ronn](http://rtomayko.github.io/ronn/), which is used to build the man pages. Prebuilt man pages are included in the distribution.
+
+Please see INSTALL for detailed installation instructions.
 
 ## Usage
 
@@ -26,12 +44,9 @@ For usage instructions see the
 [castget(1)](http://mlj.github.io/castget/castget.1.html) and
 [castget(5)](http://mlj.github.io/castget/castgetrc.5.html) man pages.
 
-## Development
-
-To build from git, regenerate the `configure` script using `autoreconf -fi`. You will also need [ronn](http://rtomayko.github.io/ronn/), which is used to build the man pages.
-
-To rebuild the man pages you will need [ronn](http://rtomayko.github.io/ronn/).
-Prebuilt man pages are included in the distribution.
+You will find a sample configuration file castgetrc.example in the top level
+directory of the distribution. You should copy this file to your home directory
+as `.castgetrc` and edit it to suit your preferences.
 
 ## Bug reports
 
