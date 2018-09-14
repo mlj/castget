@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005-2016 Marius L. Jøhndal
+  Copyright (C) 2005-2018 Marius L. Jøhndal
   Copyright (C) 2010 Tony Armitstead
 
   This library is free software; you can redistribute it and/or
@@ -22,6 +22,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 #include <string.h>
+#include <stdlib.h>
 #include <glib/gstdio.h>
 
 #include "configuration.h"
