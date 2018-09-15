@@ -3,13 +3,14 @@ https://github.com/mlj/castget/commits/master for a details.
 
 Unreleased development version:
 
-  * Add support for filename patterns
+  * Add support for filename patterns (configuration option `filename`)
   * Refuse to overwrite existing downloads unless explicitly asked to resume a
     download
-  * Behaviour change: The -f/--filter option and the filter configuration
+  * Behaviour change: The `-f`/`--filter` option and the filter configuration
     options now match the URLs of enclosures instead of the filenames castget
     infers for them
   * Require glib >= 2.30 and make regular expression support mandatory
+  * Drop autogen.sh and require autoreconf when building from git
 
 Version 1.2.4 (2017/05/17):
 

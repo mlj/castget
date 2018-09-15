@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2005-2017 Marius L. Jøhndal
+# Copyright (C) 2005-2018 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,9 +23,8 @@ EXTRA_DIST = \
   castget.1.ronn \
   castgetrc.5 \
   castgetrc.5.ronn \
-  CHANGES \
-  ChangeLog.old \
-  NEWS.old
+  CHANGES.md \
+  ChangeLog.old
 
 man_MANS = \
   castget.1 \
