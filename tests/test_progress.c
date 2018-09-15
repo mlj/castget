@@ -4,8 +4,7 @@
 
 #include "../src/progress.h"
 
-static void
-test_progress_bar_new()
+static void test_progress_bar_new()
 {
   char *old_columns = getenv("COLUMNS");
   progress_bar *pb;
@@ -30,8 +29,7 @@ test_progress_bar_new()
   }
 }
 
-static void
-test_progress_bar_cb()
+static void test_progress_bar_cb()
 {
   char *old_columns = getenv("COLUMNS");
   progress_bar *pb;
@@ -61,9 +59,7 @@ test_progress_bar_cb()
   }
 }
 
-
-int
-main (int   argc, char *argv[])
+int main (int argc, char *argv[])
 {
   g_test_init(&argc, &argv, NULL);
 
