@@ -198,7 +198,8 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
   }
 
   /* Build enclosure filename. */
-  enclosure_full_filename = build_enclosure_filename(c->spool_directory, c->filename_pattern, item);
+  enclosure_full_filename = build_enclosure_filename(c->spool_directory,
+    c->filename_pattern, channel_info, item);
 
   if (g_file_test(enclosure_full_filename, G_FILE_TEST_EXISTS)) {
     /* A file with the same filename already exists. If the user has asked us

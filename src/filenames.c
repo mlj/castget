@@ -55,14 +55,15 @@ static gchar *sanitise_filename(const gchar *filename)
   return new_filename;
 }
 
-gchar *build_enclosure_filename(const char *spool_directory, const char *filename_pattern, const rss_item *item)
+gchar *build_enclosure_filename(const char *spool_directory, const char *filename_pattern,
+    const channel_info *channel_info, const rss_item *item)
 {
   gchar *filename;
   gchar *sanitised_filename;
   gchar *pathname;
 
   if (filename_pattern)
-    filename = expand_string_with_patterns(filename_pattern, item);
+    filename = expand_string_with_patterns(filename_pattern, channel_info, item);
   else
     filename = guess_filename_from_url(item->enclosure->url);
 

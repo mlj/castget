@@ -1,6 +1,6 @@
 /*
   Copyright (C) 2010 Tony Armistead
-  Copyright (C) 2017 Marius L. Jøhndal
+  Copyright (C) 2017-2018 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,9 @@
 
 static gchar *expand_date_pattern(const rss_item *item);
 static gchar *expand_title_pattern(const rss_item *item);
-static gchar *expand_pattern(const rss_item *item, const gchar *pattern);
+static gchar *expand_channel_title_pattern(const channel_info *info);
+static gchar *expand_pattern(const channel_info *channel_info,
+  const rss_item *item, const gchar *pattern);
 
 /* Expands a 'date' pattern to the value of the item's pub_date. Returns
    an empty string if pub_date is absent or invalid. Formats the date
@@ -61,22 +63,37 @@ static gchar *expand_title_pattern(const rss_item *item)
     return g_strdup("");
 }
 
+/* Expands a 'channel_title' pattern to the value of the channel's title.
+   Returns an empty string if title is absent. Caller must free returned string
+   with g_free. */
+static gchar *expand_channel_title_pattern(const channel_info *info)
+{
+  if (info->title)
+    return g_strdup(info->title);
+  else
+    return g_strdup("");
+}
+
 /* Expands a pattern to values from the RSS field's item. Returns an empty
    string if pattern is invalid or if it cannot be expanded. Caller must free
    returned string with g_free. */
-static gchar *expand_pattern(const rss_item *item, const gchar *pattern)
+static gchar *expand_pattern(const channel_info *channel_info,
+  const rss_item *item, const gchar *pattern)
 {
   if (g_ascii_strcasecmp(pattern, "date") == 0)
     return expand_date_pattern(item);
   else if (g_ascii_strcasecmp(pattern, "title") == 0)
     return expand_title_pattern(item);
+  else if (g_ascii_strcasecmp(pattern, "channel_title") == 0)
+    return expand_channel_title_pattern(channel_info);
   else
     return g_strdup("");
 }
 
 #define DIM(a) sizeof(a)/sizeof(a[0])
 
-gchar *expand_string_with_patterns(const gchar *string, const rss_item *item)
+gchar *expand_string_with_patterns(const gchar *string,
+  const channel_info *channel_info, const rss_item *item)
 {
   enum { STATE_COPY, STATE_FIELD, STATE_DONE } state = STATE_COPY;
   GString *parts;
@@ -107,7 +124,7 @@ gchar *expand_string_with_patterns(const gchar *string, const rss_item *item)
       /* Process */
       if (*cp_end == '\0' || *cp_end == ')') {
         fieldname[fieldname_idx] = '\0';
-        expanded_field = expand_pattern(item, fieldname);
+        expanded_field = expand_pattern(channel_info, item, fieldname);
         g_string_append(parts, expanded_field);
         g_free(expanded_field);
       }

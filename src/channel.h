@@ -54,23 +54,20 @@ typedef struct _enclosure_filter {
   gboolean caseless;
 } enclosure_filter;
 
-typedef void (*channel_callback)(void *user_data,
-                                 channel_action action,
+typedef void (*channel_callback)(void *user_data, channel_action action,
                                  channel_info *channel_info,
-                                 enclosure *enclosure,
-                                 const char *filename);
+                                 enclosure *enclosure, const char *filename);
 
 channel *channel_new(const char *url, const char *channel_file,
-                     const char *spool_directory,
-                     const char *filename_pattern,
+                     const char *spool_directory, const char *filename_pattern,
                      int resume);
 void channel_free(channel *c);
-int channel_update(channel *c, void *user_data, channel_callback cb, int no_download,
-                   int no_mark_read, int first_only, int resume,
-                   enclosure_filter *filter, int debug, int progress_bar);
+int channel_update(channel *c, void *user_data, channel_callback cb,
+                   int no_download, int no_mark_read, int first_only,
+                   int resume, enclosure_filter *filter, int debug,
+                   int progress_bar);
 
-enclosure_filter *enclosure_filter_new(const gchar *pattern,
-                                       gboolean caseless);
+enclosure_filter *enclosure_filter_new(const gchar *pattern, gboolean caseless);
 void enclosure_filter_free(enclosure_filter *e);
 
 #endif /* CHANNEL_H */

@@ -92,6 +92,10 @@ The following patterns take information from the `item` element or the enclosure
   * `%(date)`: date (by default on the format YYYY-MM-DD)
   * `%(title)`: title
 
+The following take information from the `channel` element or the enclosure in the RSS feed:
+
+  * `%(channel_title)`: channel title
+
 If any of the information required by a pattern is missing from the RSS feed or is invalid the pattern will be ignored and removed from the resulting filename.
 
 ## CHANNEL REMOVAL

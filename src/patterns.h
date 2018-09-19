@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2017 Marius L. Jøhndal
+  Copyright (C) 2017-2018 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -22,6 +22,8 @@
 
 #include "rss.h"
 
-gchar *expand_string_with_patterns(const gchar *string, const rss_item *item);
+gchar *expand_string_with_patterns(const gchar *string,
+                                   const channel_info *channel_info,
+                                   const rss_item *item);
 
 #endif /* PATTERN_H */

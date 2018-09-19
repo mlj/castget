@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2017 Wilhelm Schuster
-# Copyright (C) 2017 Marius L. Jøhndal
+# Copyright (C) 2017-2018 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -34,10 +34,10 @@ test_progress_SOURCES = test_progress.c ../src/progress.c ../src/progress.h
 
 test_progress_LDADD = $(GLIBS_LIBS) $(CURL_LIBS)
 
-test_patterns_SOURCES = test_patterns.c ../src/date_parsing.c ../src/date_parsing.h ../src/patterns.c ../src/patterns.h
+test_patterns_SOURCES = test_patterns.c ../src/date_parsing.c ../src/date_parsing.h ../src/patterns.c ../src/patterns.h mocks.c mocks.h
 
 test_patterns_LDADD = $(GLIBS_LIBS) $(CURL_LIBS)
 
-test_filenames_SOURCES = test_filenames.c ../src/filenames.c ../src/filenames.h ../src/date_parsing.c ../src/date_parsing.h ../src/patterns.c ../src/patterns.h
+test_filenames_SOURCES = test_filenames.c ../src/filenames.c ../src/filenames.h ../src/date_parsing.c ../src/date_parsing.h ../src/patterns.c ../src/patterns.h mocks.c mocks.h
 
 test_filenames_LDADD = $(GLIBS_LIBS) $(CURL_LIBS)
