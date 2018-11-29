@@ -56,6 +56,7 @@ int urlget_buffer(const char *url, void *user_data,
     curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, user_data);
     curl_easy_setopt(easyhandle, CURLOPT_FOLLOWLOCATION, 1);
     curl_easy_setopt(easyhandle, CURLOPT_USERAGENT, user_agent);
+    curl_easy_setopt(easyhandle, CURLOPT_ACCEPT_ENCODING, "");
 
     if (pb) {
       curl_easy_setopt(easyhandle, CURLOPT_NOPROGRESS, 0);
