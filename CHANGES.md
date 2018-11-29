@@ -11,6 +11,7 @@ Unreleased development version:
     infers for them
   * Require glib >= 2.30 and make regular expression support mandatory
   * Drop autogen.sh and require autoreconf when building from git
+  * Enable libcurl's compression support (PR #28)
 
 Version 1.2.4 (2017/05/17):
 

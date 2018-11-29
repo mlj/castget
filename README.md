@@ -16,7 +16,7 @@ make install
 castget depends on
 
   * glib2 >= 2.30
-  * libcurl
+  * libcurl >= 7.21.6
   * id3lib (optional, for ID3 tag support)
 
 To disable id3lib support, pass `--disable-id3lib` to `configure`;
