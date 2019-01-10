@@ -266,7 +266,7 @@ static void update_callback(void *user_data, channel_action action,
     g_assert(filename);
 
     /* Set media tags. */
-    if (enclosure->type && !strcmp(enclosure->type, "audio/mpeg")) {
+    if (enclosure->type && (!strcmp(enclosure->type, "audio/mpeg") || !strcmp(enclosure->type, "audio/mp3"))) {
 #ifdef ENABLE_ID3LIB
       if (_id3_check_and_set(filename, c))
         fprintf(stderr, "Error setting ID3 tag for file %s.\n", filename);
