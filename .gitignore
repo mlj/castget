@@ -7,6 +7,7 @@ test-driver
 ltmain.sh
 Makefile
 Makefile.in
+m4
 missing
 mkinstalldirs
 stamp-h1
@@ -14,6 +15,7 @@ autom4te.cache
 config.guess
 config.h
 config.h.in
+config.h.in~
 config.log
 config.status
 config.sub

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-INCLUDES = $(GLIBS_CFLAGS) $(CURL_CFLAGS)
+AM_CPPFLAGS = $(GLIBS_CFLAGS) $(CURL_CFLAGS)
 
 AUTOMAKE_OPTIONS = subdir-objects
 

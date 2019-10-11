@@ -22,6 +22,7 @@ AC_INIT(castget, 1.2.4, mariuslj@ifi.uio.no)
 AM_INIT_AUTOMAKE([1.8 dist-bzip2 no-dist-gzip foreign])
 AC_CONFIG_SRCDIR([src/castget.c])
 AC_CONFIG_HEADER([config.h])
+AC_CONFIG_MACRO_DIRS([m4])
 
 AH_TEMPLATE([ENABLE_ID3LIB], [Define to 1 if you want to enable support for id3lib])
 AC_ARG_ENABLE(id3lib,
