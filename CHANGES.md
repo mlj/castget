@@ -3,7 +3,8 @@ https://github.com/mlj/castget/commits/master for a details.
 
 Unreleased development version:
 
-  * Add support for filename patterns (configuration option `filename`)
+  * Fix feeds with enclosure type `audio/mp3` (PR #30)
+  * Add support for filename patterns (configuration option `filename`, issue #13, issue #21)
   * Refuse to overwrite existing downloads unless explicitly asked to resume a
     download
   * Behaviour change: The `-f`/`--filter` option and the filter configuration
