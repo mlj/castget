@@ -99,38 +99,36 @@ options as arguments.</p>
 <h3 id="Operations">Operations</h3>
 
 <dl>
-<dt><code>-c</code>, <code>--catchup</code></dt><dd><p>catch up with channels and exit</p></dd>
-<dt><code>-l</code>, <code>--list</code></dt><dd><p>list available enclosures that have not yet been downloaded, and exit</p></dd>
-<dt><code>-h</code>, <code>--help</code></dt><dd><p>display help and exit</p></dd>
-<dt><code>-V</code>, <code>--version</code></dt><dd><p>output version information and exit</p></dd>
+<dt><code>-c</code>, <code>--catchup</code></dt><dd><p>Catch up with channels and exit.</p></dd>
+<dt><code>-l</code>, <code>--list</code></dt><dd><p>List available enclosures that have not yet been downloaded, and exit.</p></dd>
+<dt><code>-h</code>, <code>--help</code></dt><dd><p>Display help and exit.</p></dd>
+<dt><code>-V</code>, <code>--version</code></dt><dd><p>Output version information and exit.</p></dd>
 </dl>
 
 
 <h3 id="Operation-filters">Operation filters</h3>
 
 <dl>
-<dt><code>-n</code>, <code>--new-only</code></dt><dd><p>restrict operation to new channels only, i.e. to channels that have never been
+<dt><code>-n</code>, <code>--new-only</code></dt><dd><p>Restrict operation to new channels only, i.e. to channels that have never been
 downloaded from or been caught up with before. Note that if a channel is added
 to the configuration and subsequently removed, its download history is
 preserved. This means that a channel that has been removed from the
 configuration file will not be considered as 'new' if it is added to the
 configuration again at a later time.</p></dd>
-<dt><code>-1</code>, <code>--first-only</code></dt><dd><p>restrict operation to the most recent item in each channel only.</p></dd>
-<dt><code>-f</code> <var>pattern</var>, <code>--filter</code>=<var>pattern</var></dt><dd><p>restrict operation to items whose enclosures have names matching the
-regular expression <code>pattern</code>. Note that this will override any
-regular expression filters given in the configuration file.</p></dd>
+<dt><code>-1</code>, <code>--first-only</code></dt><dd><p>Restrict operation to the most recent item in each channel only.</p></dd>
+<dt><code>-f</code> <var>pattern</var>, <code>--filter</code>=<var>pattern</var></dt><dd><p>Restrict operation to enclosures whose download URLs match the regular expression <code>pattern</code>. Note that this will override any regular expression filters given in the configuration file.</p></dd>
 </dl>
 
 
 <h3 id="Global-options">Global options</h3>
 
 <dl>
-<dt><code>-r</code>, <code>--resume</code></dt><dd><p>resume aborted downloads</p></dd>
-<dt><code>-q</code>, <code>--quiet</code></dt><dd><p>do not print anything except error messages</p></dd>
-<dt><code>-v</code>, <code>--verbose</code></dt><dd><p>print detailed progress information</p></dd>
-<dt><code>-d</code>, <code>--debug</code></dt><dd><p>print (lots of) connection debug information</p></dd>
-<dt><code>-p</code>, <code>--progress-bar</code></dt><dd><p>print a progress bar when downloading enclosures</p></dd>
-<dt><code>-C</code> <var>filename</var>, <code>--rcfile</code>=<var>filename</var></dt><dd><p>override the default filename for the configuration file</p></dd>
+<dt><code>-r</code>, <code>--resume</code></dt><dd><p>Resume aborted downloads. Make sure not to use this option if the RSS feed uses the same filename for multiple enclosures as this will corrupt existing downloads.</p></dd>
+<dt><code>-q</code>, <code>--quiet</code></dt><dd><p>Do not print anything except error messages.</p></dd>
+<dt><code>-v</code>, <code>--verbose</code></dt><dd><p>Print detailed progress information.</p></dd>
+<dt><code>-d</code>, <code>--debug</code></dt><dd><p>Print (lots of) connection debug information.</p></dd>
+<dt><code>-p</code>, <code>--progress-bar</code></dt><dd><p>Print a progress bar when downloading enclosures.</p></dd>
+<dt><code>-C</code> <var>filename</var>, <code>--rcfile</code>=<var>filename</var></dt><dd><p>Override the default filename for the configuration file.</p></dd>
 </dl>
 
 
@@ -182,7 +180,7 @@ instructions on how to submit bug reports.</p>
 
 <h2 id="COPYRIGHT">COPYRIGHT</h2>
 
-<p>Castget is Copyright (C) 2005-2013 Marius L. Jøhndal.</p>
+<p>Castget is Copyright (C) 2005-2019 Marius L. Jøhndal.</p>
 
 <p>Castget is Copyright (C) 2007 Jick Nan.</p>
 
@@ -191,8 +189,8 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 
 
   <ol class='man-decor man-foot man foot'>
-    <li class='tl'>castget 1.2.4</li>
-    <li class='tc'>May 2017</li>
+    <li class='tl'>castget 2.0.0</li>
+    <li class='tc'>October 2019</li>
     <li class='tr'>castget(1)</li>
   </ol>
 

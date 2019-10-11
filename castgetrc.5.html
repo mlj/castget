@@ -57,6 +57,7 @@
     <a href="#DESCRIPTION">DESCRIPTION</a>
     <a href="#KEYS">KEYS</a>
     <a href="#GLOBAL-CONFIGURATION">GLOBAL CONFIGURATION</a>
+    <a href="#FILENAME-PATTERNS">FILENAME PATTERNS</a>
     <a href="#CHANNEL-REMOVAL">CHANNEL REMOVAL</a>
     <a href="#NOTE">NOTE</a>
     <a href="#SEE-ALSO">SEE ALSO</a>
@@ -106,18 +107,18 @@ directory when processing the channel <code>fooc</code>.</p>
 <h2 id="KEYS">KEYS</h2>
 
 <dl>
-<dt class="flush"><code>url</code></dt><dd><p>retrieve RSS feed from this URL. The field is mandatory for all channel definitions.</p></dd>
-<dt class="flush"><code>spool</code></dt><dd><p>download enclosures to this directory.</p></dd>
-<dt><code>playlist</code></dt><dd><p>write the fully qualified file names of all downloaded enclosures to an m3u style playlist file with this name.</p></dd>
-<dt class="flush"><code>filter</code></dt><dd><p>restrict operation to items whose enclosures have names matching this regular
-expression.</p></dd>
-<dt><code>id3leadartist</code></dt><dd><p>add or overwrite the `lead artist' (TPE1) ID3v2 tag in enclosures that support this.</p></dd>
-<dt><code>id3contentgroup</code></dt><dd><p>add or overwrite the `content group' (TIT1) ID3v2 tag in enclosures that support this.</p></dd>
-<dt><code>id3title</code></dt><dd><p>add or overwrite the `title' (TIT2) ID3v2 tag in enclosures that support this.</p></dd>
-<dt><code>id3album</code></dt><dd><p>add or overwrite the `album' (TALB) ID3v2 tag in enclosures that support this.</p></dd>
-<dt><code>id3contenttype</code></dt><dd><p>add or overwrite the `content type' (TCON) ID3v2 tag in enclosures that support this.</p></dd>
-<dt class="flush"><code>id3year</code></dt><dd><p>add or overwrite the `year' (TYER) ID3v2 tag in enclosures that support this.</p></dd>
-<dt><code>id3comment</code></dt><dd><p>add or overwrite the `comment' (COMM) ID3v2 tag in enclosures that support this.</p></dd>
+<dt class="flush"><code>url</code></dt><dd><p>Retrieve RSS feed from this URL. The field is mandatory for all channel definitions.</p></dd>
+<dt class="flush"><code>spool</code></dt><dd><p>Download enclosures to this directory.</p></dd>
+<dt><code>playlist</code></dt><dd><p>Write the fully qualified file names of all downloaded enclosures to an m3u style playlist file with this name.</p></dd>
+<dt class="flush"><code>filter</code></dt><dd><p>Restrict operation to enclosures whose URLs match this regular expression.</p></dd>
+<dt><code>id3leadartist</code></dt><dd><p>Add or overwrite the `lead artist' (TPE1) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>id3contentgroup</code></dt><dd><p>Add or overwrite the `content group' (TIT1) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>id3title</code></dt><dd><p>Add or overwrite the `title' (TIT2) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>id3album</code></dt><dd><p>Add or overwrite the `album' (TALB) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>id3contenttype</code></dt><dd><p>Add or overwrite the `content type' (TCON) ID3v2 tag in enclosures that support this.</p></dd>
+<dt class="flush"><code>id3year</code></dt><dd><p>Add or overwrite the `year' (TYER) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>id3comment</code></dt><dd><p>Add or overwrite the `comment' (COMM) ID3v2 tag in enclosures that support this.</p></dd>
+<dt><code>filename</code></dt><dd><p>Save downloads using the given filename pattern instead of deriving it from the URL of the enclosure. See FILENAME PATTERNS.</p></dd>
 </dl>
 
 
@@ -134,6 +135,31 @@ id3contenttype=Podcast
 <code>id3contenttype=Podcast</code> to all other channel definitions.</p>
 
 <p>Key-value pairs in channel definitions override the global configuration.</p>
+
+<h2 id="FILENAME-PATTERNS">FILENAME PATTERNS</h2>
+
+<p>Filename patterns can contain patterns on the form <code>%(parameter)</code>, which are expanded to form a complete filename. Patterns are expanded once for each enclosure download and can therefore be used to generate filenames that are unique to each download.</p>
+
+<p>Anything that is not a pattern is as a literal that will be reproduced verbatim (subject to some sanity checking). The complete pathname of a download is determined by concatenating the channel's spool directory with the filename.</p>
+
+<p>Note that <code>castget</code> will refuse to overwrite files that already exist except when it is invoked with the <code>-r</code> option to resume downloads. Some RSS feeds reuse the same filename for all enclosures. In such cases the <code>-r</code> option will corrupt existing downloads unless you use filename patterns to construct unique filenames.</p>
+
+<p>The following patterns take information from the <code>item</code> element or the enclosure in the RSS feed:</p>
+
+<ul>
+<li><code>%(date)</code>: date (by default on the format YYYY-MM-DD)</li>
+<li><code>%(title)</code>: title</li>
+</ul>
+
+
+<p>The following take information from the <code>channel</code> element or the enclosure in the RSS feed:</p>
+
+<ul>
+<li><code>%(channel_title)</code>: channel title</li>
+</ul>
+
+
+<p>If any of the information required by a pattern is missing from the RSS feed or is invalid the pattern will be ignored and removed from the resulting filename.</p>
 
 <h2 id="CHANNEL-REMOVAL">CHANNEL REMOVAL</h2>
 
@@ -153,8 +179,8 @@ id3contenttype=Podcast
 
 
   <ol class='man-decor man-foot man foot'>
-    <li class='tl'>castget 1.2.4</li>
-    <li class='tc'>May 2017</li>
+    <li class='tl'>castget 2.0.0</li>
+    <li class='tc'>October 2019</li>
     <li class='tr'>castgetrc(5)</li>
   </ol>
 
