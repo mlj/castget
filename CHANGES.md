@@ -1,18 +1,18 @@
 This is a summary of changes between each release. See the commit log on
 https://github.com/mlj/castget/commits/master for a details.
 
-Unreleased development version:
+Version 2.0.0 (2019/10/12):
 
-  * Fix feeds with enclosure type `audio/mp3` (PR #30)
   * Add support for filename patterns (configuration option `filename`, issue #13, issue #21)
-  * Refuse to overwrite existing downloads unless explicitly asked to resume a
-    download
   * Behaviour change: The `-f`/`--filter` option and the filter configuration
     options now match the URLs of enclosures instead of the filenames castget
     infers for them
+  * Refuse to overwrite existing downloads unless explicitly asked to resume a
+    download
   * Require glib >= 2.30 and make regular expression support mandatory
   * Drop autogen.sh and require autoreconf when building from git
   * Enable libcurl's compression support (PR #28)
+  * Fix feeds with enclosure type `audio/mp3` (PR #30)
 
 Version 1.2.4 (2017/05/17):
 
