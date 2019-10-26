@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
 AC_PREREQ(2.59)
-AC_INIT(castget, 2.0.0, mariuslj@ifi.uio.no)
+AC_INIT(castget, 2.0.1, mariuslj@ifi.uio.no)
 AM_INIT_AUTOMAKE([1.8 dist-bzip2 no-dist-gzip foreign])
 AC_CONFIG_SRCDIR([src/castget.c])
 AC_CONFIG_HEADER([config.h])

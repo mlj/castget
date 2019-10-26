@@ -1,6 +1,10 @@
 This is a summary of changes between each release. See the commit log on
 https://github.com/mlj/castget/commits/master for a details.
 
+Version 2.0.1 (2019/10/26):
+
+  * Fix broken man pages in distribution (issue #37)
+
 Version 2.0.0 (2019/10/12):
 
   * Add support for filename patterns (configuration option `filename`, issue #13, issue #21)
