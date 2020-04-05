@@ -26,6 +26,7 @@ struct channel_configuration {
   gchar *identifier;
   gchar *url;
   gchar *spool_directory;
+  gchar *channel_directory;
   gchar *filename_pattern;
   gchar *playlist;
   gchar *id3_lead_artist;

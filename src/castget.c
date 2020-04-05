@@ -148,15 +148,8 @@ int main(int argc, char **argv)
 
   LIBXML_TEST_VERSION;
 
-  /* Build the channel directory path and ensure that it exists. */
+  /* Assigning default channel directory before reading configuration file */
   channeldir = g_build_filename(g_get_home_dir(), ".castget", NULL);
-
-  if (!g_file_test(channeldir, G_FILE_TEST_IS_DIR)) {
-    if (g_mkdir(channeldir, 0755) < 0) {
-      perror("Error creating channel directory");
-      return 1;
-    }
-  }
 
   /* Try opening configuration file. */
   if (!rcfile)
@@ -173,8 +166,20 @@ int main(int argc, char **argv)
         return -1;
 
       defaults = channel_configuration_new(kf, "*", NULL);
+
+      /* Read global channel directory setting from configuration */
+      if (defaults->channel_directory)
+        channeldir = defaults->channel_directory;
     } else
       defaults = NULL;
+
+    /* Build the channel directory path and ensure that it exists. */
+    if (!g_file_test(channeldir, G_FILE_TEST_IS_DIR)) {
+      if (g_mkdir_with_parents(channeldir, 0755) < 0) {
+        perror("Error creating channel directory");
+        return 1;
+      }
+    }
 
     /* Perform actions. */
     if (optind < argc) {
