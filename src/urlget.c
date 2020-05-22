@@ -21,12 +21,13 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <string.h>
-#include <stdlib.h>
-#include <glib.h>
 #include <curl/curl.h>
-#include "urlget.h"
+#include <glib.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "progress.h"
+#include "urlget.h"
 
 int urlget_file(const char *url, FILE *f, int debug)
 {
@@ -34,7 +35,8 @@ int urlget_file(const char *url, FILE *f, int debug)
 }
 
 int urlget_buffer(const char *url, void *user_data,
-                  size_t (*write_buffer)(void *buffer, size_t size, size_t nmemb, void *user_data),
+                  size_t (*write_buffer)(void *buffer, size_t size,
+                                         size_t nmemb, void *user_data),
                   long resume_from, int debug, progress_bar *pb)
 {
   CURL *easyhandle;
@@ -44,7 +46,8 @@ int urlget_buffer(const char *url, void *user_data,
   gchar *user_agent;
 
   /* Construct user agent string. */
-  user_agent = g_strdup_printf("%s (%s rss enclosure downloader)", PACKAGE_STRING, PACKAGE);
+  user_agent = g_strdup_printf("%s (%s rss enclosure downloader)",
+                               PACKAGE_STRING, PACKAGE);
 
   /* Initialise curl. */
   easyhandle = curl_easy_init();
@@ -66,7 +69,8 @@ int urlget_buffer(const char *url, void *user_data,
       curl_easy_setopt(easyhandle, CURLOPT_NOPROGRESS, 1);
 
     if (resume_from)
-      curl_easy_setopt(easyhandle, CURLOPT_RESUME_FROM_LARGE, (curl_off_t)resume_from);
+      curl_easy_setopt(easyhandle, CURLOPT_RESUME_FROM_LARGE,
+                       (curl_off_t)resume_from);
 
     curl_easy_setopt(easyhandle, CURLOPT_VERBOSE, debug);
 
@@ -76,7 +80,8 @@ int urlget_buffer(const char *url, void *user_data,
 
     if (success != CURLE_OK) {
       if (pb)
-        /* Insert an extra CR on stdout as we may have started printing a progress bar there. */
+        /* Insert an extra CR on stdout as we may have started printing a
+           progress bar there. */
         fprintf(stdout, "\n");
 
       if (success == CURLE_WRITE_ERROR) {

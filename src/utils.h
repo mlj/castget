@@ -20,11 +20,12 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <stdio.h>
 #include <glib.h>
+#include <stdio.h>
 
 int write_by_temporary_file(const gchar *filename,
-                            int(*writer)(FILE *f, gpointer user_data, int debug),
+                            int (*writer)(FILE *f, gpointer user_data,
+                                          int debug),
                             gpointer user_data, gchar **used_filename,
                             int debug);
 gchar *get_rfc822_time(void);

@@ -22,15 +22,16 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <assert.h>
-#include <stdio.h>
-#include <string.h>
 #include <glib.h>
 #include <glib/gprintf.h>
+#include <stdio.h>
+#include <string.h>
 #include <unistd.h>
-#include "libxmlutil.h"
-#include "urlget.h"
+
 #include "htmlent.h"
+#include "libxmlutil.h"
 #include "rss.h"
+#include "urlget.h"
 #include "utils.h"
 
 #define MRSS_NAMESPACE "http://search.yahoo.com/mrss"
@@ -66,16 +67,14 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
   /* Look for mrss information first, if there is any. It may be
      located either directly under the "item" tag, or inside an mrss
      "group" tag. */
-  mrss_content = libxmlutil_child_node_by_name(node, MRSS_NAMESPACE,
-                                               "content");
+  mrss_content = libxmlutil_child_node_by_name(node, MRSS_NAMESPACE, "content");
 
   if (!mrss_content) {
-    mrss_group = libxmlutil_child_node_by_name(node, MRSS_NAMESPACE,
-                                               "group");
+    mrss_group = libxmlutil_child_node_by_name(node, MRSS_NAMESPACE, "group");
 
     if (mrss_group)
-      mrss_content = libxmlutil_child_node_by_name(mrss_group,
-                                                   MRSS_NAMESPACE, "content");
+      mrss_content =
+          libxmlutil_child_node_by_name(mrss_group, MRSS_NAMESPACE, "content");
   }
 
   /* Figure out if there is an "enclosure" tag here. */
@@ -92,7 +91,8 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
     /* Now read attributes. Prefer mrss over enclosure. */
     if (mrss_content) {
       f->items[i]->enclosure->url = libxmlutil_dup_attr(mrss_content, "url");
-      f->items[i]->enclosure->length = libxmlutil_attr_as_long(mrss_content, "fileSize");
+      f->items[i]->enclosure->length =
+          libxmlutil_attr_as_long(mrss_content, "fileSize");
       f->items[i]->enclosure->type = libxmlutil_dup_attr(encl, "type");
     }
 
@@ -101,7 +101,8 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
         f->items[i]->enclosure->url = libxmlutil_dup_attr(encl, "url");
 
       if (!f->items[i]->enclosure->length)
-        f->items[i]->enclosure->length = libxmlutil_attr_as_long(encl, "length");
+        f->items[i]->enclosure->length =
+            libxmlutil_attr_as_long(encl, "length");
 
       if (!f->items[i]->enclosure->type)
         f->items[i]->enclosure->type = libxmlutil_dup_attr(encl, "type");
@@ -114,7 +115,8 @@ static void _item_iterator(const void *user_data, int i, const xmlNode *node)
     f->items[i]->enclosure = NULL;
 }
 
-static rss_file *rss_parse(const gchar *url, const xmlNode *root_element, gchar *fetched_time)
+static rss_file *rss_parse(const gchar *url, const xmlNode *root_element,
+                           gchar *fetched_time)
 {
   const char *version_string;
   const xmlNode *channel;
@@ -123,7 +125,8 @@ static rss_file *rss_parse(const gchar *url, const xmlNode *root_element, gchar 
 
   /* Do some sanity checking and extract the RSS version number. */
   if (strcmp((char *)root_element->name, "rss")) {
-    fprintf(stderr, "Error parsing RSS file %s: Unrecognized top-level element %s.\n",
+    fprintf(stderr,
+            "Error parsing RSS file %s: Unrecognized top-level element %s.\n",
             url, (char *)root_element->name);
     return NULL;
   }
@@ -222,7 +225,7 @@ rss_file *rss_open_file(const char *filename)
 
   root_element = xmlDocGetRootElement(doc);
 
-  if (!root_element)  {
+  if (!root_element) {
     xmlFreeDoc(doc);
     xmlFreeParserCtxt(ctxt);
 
@@ -262,7 +265,8 @@ rss_file *rss_open_url(const char *url, int debug)
   rss_file *f;
   gchar *rss_filename;
 
-  if (write_by_temporary_file(NULL, _rss_open_url_cb, (gpointer)url, &rss_filename, debug))
+  if (write_by_temporary_file(NULL, _rss_open_url_cb, (gpointer)url,
+                              &rss_filename, debug))
     return NULL;
 
   f = rss_open_file(rss_filename);

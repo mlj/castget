@@ -23,9 +23,10 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <glib.h>
+
+#include "date_parsing.h"
 #include "filenames.h"
 #include "patterns.h"
-#include "date_parsing.h"
 
 static gchar *guess_filename_from_url(const gchar *url);
 static gchar *sanitise_filename(const gchar *filename);
@@ -55,15 +56,18 @@ static gchar *sanitise_filename(const gchar *filename)
   return new_filename;
 }
 
-gchar *build_enclosure_filename(const char *spool_directory, const char *filename_pattern,
-    const channel_info *channel_info, const rss_item *item)
+gchar *build_enclosure_filename(const char *spool_directory,
+                                const char *filename_pattern,
+                                const channel_info *channel_info,
+                                const rss_item *item)
 {
   gchar *filename;
   gchar *sanitised_filename;
   gchar *pathname;
 
   if (filename_pattern)
-    filename = expand_string_with_patterns(filename_pattern, channel_info, item);
+    filename =
+        expand_string_with_patterns(filename_pattern, channel_info, item);
   else
     filename = guess_filename_from_url(item->enclosure->url);
 

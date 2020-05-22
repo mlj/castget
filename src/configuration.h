@@ -38,8 +38,9 @@ struct channel_configuration {
   gchar *regex_filter;
 };
 
-struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gchar *identifier,
-                                                        struct channel_configuration *defaults);
+struct channel_configuration *channel_configuration_new(
+    GKeyFile *kf, const gchar *identifier,
+    struct channel_configuration *defaults);
 void channel_configuration_free(struct channel_configuration *c);
 int channel_configuration_verify_keys(GKeyFile *kf, const char *identifier);
 

@@ -21,23 +21,25 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <glib.h>
 #include <glib/gprintf.h>
-#include "libxmlutil.h"
-#include "urlget.h"
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include "channel.h"
-#include "rss.h"
-#include "utils.h"
-#include "progress.h"
 #include "filenames.h"
+#include "libxmlutil.h"
+#include "progress.h"
+#include "rss.h"
+#include "urlget.h"
+#include "utils.h"
 
 static int _enclosure_pattern_match(enclosure_filter *filter,
                                     const enclosure *enclosure);
 
-static void _enclosure_iterator(const void *user_data, int i, const xmlNode *node)
+static void _enclosure_iterator(const void *user_data, int i,
+                                const xmlNode *node)
 {
   const char *downloadtime;
 
@@ -56,8 +58,7 @@ static void _enclosure_iterator(const void *user_data, int i, const xmlNode *nod
 }
 
 channel *channel_new(const char *url, const char *channel_file,
-                     const char *spool_directory,
-                     const char *filename_pattern,
+                     const char *spool_directory, const char *filename_pattern,
                      int resume)
 {
   channel *c;
@@ -72,22 +73,25 @@ channel *channel_new(const char *url, const char *channel_file,
   c->filename_pattern = g_strdup(filename_pattern);
   //  c->resume = resume;
   c->rss_last_fetched = NULL;
-  c->downloaded_enclosures = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, g_free);
+  c->downloaded_enclosures =
+      g_hash_table_new_full(g_str_hash, g_str_equal, NULL, g_free);
 
   if (g_file_test(c->channel_filename, G_FILE_TEST_EXISTS)) {
     doc = xmlReadFile(c->channel_filename, NULL, 0);
 
     if (!doc) {
-      g_fprintf(stderr, "Error parsing channel file %s.\n", c->channel_filename);
+      g_fprintf(stderr, "Error parsing channel file %s.\n",
+                c->channel_filename);
       return NULL;
     }
 
     root_element = xmlDocGetRootElement(doc);
 
-    if (!root_element)  {
+    if (!root_element) {
       xmlFreeDoc(doc);
 
-      g_fprintf(stderr, "Error parsing channel file %s.\n", c->channel_filename);
+      g_fprintf(stderr, "Error parsing channel file %s.\n",
+                c->channel_filename);
       return NULL;
     }
 
@@ -98,7 +102,8 @@ channel *channel_new(const char *url, const char *channel_file,
       c->rss_last_fetched = g_strdup(s);
 
     /* Iterate encolsure elements. */
-    libxmlutil_iterate_by_tag_name(root_element, "enclosure", c, _enclosure_iterator);
+    libxmlutil_iterate_by_tag_name(root_element, "enclosure", c,
+                                   _enclosure_iterator);
 
     xmlFreeDoc(doc);
   }
@@ -106,15 +111,16 @@ channel *channel_new(const char *url, const char *channel_file,
   return c;
 }
 
-static void _cast_channel_save_downloaded_enclosure(gpointer key, gpointer value,
+static void _cast_channel_save_downloaded_enclosure(gpointer key,
+                                                    gpointer value,
                                                     gpointer user_data)
 {
   FILE *f = (FILE *)user_data;
   gchar *escaped_key = g_markup_escape_text(key, -1);
 
   if (value)
-    g_fprintf(f, "  <enclosure url=\"%s\" downloadtime=\"%s\"/>\n",
-              escaped_key, (gchar *)value);
+    g_fprintf(f, "  <enclosure url=\"%s\" downloadtime=\"%s\"/>\n", escaped_key,
+              (gchar *)value);
   else
     g_fprintf(f, "  <enclosure url=\"%s\"/>\n", escaped_key);
 
@@ -128,11 +134,13 @@ static int _cast_channel_save_channel(FILE *f, gpointer user_data, int debug)
   g_fprintf(f, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
   if (c->rss_last_fetched)
-    g_fprintf(f, "<channel version=\"1.0\" rsslastfetched=\"%s\">\n", c->rss_last_fetched);
+    g_fprintf(f, "<channel version=\"1.0\" rsslastfetched=\"%s\">\n",
+              c->rss_last_fetched);
   else
     g_fprintf(f, "<channel version=\"1.0\">\n");
 
-  g_hash_table_foreach(c->downloaded_enclosures, _cast_channel_save_downloaded_enclosure, f);
+  g_hash_table_foreach(c->downloaded_enclosures,
+                       _cast_channel_save_downloaded_enclosure, f);
 
   g_fprintf(f, "</channel>\n");
 
@@ -141,7 +149,8 @@ static int _cast_channel_save_channel(FILE *f, gpointer user_data, int debug)
 
 static void _cast_channel_save(channel *c, int debug)
 {
-  write_by_temporary_file(c->channel_filename, _cast_channel_save_channel, c, NULL, debug);
+  write_by_temporary_file(c->channel_filename, _cast_channel_save_channel, c,
+                          NULL, debug);
 }
 
 void channel_free(channel *c)
@@ -154,22 +163,24 @@ void channel_free(channel *c)
   free(c);
 }
 
-static size_t _enclosure_urlget_cb(void *buffer, size_t size, size_t nmemb, void *user_data)
+static size_t _enclosure_urlget_cb(void *buffer, size_t size, size_t nmemb,
+                                   void *user_data)
 {
   FILE *f = (FILE *)user_data;
 
   return fwrite(buffer, size, nmemb, f);
 }
 
-static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb, int debug)
+static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb,
+                          int debug)
 {
   rss_file *f;
 
   if (cb)
     cb(user_data, CCA_RSS_DOWNLOAD_START, NULL, NULL, NULL);
 
-  if (!strncmp("http://", c->url, strlen("http://"))
-      || !strncmp("https://", c->url, strlen("https://")))
+  if (!strncmp("http://", c->url, strlen("http://")) ||
+      !strncmp("https://", c->url, strlen("https://")))
     f = rss_open_url(c->url, debug);
   else
     f = rss_open_file(c->url);
@@ -198,8 +209,8 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
   }
 
   /* Build enclosure filename. */
-  enclosure_full_filename = build_enclosure_filename(c->spool_directory,
-    c->filename_pattern, channel_info, item);
+  enclosure_full_filename = build_enclosure_filename(
+      c->spool_directory, c->filename_pattern, channel_info, item);
 
   if (g_file_test(enclosure_full_filename, G_FILE_TEST_EXISTS)) {
     /* A file with the same filename already exists. If the user has asked us
@@ -216,8 +227,10 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
       else
         resume_from = 0;
     } else {
-      /* File exists but user does not allow us to append so we have to abort. */
-      g_fprintf(stderr, "Enclosure file %s already exists.\n", enclosure_full_filename);
+      /* File exists but user does not allow us to append so we have to
+         abort. */
+      g_fprintf(stderr, "Enclosure file %s already exists.\n",
+                enclosure_full_filename);
       g_free(enclosure_full_filename);
       return 1;
     }
@@ -228,21 +241,25 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
   enclosure_file = fopen(enclosure_full_filename, resume_from ? "ab" : "wb");
 
   if (!enclosure_file) {
-    g_fprintf(stderr, "Error opening enclosure file %s.\n", enclosure_full_filename);
+    g_fprintf(stderr, "Error opening enclosure file %s.\n",
+              enclosure_full_filename);
     g_free(enclosure_full_filename);
     return 1;
   }
 
   if (cb)
-    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, enclosure_full_filename);
+    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure,
+       enclosure_full_filename);
 
   if (show_progress_bar)
     pb = progress_bar_new(resume_from);
   else
     pb = NULL;
 
-  if (urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb, resume_from, debug, pb)) {
-    g_fprintf(stderr, "Error downloading enclosure from %s.\n", item->enclosure->url);
+  if (urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb,
+                    resume_from, debug, pb)) {
+    g_fprintf(stderr, "Error downloading enclosure from %s.\n",
+              item->enclosure->url);
 
     download_failed = 1;
   } else
@@ -254,7 +271,8 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
   fclose(enclosure_file);
 
   if (cb)
-    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, channel_info, item->enclosure, enclosure_full_filename);
+    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, channel_info, item->enclosure,
+       enclosure_full_filename);
 
   g_free(enclosure_full_filename);
 
@@ -265,9 +283,11 @@ static int _do_catchup(channel *c, channel_info *channel_info, rss_item *item,
                        void *user_data, channel_callback cb)
 {
   if (cb) {
-    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure, NULL);
+    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_START, channel_info, item->enclosure,
+       NULL);
 
-    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, channel_info, item->enclosure, NULL);
+    cb(user_data, CCA_ENCLOSURE_DOWNLOAD_END, channel_info, item->enclosure,
+       NULL);
   }
 
   return 0;
@@ -290,16 +310,21 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
   /* Check enclosures in RSS file. */
   for (i = 0; i < f->num_items; i++)
     if (f->items[i]->enclosure) {
-      if (!g_hash_table_lookup_extended(c->downloaded_enclosures, f->items[i]->enclosure->url, NULL, NULL)) {
+      if (!g_hash_table_lookup_extended(c->downloaded_enclosures,
+                                        f->items[i]->enclosure->url, NULL,
+                                        NULL)) {
         rss_item *item;
 
         item = f->items[i];
 
         if (!filter || _enclosure_pattern_match(filter, item->enclosure)) {
           if (no_download)
-            download_failed = _do_catchup(c, &(f->channel_info), item, user_data, cb);
+            download_failed =
+                _do_catchup(c, &(f->channel_info), item, user_data, cb);
           else
-            download_failed = _do_download(c, &(f->channel_info), item, user_data, cb, resume, debug, show_progress_bar);
+            download_failed =
+                _do_download(c, &(f->channel_info), item, user_data, cb, resume,
+                             debug, show_progress_bar);
 
           if (download_failed)
             break;
@@ -307,7 +332,8 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
           if (!no_mark_read) {
             /* Mark enclosure as downloaded and immediately save channel
                file to ensure that it reflects the change. */
-            g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url,
+            g_hash_table_insert(c->downloaded_enclosures,
+                                f->items[i]->enclosure->url,
                                 (gpointer)get_rfc822_time());
 
             _cast_channel_save(c, debug);
@@ -357,8 +383,7 @@ static gboolean _enclosure_pattern_match(enclosure_filter *filter,
   if (filter->caseless)
     compile_options |= G_REGEX_CASELESS;
 
-  regex = g_regex_new(filter->pattern, compile_options, match_options,
-                      &error);
+  regex = g_regex_new(filter->pattern, compile_options, match_options, &error);
 
   if (error) {
     fprintf(stderr, "Error compiling regular expression %s: %s\n",
@@ -374,8 +399,7 @@ static gboolean _enclosure_pattern_match(enclosure_filter *filter,
   return match;
 }
 
-enclosure_filter *enclosure_filter_new(const gchar *pattern,
-                                       gboolean caseless)
+enclosure_filter *enclosure_filter_new(const gchar *pattern, gboolean caseless)
 {
   enclosure_filter *e = g_malloc(sizeof(struct _enclosure_filter));
 

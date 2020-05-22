@@ -29,9 +29,11 @@ long libxmlutil_attr_as_long(const xmlNode *node, const char *name);
 int libxmlutil_attr_as_int(const xmlNode *node, const char *name);
 char *libxmlutil_dup_value(const xmlNode *node);
 int libxmlutil_count_by_tag_name(const xmlNode *node, const char *name);
-void libxmlutil_iterate_by_tag_name(const xmlNode *node, const char *name, void *user_data,
-                                    void(*f)(const void *user_data, int i, const xmlNode *node));
-const xmlNode *libxmlutil_child_node_by_name(const xmlNode *node, const char *ns,
-                                             const char *name);
+void libxmlutil_iterate_by_tag_name(const xmlNode *node, const char *name,
+                                    void *user_data,
+                                    void (*f)(const void *user_data, int i,
+                                              const xmlNode *node));
+const xmlNode *libxmlutil_child_node_by_name(const xmlNode *node,
+                                             const char *ns, const char *name);
 
 #endif /* LIBXMLUTIL_H */

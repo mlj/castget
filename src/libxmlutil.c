@@ -22,6 +22,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <string.h>
+
 #include "libxmlutil.h"
 
 char *libxmlutil_dup_attr(const xmlNode *node, const char *name)
@@ -81,8 +82,10 @@ int libxmlutil_count_by_tag_name(const xmlNode *node, const char *name)
   return n;
 }
 
-void libxmlutil_iterate_by_tag_name(const xmlNode *node, const char *name, void *user_data,
-                                     void(*f)(const void *user_data, int i, const xmlNode *node))
+void libxmlutil_iterate_by_tag_name(const xmlNode *node, const char *name,
+                                    void *user_data,
+                                    void (*f)(const void *user_data, int i,
+                                              const xmlNode *node))
 {
   int i = 0;
 
@@ -93,12 +96,12 @@ void libxmlutil_iterate_by_tag_name(const xmlNode *node, const char *name, void 
     }
 }
 
-const xmlNode *libxmlutil_child_node_by_name(const xmlNode *node, const char *ns,
-                                             const char *name)
+const xmlNode *libxmlutil_child_node_by_name(const xmlNode *node,
+                                             const char *ns, const char *name)
 {
   for (node = node->children; node; node = node->next)
-    if (node->type == XML_ELEMENT_NODE && !strcmp((char *)node->name, name)
-        && (!ns || !strcmp((char *)node->ns->href, ns)))
+    if (node->type == XML_ELEMENT_NODE && !strcmp((char *)node->name, name) &&
+        (!ns || !strcmp((char *)node->ns->href, ns)))
       return node;
 
   return NULL;

@@ -21,18 +21,19 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
 #include <glib.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "progress.h"
 
 /* This code was inspired/guided by the progress-bar implementation found in
- * curl (src/tool_cb_prg.c) by Daniel Stenberg, in turn building on an
- * implementation by Lars Aas. */
-
-int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal, double ulnow)
+   curl (src/tool_cb_prg.c) by Daniel Stenberg, in turn building on an
+   implementation by Lars Aas. */
+int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal,
+                    double ulnow)
 {
   double fraction;
   int num;
@@ -55,7 +56,7 @@ int progress_bar_cb(void *clientp, double dltotal, double dlnow, double ultotal,
       total = (long)dltotal + pb->resume_from;
       position = MIN((long)dlnow + pb->resume_from, total);
 
-      fraction = (double)position/(double)total;
+      fraction = (double)position / (double)total;
       num = (int)((double)pb->width * fraction);
     }
 
@@ -87,21 +88,26 @@ progress_bar *progress_bar_new(long resume_from)
   pb->width = 79;
   pb->previous_num = -1;
 
-  /* Try to grab the COLUMNS environment variable to initialize pb->with with a suitable value. */
+  /* Try to grab the COLUMNS environment variable to initialize pb->with with a
+     suitable value. */
   environ = g_get_environ();
   columns = g_environ_getenv(environ, "COLUMNS");
 
   if (columns) {
     char *endptr;
     long num = strtol(columns, &endptr, 10);
-    if ((endptr != columns) && (endptr == columns + strlen(columns)) && (num > 0)) {
-      pb->width = MIN(pb->width, (int)num); /* restrict width of progress bar to avoid insane values */
+    if ((endptr != columns) && (endptr == columns + strlen(columns)) &&
+        (num > 0)) {
+      pb->width = MIN(
+          pb->width,
+          (int)num);  // restrict width of progress bar to avoid insane values
     }
   }
 
   g_strfreev(environ);
 
-  /* Leave a margin for printing the percentages (the longest string is " 100%") */
+  /* Leave a margin for printing the percentages (the longest string is
+     " 100%"). */
   pb->width = MAX(0, pb->width - 5);
 
   /* Allocate space for progress bar string + terminating zero. */
@@ -112,7 +118,7 @@ progress_bar *progress_bar_new(long resume_from)
 
 void progress_bar_free(progress_bar *pb)
 {
-  fprintf(pb->f, "\n"); /* Make sure that we will start output on a new line. */
+  fprintf(pb->f, "\n");  // Make sure that we will start output on a new line.
   g_free(pb->buffer);
   g_free(pb);
 }

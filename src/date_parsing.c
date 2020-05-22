@@ -22,20 +22,19 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <string.h>
-#include <stdio.h>
 #include <ctype.h>
 #include <glib.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "date_parsing.h"
 
 static const char *days[7] = {
   "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
 
-static const char *months[12] = {
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-};
+static const char *months[12] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 GDate *parse_rfc822_date(const char *rfc822_date_str)
 {
@@ -51,12 +50,12 @@ GDate *parse_rfc822_date(const char *rfc822_date_str)
     return NULL;
 
   /* Skip past any valid day, field */
-  for (i = 0; i < sizeof(days)/sizeof(days[0]); i++) {
+  for (i = 0; i < sizeof(days) / sizeof(days[0]); i++) {
     if (strncmp(dstr, days[i], 3) == 0)
       break;
   }
 
-  if (i < sizeof(days)/sizeof(days[0])) {
+  if (i < sizeof(days) / sizeof(days[0])) {
     dstr += 3;
 
     while (isspace(*dstr))
@@ -79,12 +78,12 @@ GDate *parse_rfc822_date(const char *rfc822_date_str)
   if (sscanf(dstr, "%d %s %d", &day, mstr, &year) != 3)
     return NULL;
 
-  for (i=0; i < sizeof(months)/sizeof(months[0]); i++) {
+  for (i = 0; i < sizeof(months) / sizeof(months[0]); i++) {
     if (strncmp(mstr, months[i], 3) == 0)
       break;
   }
 
-  if (i == sizeof(months)/sizeof(months[0]))
+  if (i == sizeof(months) / sizeof(months[0]))
     return NULL;
 
   month = i + 1;

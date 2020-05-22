@@ -22,28 +22,25 @@
 #endif /* HAVE_CONFIG_H */
 
 #define _GNU_SOURCE
+#include <errno.h>
 #include <getopt.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
-#include <errno.h>
+#include <libxml/parser.h>
 #include <string.h>
 #include <unistd.h>
-#include <libxml/parser.h>
 #ifdef ENABLE_ID3LIB
 #include <id3.h>
 #endif /* ENABLE_ID3LIB */
-#include "configuration.h"
 #include "channel.h"
+#include "configuration.h"
 
-enum op {
-  OP_UPDATE,
-  OP_CATCHUP,
-  OP_LIST
-};
+enum op { OP_UPDATE, OP_CATCHUP, OP_LIST };
 
-static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier,
-                            enum op op, struct channel_configuration *defaults,
+static int _process_channel(const gchar *channel_directory, GKeyFile *kf,
+                            const char *identifier, enum op op,
+                            struct channel_configuration *defaults,
                             enclosure_filter *filter);
 static void version(void);
 static GKeyFile *_configuration_file_open(const gchar *rcfile);
@@ -51,13 +48,12 @@ static void _configuration_file_close(GKeyFile *kf);
 #ifdef ENABLE_ID3LIB
 static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist,
                     const gchar *content_group, const gchar *title,
-                    const gchar *album, const gchar *content_type, const gchar *year,
-                    const gchar *comment);
+                    const gchar *album, const gchar *content_type,
+                    const gchar *year, const gchar *comment);
 static int _id3_check_and_set(const gchar *filename,
                               const struct channel_configuration *cfg);
 #endif /* ENABLE_ID3LIB */
-static int playlist_add(const gchar *playlist_file,
-                        const gchar *media_file);
+static int playlist_add(const gchar *playlist_file, const gchar *media_file);
 
 static gboolean verbose = FALSE;
 static gboolean quiet = FALSE;
@@ -86,23 +82,33 @@ int main(int argc, char **argv)
   GError *error = NULL;
   GOptionContext *context;
 
-  static GOptionEntry options[] =
-  {
-    {"catchup",      'c', 0, G_OPTION_ARG_NONE,     &catchup,           "catch up with channels and exit"},
-    {"list",         'l', 0, G_OPTION_ARG_NONE,     &list,              "list available enclosures that have not yet been downloaded and exit"},
-    {"version",      'V', 0, G_OPTION_ARG_NONE,     &show_version,      "print version and exit"},
+  static GOptionEntry options[] = {
+    { "catchup", 'c', 0, G_OPTION_ARG_NONE, &catchup,
+      "catch up with channels and exit" },
+    { "list", 'l', 0, G_OPTION_ARG_NONE, &list,
+      "list available enclosures that have not yet been downloaded and exit" },
+    { "version", 'V', 0, G_OPTION_ARG_NONE, &show_version,
+      "print version and exit" },
 
-    {"resume",       'r', 0, G_OPTION_ARG_NONE,     &resume,            "resume aborted downloads"},
-    {"rcfile",       'C', 0, G_OPTION_ARG_FILENAME, &rcfile,            "override the default configuration file name"},
+    { "resume", 'r', 0, G_OPTION_ARG_NONE, &resume,
+      "resume aborted downloads" },
+    { "rcfile", 'C', 0, G_OPTION_ARG_FILENAME, &rcfile,
+      "override the default configuration file name" },
 
-    {"debug",        'd', 0, G_OPTION_ARG_NONE,     &show_debug_info,   "print connection debug information"},
-    {"verbose",      'v', 0, G_OPTION_ARG_NONE,     &verbose,           "print detailed progress information"},
-    {"progress-bar", 'p', 0, G_OPTION_ARG_NONE,     &show_progress_bar, "print progress bar"},
+    { "debug", 'd', 0, G_OPTION_ARG_NONE, &show_debug_info,
+      "print connection debug information" },
+    { "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
+      "print detailed progress information" },
+    { "progress-bar", 'p', 0, G_OPTION_ARG_NONE, &show_progress_bar,
+      "print progress bar" },
 
-    {"new-only",     'n', 0, G_OPTION_ARG_NONE,     &new_only,          "only process new channels"},
-    {"quiet",        'q', 0, G_OPTION_ARG_NONE,     &quiet,             "only print error messages"},
-    {"first-only",   '1', 0, G_OPTION_ARG_NONE,     &first_only,        "only process the most recent item from each channel"},
-    {"filter",       'f', 0, G_OPTION_ARG_STRING,   &filter_regex,      "only process items whose enclosure names match a regular expression"},
+    { "new-only", 'n', 0, G_OPTION_ARG_NONE, &new_only,
+      "only process new channels" },
+    { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet, "only print error messages" },
+    { "first-only", '1', 0, G_OPTION_ARG_NONE, &first_only,
+      "only process the most recent item from each channel" },
+    { "filter", 'f', 0, G_OPTION_ARG_STRING, &filter_regex,
+      "only process items whose enclosure names match a regular expression" },
 
     { NULL }
   };
@@ -121,8 +127,11 @@ int main(int argc, char **argv)
     exit(1);
   }
 
-  if ((catchup && list) || (catchup && show_version) || (list && show_version)) {
-    g_print("option parsing failed: --catchup, --list and --version options are incompatible.\n");
+  if ((catchup && list) || (catchup && show_version) ||
+      (list && show_version)) {
+    g_print(
+        "option parsing failed: --catchup, --list and --version options are "
+        "incompatible.\n");
     exit(1);
   }
 
@@ -179,15 +188,13 @@ int main(int argc, char **argv)
     /* Perform actions. */
     if (optind < argc) {
       while (optind < argc)
-        _process_channel(channeldir, kf, argv[optind++], op, defaults,
-                         filter);
+        _process_channel(channeldir, kf, argv[optind++], op, defaults, filter);
     } else {
       groups = g_key_file_get_groups(kf, NULL);
 
       for (i = 0; groups[i]; i++)
         if (strcmp(groups[i], "*"))
-          _process_channel(channeldir, kf, groups[i], op, defaults,
-                           filter);
+          _process_channel(channeldir, kf, groups[i], op, defaults, filter);
 
       g_strfreev(groups);
     }
@@ -223,10 +230,12 @@ static void version(void)
   g_printf("\n");
 #endif
 
-  g_printf("Copyright (C) 2005-2019 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
+  g_printf(
+      "Copyright (C) 2005-2019 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
 }
 
-static void _print_item_update(const enclosure *enclosure, const gchar *filename)
+static void _print_item_update(const enclosure *enclosure,
+                               const gchar *filename)
 {
   if (enclosure->length > 0) {
     gchar *size = g_format_size(enclosure->length);
@@ -266,7 +275,8 @@ static void update_callback(void *user_data, channel_action action,
     g_assert(filename);
 
     /* Set media tags. */
-    if (enclosure->type && (!strcmp(enclosure->type, "audio/mpeg") || !strcmp(enclosure->type, "audio/mp3"))) {
+    if (enclosure->type && (!strcmp(enclosure->type, "audio/mpeg") ||
+                            !strcmp(enclosure->type, "audio/mp3"))) {
 #ifdef ENABLE_ID3LIB
       if (_id3_check_and_set(filename, c))
         fprintf(stderr, "Error setting ID3 tag for file %s.\n", filename);
@@ -278,15 +288,16 @@ static void update_callback(void *user_data, channel_action action,
       playlist_add(c->playlist, filename);
 
       if (verbose)
-        printf(" * Added downloaded enclosure %s to playlist %s.\n",
-               filename, c->playlist);
+        printf(" * Added downloaded enclosure %s to playlist %s.\n", filename,
+               c->playlist);
     }
     break;
   }
 }
 
-static void catchup_callback(void *user_data, channel_action action, channel_info *channel_info,
-                             enclosure *enclosure, const gchar *filename)
+static void catchup_callback(void *user_data, channel_action action,
+                             channel_info *channel_info, enclosure *enclosure,
+                             const gchar *filename)
 {
   struct channel_configuration *c = (struct channel_configuration *)user_data;
 
@@ -313,8 +324,9 @@ static void catchup_callback(void *user_data, channel_action action, channel_inf
   }
 }
 
-static void list_callback(void *user_data, channel_action action, channel_info *channel_info,
-                          enclosure *enclosure, const gchar *filename)
+static void list_callback(void *user_data, channel_action action,
+                          channel_info *channel_info, enclosure *enclosure,
+                          const gchar *filename)
 {
   struct channel_configuration *c = (struct channel_configuration *)user_data;
 
@@ -340,8 +352,9 @@ static void list_callback(void *user_data, channel_action action, channel_info *
   }
 }
 
-static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const char *identifier,
-                            enum op op, struct channel_configuration *defaults,
+static int _process_channel(const gchar *channel_directory, GKeyFile *kf,
+                            const char *identifier, enum op op,
+                            struct channel_configuration *defaults,
                             enclosure_filter *filter)
 {
   channel *c;
@@ -392,8 +405,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
 
   c = channel_new(channel_configuration->url, channel_file,
                   channel_configuration->spool_directory,
-                  channel_configuration->filename_pattern,
-                  resume);
+                  channel_configuration->filename_pattern, resume);
   g_free(channel_file);
 
   if (!c) {
@@ -407,25 +419,25 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf, const 
      line. */
   if (!filter && channel_configuration->regex_filter) {
     per_channel_filter =
-      enclosure_filter_new(channel_configuration->regex_filter, FALSE);
+        enclosure_filter_new(channel_configuration->regex_filter, FALSE);
 
     filter = per_channel_filter;
   }
 
   switch (op) {
   case OP_UPDATE:
-    channel_update(c, channel_configuration, update_callback, 0, 0,
-                   first_only, resume, filter, debug, show_progress_bar);
+    channel_update(c, channel_configuration, update_callback, 0, 0, first_only,
+                   resume, filter, debug, show_progress_bar);
     break;
 
   case OP_CATCHUP:
-    channel_update(c, channel_configuration, catchup_callback, 1, 0,
-                   first_only, 0, filter, debug, show_progress_bar);
+    channel_update(c, channel_configuration, catchup_callback, 1, 0, first_only,
+                   0, filter, debug, show_progress_bar);
     break;
 
   case OP_LIST:
-    channel_update(c, channel_configuration, list_callback, 1, 1, first_only,
-                   0, filter, debug, show_progress_bar);
+    channel_update(c, channel_configuration, list_callback, 1, 1, first_only, 0,
+                   filter, debug, show_progress_bar);
     break;
   }
 
@@ -447,7 +459,8 @@ static GKeyFile *_configuration_file_open(const gchar *rcfile)
   kf = g_key_file_new();
 
   if (!g_key_file_load_from_file(kf, rcfile, G_KEY_FILE_NONE, &error)) {
-    fprintf(stderr, "Error reading configuration file %s: %s.\n", rcfile, error->message);
+    fprintf(stderr, "Error reading configuration file %s: %s.\n", rcfile,
+            error->message);
     g_error_free(error);
     g_key_file_free(kf);
     kf = NULL;
@@ -462,7 +475,8 @@ static void _configuration_file_close(GKeyFile *kf)
 }
 
 #ifdef ENABLE_ID3LIB
-static int _id3_find_and_set_frame(ID3Tag *tag, ID3_FrameID id, const char *value)
+static int _id3_find_and_set_frame(ID3Tag *tag, ID3_FrameID id,
+                                   const char *value)
 {
   ID3Frame *frame;
   ID3Field *field;
@@ -480,7 +494,7 @@ static int _id3_find_and_set_frame(ID3Tag *tag, ID3_FrameID id, const char *valu
     field = ID3Frame_GetField(frame, ID3FN_TEXT);
 
     if (field)
-      ID3Field_SetASCII(field, value); //TODO: UTF8
+      ID3Field_SetASCII(field, value);  // TODO: UTF8
     else
       return 1;
   }
@@ -489,8 +503,9 @@ static int _id3_find_and_set_frame(ID3Tag *tag, ID3_FrameID id, const char *valu
 }
 
 static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist,
-                    const gchar *content_group, const gchar *title, const gchar *album,
-                    const gchar *content_type, const gchar *year, const gchar *comment)
+                    const gchar *content_group, const gchar *title,
+                    const gchar *album, const gchar *content_type,
+                    const gchar *year, const gchar *comment)
 {
   int errors = 0;
   ID3Tag *tag;
@@ -503,7 +518,7 @@ static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist,
   ID3Tag_Link(tag, filename);
 
   if (clear)
-    ID3Tag_Clear(tag); // TODO
+    ID3Tag_Clear(tag);  // TODO
 
   if (lead_artist) {
     errors += _id3_find_and_set_frame(tag, ID3FID_LEADARTIST, lead_artist);
@@ -566,7 +581,8 @@ static int _id3_check_and_set(const gchar *filename,
                               const struct channel_configuration *cfg)
 {
   if (cfg->id3_lead_artist || cfg->id3_content_group || cfg->id3_title ||
-      cfg->id3_album || cfg->id3_content_type || cfg->id3_year || cfg->id3_comment)
+      cfg->id3_album || cfg->id3_content_type || cfg->id3_year ||
+      cfg->id3_comment)
     return _id3_set(filename, 0, cfg->id3_lead_artist, cfg->id3_content_group,
                     cfg->id3_title, cfg->id3_album, cfg->id3_content_type,
                     cfg->id3_year, cfg->id3_comment);
@@ -576,16 +592,15 @@ static int _id3_check_and_set(const gchar *filename,
 
 #endif /* ENABLE_ID3LIB */
 
-static int playlist_add(const gchar *playlist_file,
-                        const gchar *media_file)
+static int playlist_add(const gchar *playlist_file, const gchar *media_file)
 {
   FILE *f;
 
   f = fopen(playlist_file, "a");
 
   if (!f) {
-    fprintf(stderr, "Error opening playlist file %s: %s.\n",
-            playlist_file, strerror(errno));
+    fprintf(stderr, "Error opening playlist file %s: %s.\n", playlist_file,
+            strerror(errno));
     return -1;
   }
 

@@ -20,17 +20,20 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
-#include <time.h>
 #include <errno.h>
-#include <unistd.h>
-#include <string.h>
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
+
 #include "utils.h"
 
 int write_by_temporary_file(const gchar *filename,
-                            int(*writer)(FILE *f, gpointer user_data, int debug),
-                            gpointer user_data, gchar **used_filename, int debug)
+                            int (*writer)(FILE *f, gpointer user_data,
+                                          int debug),
+                            gpointer user_data, gchar **used_filename,
+                            int debug)
 {
   int retval;
   FILE *f;
@@ -110,7 +113,8 @@ gchar *get_rfc822_time(void)
 
   now = time(NULL);
 
-  if (strftime(rfc822_time_buffer, RFC822_TIME_BUFFER_LEN, "%a, %d-%b-%Y %X GMT", gmtime(&now)))
+  if (strftime(rfc822_time_buffer, RFC822_TIME_BUFFER_LEN,
+               "%a, %d-%b-%Y %X GMT", gmtime(&now)))
     return g_strdup(rfc822_time_buffer);
   else
     return NULL;

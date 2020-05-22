@@ -1,6 +1,6 @@
 #include <glib.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../src/progress.h"
 
@@ -40,16 +40,26 @@ static void test_progress_bar_cb()
   pb->f = tmpfile();
 
   progress_bar_cb(pb, 300, 0, 0, 0);
-  g_assert_cmpstr(pb->buffer, ==, "                                                                         ");
+  g_assert_cmpstr(pb->buffer, ==,
+                  "                                                            "
+                  "             ");
   progress_bar_cb(pb, 300, 150, 0, 0);
-  g_assert_cmpstr(pb->buffer, ==, "####################################                                     ");
+  g_assert_cmpstr(pb->buffer, ==,
+                  "####################################                        "
+                  "             ");
   progress_bar_cb(pb, 300, 450, 0, 0);
-  g_assert_cmpstr(pb->buffer, ==, "#########################################################################");
+  g_assert_cmpstr(pb->buffer, ==,
+                  "############################################################"
+                  "#############");
   progress_bar_cb(pb, 300, -1, 0, 0);
-  g_assert_cmpstr(pb->buffer, ==, "                                                                         ");
+  g_assert_cmpstr(pb->buffer, ==,
+                  "                                                            "
+                  "             ");
   pb->resume_from = 150;
   progress_bar_cb(pb, 150, 0, 0, 0);
-  g_assert_cmpstr(pb->buffer, ==, "####################################                                     ");
+  g_assert_cmpstr(pb->buffer, ==,
+                  "####################################                        "
+                  "             ");
 
   fclose(pb->f);
   progress_bar_free(pb);
@@ -59,7 +69,7 @@ static void test_progress_bar_cb()
   }
 }
 
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   g_test_init(&argc, &argv, NULL);
 

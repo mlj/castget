@@ -21,13 +21,14 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
-#include <string.h>
-#include <stdlib.h>
 #include <glib/gstdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "configuration.h"
 
-static gchar *_read_channel_configuration_key(GKeyFile *kf, const gchar *identifier,
+static gchar *_read_channel_configuration_key(GKeyFile *kf,
+                                              const gchar *identifier,
                                               const gchar *key)
 {
   GError *error = NULL;
@@ -81,30 +82,37 @@ void channel_configuration_free(struct channel_configuration *c)
   g_free(c);
 }
 
-struct channel_configuration *channel_configuration_new(GKeyFile *kf, const gchar *identifier,
-                                                        struct channel_configuration *defaults)
+struct channel_configuration *channel_configuration_new(
+    GKeyFile *kf, const gchar *identifier,
+    struct channel_configuration *defaults)
 {
   struct channel_configuration *c;
 
   g_assert(g_key_file_has_group(kf, identifier));
 
   /* Allocate new structure and save identifierr. */
-  c = (struct channel_configuration *)g_malloc(sizeof(struct channel_configuration));
+  c = (struct channel_configuration *)g_malloc(
+      sizeof(struct channel_configuration));
 
   c->identifier = g_strdup(identifier);
 
   /* Read keys from configuration file. */
   c->url = _read_channel_configuration_key(kf, identifier, "url");
   c->spool_directory = _read_channel_configuration_key(kf, identifier, "spool");
-  c->filename_pattern = _read_channel_configuration_key(kf, identifier, "filename");
+  c->filename_pattern =
+      _read_channel_configuration_key(kf, identifier, "filename");
   c->playlist = _read_channel_configuration_key(kf, identifier, "playlist");
-  c->id3_lead_artist = _read_channel_configuration_key(kf, identifier, "id3leadartist");
-  c->id3_content_group = _read_channel_configuration_key(kf, identifier, "id3contentgroup");
+  c->id3_lead_artist =
+      _read_channel_configuration_key(kf, identifier, "id3leadartist");
+  c->id3_content_group =
+      _read_channel_configuration_key(kf, identifier, "id3contentgroup");
   c->id3_title = _read_channel_configuration_key(kf, identifier, "id3title");
   c->id3_album = _read_channel_configuration_key(kf, identifier, "id3album");
-  c->id3_content_type = _read_channel_configuration_key(kf, identifier, "id3contenttype");
+  c->id3_content_type =
+      _read_channel_configuration_key(kf, identifier, "id3contenttype");
   c->id3_year = _read_channel_configuration_key(kf, identifier, "id3year");
-  c->id3_comment = _read_channel_configuration_key(kf, identifier, "id3comment");
+  c->id3_comment =
+      _read_channel_configuration_key(kf, identifier, "id3comment");
   c->regex_filter = _read_channel_configuration_key(kf, identifier, "filter");
 
   /* Populate with defaults if necessary. */
@@ -157,25 +165,26 @@ int channel_configuration_verify_keys(GKeyFile *kf, const char *identifier)
   key_list = g_key_file_get_keys(kf, identifier, NULL, NULL);
 
   if (!key_list) {
-    fprintf(stderr, "Error reading keys in configuration of channel %s.\n", identifier);
+    fprintf(stderr, "Error reading keys in configuration of channel %s.\n",
+            identifier);
 
     return -1;
   }
 
   for (i = 0; key_list[i]; i++) {
-    if (! (!strcmp(key_list[i], "url") ||
-           !strcmp(key_list[i], "spool") ||
-           !strcmp(key_list[i], "filename") ||
-           !strcmp(key_list[i], "playlist") ||
-           !strcmp(key_list[i], "id3leadartist") ||
-           !strcmp(key_list[i], "id3contentgroup") ||
-           !strcmp(key_list[i], "id3title") ||
-           !strcmp(key_list[i], "id3album") ||
-           !strcmp(key_list[i], "id3contenttype") ||
-           !strcmp(key_list[i], "id3year") ||
-           !strcmp(key_list[i], "id3comment") ||
-           !strcmp(key_list[i], "filter"))) {
-      fprintf(stderr, "Invalid key %s in configuration of channel %s.\n", key_list[i], identifier);
+    if (!(!strcmp(key_list[i], "url") || !strcmp(key_list[i], "spool") ||
+          !strcmp(key_list[i], "filename") ||
+          !strcmp(key_list[i], "playlist") ||
+          !strcmp(key_list[i], "id3leadartist") ||
+          !strcmp(key_list[i], "id3contentgroup") ||
+          !strcmp(key_list[i], "id3title") ||
+          !strcmp(key_list[i], "id3album") ||
+          !strcmp(key_list[i], "id3contenttype") ||
+          !strcmp(key_list[i], "id3year") ||
+          !strcmp(key_list[i], "id3comment") ||
+          !strcmp(key_list[i], "filter"))) {
+      fprintf(stderr, "Invalid key %s in configuration of channel %s.\n",
+              key_list[i], identifier);
       return -1;
     }
   }
