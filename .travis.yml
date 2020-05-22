@@ -1,16 +1,31 @@
 language: c
 
-compiler:
-  - clang
-  - gcc
-
-sudo: false
-
 addons:
+  homebrew:
+    packages:
+      - id3lib
+      - glib
+      - libxml2
+    update: true
   apt:
     packages:
       - libid3-3.8.3-dev
       - libcurl4-gnutls-dev
+
+matrix:
+  include:
+    - name: macOS clang
+      os: osx
+      osx_image: xcode11
+      compiler: clang
+    - name: Xenial clang
+      os: linux
+      dist: xenial
+      compiler: clang
+    - name: Xenial gcc
+      os: linux
+      dist: xenial
+      compiler: gcc
 
 script:
   - gem install mustache -v=0.7.0 && gem install ronn && autoreconf -fvi && ./configure && make all
