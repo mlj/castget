@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005-2018 Marius L. Jøhndal
+  Copyright (C) 2005-2020 Marius L. Jøhndal
   Copyright (C) 2010 Tony Armitstead
 
   This library is free software; you can redistribute it and/or

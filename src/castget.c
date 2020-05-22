@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005-2019 Marius L. Jøhndal
+  Copyright (C) 2005-2020 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -231,7 +231,7 @@ static void version(void)
 #endif
 
   g_printf(
-      "Copyright (C) 2005-2019 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
+      "Copyright (C) 2005-2020 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
 }
 
 static void _print_item_update(const enclosure *enclosure,

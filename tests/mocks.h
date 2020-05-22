@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 Marius L. Jøhndal
+  Copyright (C) 2018-2020 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
