@@ -230,8 +230,7 @@ static void version(void)
   g_printf("\n");
 #endif
 
-  g_printf(
-      "Copyright (C) 2005-2020 Marius L. Jøhndal <mariuslj at ifi.uio.no>\n");
+  g_printf("Copyright (C) 2005-2020 Marius L. Jøhndal\n");
 }
 
 static void _print_item_update(const enclosure *enclosure,
