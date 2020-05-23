@@ -21,6 +21,8 @@
 #ifndef DATE_PARSING_H
 #define DATE_PARSING_H
 
+#include <glib.h>
+
 GDate *parse_rfc822_date(const char *rfc822_date_str);
 
 #endif /* DATE_PARSING_H */

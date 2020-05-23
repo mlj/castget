@@ -21,18 +21,17 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <assert.h>
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-
 #include "htmlent.h"
 #include "libxmlutil.h"
 #include "rss.h"
 #include "urlget.h"
 #include "utils.h"
+
+#include <assert.h>
+#include <glib/gprintf.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 #define MRSS_NAMESPACE "http://search.yahoo.com/mrss"
 

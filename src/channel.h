@@ -20,6 +20,8 @@
 #ifndef CHANNEL_H
 #define CHANNEL_H
 
+#include <glib.h>
+
 typedef enum {
   CCA_RSS_DOWNLOAD_START,
   CCA_RSS_DOWNLOAD_END,

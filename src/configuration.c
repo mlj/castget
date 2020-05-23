@@ -21,11 +21,12 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
+
+#include "configuration.h"
+
 #include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "configuration.h"
 
 static gchar *_read_channel_configuration_key(GKeyFile *kf,
                                               const gchar *identifier,

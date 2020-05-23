@@ -20,14 +20,15 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
+
+#include "utils.h"
+
 #include <errno.h>
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-
-#include "utils.h"
 
 int write_by_temporary_file(const gchar *filename,
                             int (*writer)(FILE *f, gpointer user_data,

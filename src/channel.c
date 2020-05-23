@@ -21,12 +21,6 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-
 #include "channel.h"
 #include "filenames.h"
 #include "libxmlutil.h"
@@ -34,6 +28,11 @@
 #include "rss.h"
 #include "urlget.h"
 #include "utils.h"
+
+#include <glib/gprintf.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 static int _enclosure_pattern_match(enclosure_filter *filter,
                                     const enclosure *enclosure);

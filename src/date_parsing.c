@@ -22,12 +22,11 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include "date_parsing.h"
+
 #include <ctype.h>
-#include <glib.h>
 #include <stdio.h>
 #include <string.h>
-
-#include "date_parsing.h"
 
 static const char *days[7] = {
   "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"

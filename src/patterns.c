@@ -22,8 +22,6 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <glib.h>
-
 #include "date_parsing.h"
 #include "patterns.h"
 

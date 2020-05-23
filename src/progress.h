@@ -20,6 +20,8 @@
 #ifndef PROGRESS_H
 #define PROGRESS_H
 
+#include <stdio.h>
+
 typedef struct _progress_bar {
   FILE *f;
   long resume_from;

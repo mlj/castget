@@ -21,13 +21,13 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include "progress.h"
+#include "urlget.h"
+
 #include <curl/curl.h>
 #include <glib.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "progress.h"
-#include "urlget.h"
 
 int urlget_file(const char *url, FILE *f, int debug)
 {

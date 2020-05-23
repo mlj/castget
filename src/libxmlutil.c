@@ -21,9 +21,9 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <string.h>
-
 #include "libxmlutil.h"
+
+#include <string.h>
 
 char *libxmlutil_dup_attr(const xmlNode *node, const char *name)
 {

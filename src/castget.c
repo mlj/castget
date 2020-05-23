@@ -21,10 +21,12 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include "channel.h"
+#include "configuration.h"
+
 #define _GNU_SOURCE
 #include <errno.h>
 #include <getopt.h>
-#include <glib.h>
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
 #include <libxml/parser.h>
@@ -33,8 +35,6 @@
 #ifdef ENABLE_ID3LIB
 #include <id3.h>
 #endif /* ENABLE_ID3LIB */
-#include "channel.h"
-#include "configuration.h"
 
 enum op { OP_UPDATE, OP_CATCHUP, OP_LIST };
 
