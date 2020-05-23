@@ -1,8 +1,8 @@
+#include "mocks.h"
+
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "mocks.h"
 
 static void pattern_helper(const char *pattern, char *channel_title,
                            char *item_title, char *item_pub_date,

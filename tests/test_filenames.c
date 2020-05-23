@@ -1,9 +1,9 @@
+#include "../src/filenames.h"
+#include "mocks.h"
+
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "../src/filenames.h"
-#include "mocks.h"
 
 static void filename_helper(const char *pattern, char *channel_title,
                             char *item_title, char *item_pub_date,

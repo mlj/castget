@@ -1,5 +1,6 @@
-#include <glib.h>
 #include "mocks.h"
+
+#include <glib.h>
 
 rss_item *mock_rss_item_new(char *item_title, char *item_pub_date)
 {

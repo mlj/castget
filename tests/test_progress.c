@@ -1,8 +1,8 @@
+#include "../src/progress.h"
+
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "../src/progress.h"
 
 static void test_progress_bar_new()
 {
