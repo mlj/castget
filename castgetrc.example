@@ -6,9 +6,8 @@
 # Global settings.
 #
 
-# This will set the ID3 tag "content type" to "Podcast"
-# and use the directory /home/tom/podcasts for downloading
-# enclosures.
+# This sets the default ID3 tag "content type" to "Podcast" and use the
+# directory /home/tom/podcasts for downloading enclosures.
 [*]
 id3contenttype=Podcast
 spool=/home/tom/podcasts
@@ -36,16 +35,24 @@ id3comment=
 id3title=Yeast Radio
 id3year=2005
 
-# castget will by default download files using the original filename in the RSS
-# feed. This does not always work, e.g. if the RSS feed uses the same filename
-# for all files or if they include broken filenames, or you may prefer your own
-# way of naming downloads.
+# castget will by default download files using the filename that appears in the
+# RSS feed.
 #
-# The following configures the channel with filename patterns so that downloads
-# use the date and title from the RSS as filenames. See castgetrc(5) for
-# a list of supported patterns.
+# This does not always work, e.g. if the RSS feed uses the same filename for
+# all files or if it uses filenames with characters that the filesystem
+# considers invalid.
+#
+# The following configures the channel with filename patterns so that files are
+# saved with the date and title from the RSS fee. See castgetrc(5) for a list
+# of supported patterns.
 [scientific_american]
 url=http://rss.sciam.com/sciam/science-talk
 spool=/home/joe/podcasts
 id3album=Scientific American
 filename=%(date)-%(title).mp3
+
+# Spaces in values, including filenames do not require quotation marks or
+# escaping.
+[hollywoodbabbleon]
+url=http://feeds.feedburner.com/HollywoodBabbleOnPod
+spool=/Users/joe/My Podcasts
