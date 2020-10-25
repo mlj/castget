@@ -28,6 +28,8 @@ processing the channel. The channel definition
 for example, instructs `castget` to use `/home/joe/podcasts` as a download
 directory when processing the channel `fooc`.
 
+Directory names and filenames with spaces do not need to be quoted or escaped.
+
 ## KEYS
 
   * `url`:
