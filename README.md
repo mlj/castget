@@ -19,6 +19,12 @@ castget depends on
   * libcurl >= 7.21.6
   * id3lib (optional, for ID3 tag support)
 
+If building on macOS, you can use Homebrew to install the dependencies:
+
+```shell
+brew install glib id3lib
+```
+
 To disable id3lib support, pass `--disable-id3lib` to `configure`;
 
 ```shell
