@@ -97,14 +97,16 @@ struct channel_configuration *channel_configuration_new(
   /* Read keys from configuration file. */
   c->url = _read_channel_configuration_key(kf, identifier, "url");
   c->spool_directory = _read_channel_configuration_key(kf, identifier, "spool");
-  c->filename_pattern = _read_channel_configuration_key(kf, identifier, "filename");
+  c->filename_pattern =
+      _read_channel_configuration_key(kf, identifier, "filename");
   c->playlist = _read_channel_configuration_key(kf, identifier, "playlist");
   c->artist_tag = _read_channel_configuration_key(kf, identifier, "artist_tag");
   c->title_tag = _read_channel_configuration_key(kf, identifier, "title_tag");
   c->album_tag = _read_channel_configuration_key(kf, identifier, "album_tag");
   c->genre_tag = _read_channel_configuration_key(kf, identifier, "genre_tag");
   c->year_tag = _read_channel_configuration_key(kf, identifier, "year_tag");
-  c->comment_tag = _read_channel_configuration_key(kf, identifier, "comment_tag");
+  c->comment_tag =
+      _read_channel_configuration_key(kf, identifier, "comment_tag");
   c->regex_filter = _read_channel_configuration_key(kf, identifier, "filter");
 
   /* Populate with defaults if necessary. */
@@ -164,27 +166,39 @@ int channel_configuration_verify_keys(GKeyFile *kf, const char *identifier)
     if (!strcmp(key_list[i], "id3contentgroup"))
       fprintf(stderr, "Key id3contentgroup no longer supported.\n");
     else if (!strcmp(key_list[i], "id3leadartist"))
-      fprintf(stderr, "Key id3leadartist no longer supported. Please use artist_tag instead.\n");
+      fprintf(stderr,
+              "Key id3leadartist no longer supported. Please use artist_tag "
+              "instead.\n");
     else if (!strcmp(key_list[i], "id3title"))
-      fprintf(stderr, "Key id3title no longer supported. Please use title_tag instead.\n");
+      fprintf(
+          stderr,
+          "Key id3title no longer supported. Please use title_tag instead.\n");
     else if (!strcmp(key_list[i], "id3album"))
-      fprintf(stderr, "Key id3album no longer supported. Please use album_tag instead.\n");
+      fprintf(
+          stderr,
+          "Key id3album no longer supported. Please use album_tag instead.\n");
     else if (!strcmp(key_list[i], "id3contenttype"))
-      fprintf(stderr, "Key id3contenttype no longer supported. Please use genre_tag instead.\n");
+      fprintf(stderr,
+              "Key id3contenttype no longer supported. Please use genre_tag "
+              "instead.\n");
     else if (!strcmp(key_list[i], "id3year"))
-      fprintf(stderr, "Key id3year no longer supported. Please use year_tag instead.\n");
+      fprintf(
+          stderr,
+          "Key id3year no longer supported. Please use year_tag instead.\n");
     else if (!strcmp(key_list[i], "id3comment"))
-      fprintf(stderr, "Key id3comment no longer supported. Please use comment_tag instead.\n");
+      fprintf(stderr,
+              "Key id3comment no longer supported. Please use comment_tag "
+              "instead.\n");
     else if (!(!strcmp(key_list[i], "url") || !strcmp(key_list[i], "spool") ||
-        !strcmp(key_list[i], "filename") ||
-        !strcmp(key_list[i], "playlist") ||
-        !strcmp(key_list[i], "artist_tag") ||
-        !strcmp(key_list[i], "title_tag") ||
-        !strcmp(key_list[i], "album_tag") ||
-        !strcmp(key_list[i], "genre_tag") ||
-        !strcmp(key_list[i], "year_tag") ||
-        !strcmp(key_list[i], "comment_tag") ||
-        !strcmp(key_list[i], "filter"))) {
+               !strcmp(key_list[i], "filename") ||
+               !strcmp(key_list[i], "playlist") ||
+               !strcmp(key_list[i], "artist_tag") ||
+               !strcmp(key_list[i], "title_tag") ||
+               !strcmp(key_list[i], "album_tag") ||
+               !strcmp(key_list[i], "genre_tag") ||
+               !strcmp(key_list[i], "year_tag") ||
+               !strcmp(key_list[i], "comment_tag") ||
+               !strcmp(key_list[i], "filter"))) {
       fprintf(stderr, "Invalid key %s in configuration of channel %s.\n",
               key_list[i], identifier);
       return -1;

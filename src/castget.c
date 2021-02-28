@@ -46,7 +46,8 @@ static void version(void);
 static GKeyFile *_configuration_file_open(const gchar *rcfile);
 static void _configuration_file_close(GKeyFile *kf);
 #ifdef HAVE_TAGLIB
-static void _set_tags(const gchar *filename, const struct channel_configuration *cfg);
+static void _set_tags(const gchar *filename,
+                      const struct channel_configuration *cfg);
 #endif /* HAVE_TAGLIB */
 static int playlist_add(const gchar *playlist_file, const gchar *media_file);
 
@@ -464,12 +465,14 @@ static void _configuration_file_close(GKeyFile *kf)
 }
 
 #ifdef HAVE_TAGLIB
-static void _set_tags(const gchar *filename, const struct channel_configuration *cfg)
+static void _set_tags(const gchar *filename,
+                      const struct channel_configuration *cfg)
 {
-  if (cfg->artist_tag || cfg->title_tag || cfg->album_tag || cfg->genre_tag || cfg->year_tag || cfg->comment_tag) {
+  if (cfg->artist_tag || cfg->title_tag || cfg->album_tag || cfg->genre_tag ||
+      cfg->year_tag || cfg->comment_tag) {
     TagLib_File *file;
     TagLib_Tag *tag;
-    
+
     file = taglib_file_new(filename);
 
     if (file == NULL) {
