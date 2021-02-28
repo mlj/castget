@@ -117,7 +117,7 @@ Marius L. Jøhndal, Jick Nan.
 
 ## COPYRIGHT
 
-Castget is Copyright (C) 2005-2020 Marius L. Jøhndal.
+Castget is Copyright (C) 2005-2021 Marius L. Jøhndal.
 
 Castget is Copyright (C) 2007 Jick Nan.
 

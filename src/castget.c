@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005-2020 Marius L. Jøhndal
+  Copyright (C) 2005-2021 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -32,9 +32,9 @@
 #include <libxml/parser.h>
 #include <string.h>
 #include <unistd.h>
-#ifdef ENABLE_ID3LIB
-#include <id3.h>
-#endif /* ENABLE_ID3LIB */
+#ifdef HAVE_TAGLIB
+#include <taglib/tag_c.h>
+#endif /* HAVE_TAGLIB */
 
 enum op { OP_UPDATE, OP_CATCHUP, OP_LIST };
 
@@ -45,14 +45,9 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf,
 static void version(void);
 static GKeyFile *_configuration_file_open(const gchar *rcfile);
 static void _configuration_file_close(GKeyFile *kf);
-#ifdef ENABLE_ID3LIB
-static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist,
-                    const gchar *content_group, const gchar *title,
-                    const gchar *album, const gchar *content_type,
-                    const gchar *year, const gchar *comment);
-static int _id3_check_and_set(const gchar *filename,
-                              const struct channel_configuration *cfg);
-#endif /* ENABLE_ID3LIB */
+#ifdef HAVE_TAGLIB
+static void _set_tags(const gchar *filename, const struct channel_configuration *cfg);
+#endif /* HAVE_TAGLIB */
 static int playlist_add(const gchar *playlist_file, const gchar *media_file);
 
 static gboolean verbose = FALSE;
@@ -224,13 +219,13 @@ int main(int argc, char **argv)
 static void version(void)
 {
   g_printf("%s %s", PACKAGE, VERSION);
-#ifdef ENABLE_ID3LIB
-  g_printf(" with ID3 tag support\n");
+#ifdef HAVE_TAGLIB
+  g_printf(" with taglib support\n");
 #else
   g_printf("\n");
 #endif
 
-  g_printf("Copyright (C) 2005-2020 Marius L. Jøhndal\n");
+  g_printf("Copyright (C) 2005-2021 Marius L. Jøhndal\n");
 }
 
 static void _print_item_update(const enclosure *enclosure,
@@ -273,14 +268,9 @@ static void update_callback(void *user_data, channel_action action,
     g_assert(enclosure);
     g_assert(filename);
 
-    /* Set media tags. */
-    if (enclosure->type && (!strcmp(enclosure->type, "audio/mpeg") ||
-                            !strcmp(enclosure->type, "audio/mp3"))) {
-#ifdef ENABLE_ID3LIB
-      if (_id3_check_and_set(filename, c))
-        fprintf(stderr, "Error setting ID3 tag for file %s.\n", filename);
-#endif /* ENABLE_ID3LIB */
-    }
+#ifdef HAVE_TAGLIB
+    _set_tags(filename, c);
+#endif /* HAVE_TAGLIB */
 
     /* Update playlist. */
     if (c->playlist) {
@@ -473,123 +463,72 @@ static void _configuration_file_close(GKeyFile *kf)
   g_key_file_free(kf);
 }
 
-#ifdef ENABLE_ID3LIB
-static int _id3_find_and_set_frame(ID3Tag *tag, ID3_FrameID id,
-                                   const char *value)
+#ifdef HAVE_TAGLIB
+static void _set_tags(const gchar *filename, const struct channel_configuration *cfg)
 {
-  ID3Frame *frame;
-  ID3Field *field;
+  if (cfg->artist_tag || cfg->title_tag || cfg->album_tag || cfg->genre_tag || cfg->year_tag || cfg->comment_tag) {
+    TagLib_File *file;
+    TagLib_Tag *tag;
+    
+    file = taglib_file_new(filename);
 
-  /* Remove existing tag to avoid issues with trashed frames. */
-  while ((frame = ID3Tag_FindFrameWithID(tag, id)))
-    ID3Tag_RemoveFrame(tag, frame);
+    if (file == NULL) {
+      fprintf(stderr, "Error setting tags for file %s.\n", filename);
+      return;
+    }
 
-  if (value && strlen(value) > 0) {
-    frame = ID3Frame_NewID(id);
-    g_assert(frame);
+    tag = taglib_file_tag(file);
 
-    ID3Tag_AttachFrame(tag, frame);
+    if (cfg->artist_tag) {
+      taglib_tag_set_artist(tag, cfg->artist_tag);
 
-    field = ID3Frame_GetField(frame, ID3FN_TEXT);
+      if (verbose)
+        printf(" * Set artist tag to %s.\n", cfg->artist_tag);
+    }
 
-    if (field)
-      ID3Field_SetASCII(field, value);  // TODO: UTF8
-    else
-      return 1;
+    if (cfg->title_tag) {
+      taglib_tag_set_title(tag, cfg->title_tag);
+
+      if (verbose)
+        printf(" * Set title tag to %s.\n", cfg->title_tag);
+    }
+
+    if (cfg->album_tag) {
+      taglib_tag_set_album(tag, cfg->album_tag);
+
+      if (verbose)
+        printf(" * Set album tag to %s.\n", cfg->album_tag);
+    }
+
+    if (cfg->genre_tag) {
+      taglib_tag_set_genre(tag, cfg->genre_tag);
+
+      if (verbose)
+        printf(" * Set genre tag to %s.\n", cfg->genre_tag);
+    }
+
+    if (cfg->year_tag) {
+      taglib_tag_set_year(tag, g_ascii_strtoull(cfg->year_tag, NULL, 10));
+
+      if (verbose)
+        printf(" * Set year tag to %s.\n", cfg->year_tag);
+    }
+
+    if (cfg->comment_tag) {
+      taglib_tag_set_comment(tag, cfg->comment_tag);
+
+      if (verbose)
+        printf(" * Set comment tag to %s.\n", cfg->comment_tag);
+    }
+
+    if (!taglib_file_save(file))
+      fprintf(stderr, "Error setting tags for file %s.\n", filename);
+
+    taglib_tag_free_strings();
+    taglib_file_free(file);
   }
-
-  return 0;
 }
-
-static int _id3_set(const gchar *filename, int clear, const gchar *lead_artist,
-                    const gchar *content_group, const gchar *title,
-                    const gchar *album, const gchar *content_type,
-                    const gchar *year, const gchar *comment)
-{
-  int errors = 0;
-  ID3Tag *tag;
-
-  tag = ID3Tag_New();
-
-  if (!tag)
-    return 1;
-
-  ID3Tag_Link(tag, filename);
-
-  if (clear)
-    ID3Tag_Clear(tag);  // TODO
-
-  if (lead_artist) {
-    errors += _id3_find_and_set_frame(tag, ID3FID_LEADARTIST, lead_artist);
-
-    if (verbose)
-      printf(" * Set ID3 tag lead artist to %s.\n", lead_artist);
-  }
-
-  if (content_group) {
-    errors += _id3_find_and_set_frame(tag, ID3FID_CONTENTGROUP, content_group);
-
-    if (verbose)
-      printf(" * Set ID3 tag content group to %s.\n", content_group);
-  }
-
-  if (title) {
-    errors += _id3_find_and_set_frame(tag, ID3FID_TITLE, title);
-
-    if (verbose)
-      printf(" * Set ID3 tag title to %s.\n", title);
-  }
-
-  if (album) {
-    errors += _id3_find_and_set_frame(tag, ID3FID_ALBUM, album);
-
-    if (verbose)
-      printf(" * Set ID3 tag album to %s.\n", album);
-  }
-
-  if (content_type) {
-    errors += _id3_find_and_set_frame(tag, ID3FID_CONTENTTYPE, content_type);
-
-    if (verbose)
-      printf(" * Set ID3 tag content type to %s.\n", content_type);
-  }
-
-  if (year) {
-    errors += _id3_find_and_set_frame(tag, ID3FID_YEAR, year);
-
-    if (verbose)
-      printf(" * Set ID3 title year to %s.\n", year);
-  }
-
-  if (comment) {
-    errors += _id3_find_and_set_frame(tag, ID3FID_COMMENT, comment);
-
-    if (verbose)
-      printf(" * Set ID3 tag comment to %s.\n", comment);
-  }
-
-  if (!errors)
-    ID3Tag_Update(tag);
-
-  ID3Tag_Delete(tag);
-
-  return errors;
-}
-
-static int _id3_check_and_set(const gchar *filename,
-                              const struct channel_configuration *cfg)
-{
-  if (cfg->id3_lead_artist || cfg->id3_content_group || cfg->id3_title ||
-      cfg->id3_album || cfg->id3_content_type || cfg->id3_year ||
-      cfg->id3_comment)
-    return _id3_set(filename, 0, cfg->id3_lead_artist, cfg->id3_content_group,
-                    cfg->id3_title, cfg->id3_album, cfg->id3_content_type,
-                    cfg->id3_year, cfg->id3_comment);
-  else
-    return 0;
-}
-
-#endif /* ENABLE_ID3LIB */
+#endif /* HAVE_TAGLIB */
 
 static int playlist_add(const gchar *playlist_file, const gchar *media_file)
 {

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005-2020 Marius L. Jøhndal
+  Copyright (C) 2005-2021 Marius L. Jøhndal
   Copyright (C) 2010 Tony Armitstead
 
   This library is free software; you can redistribute it and/or
@@ -56,26 +56,23 @@ void channel_configuration_free(struct channel_configuration *c)
   if (c->playlist)
     g_free(c->playlist);
 
-  if (c->id3_lead_artist)
-    g_free(c->id3_lead_artist);
+  if (c->artist_tag)
+    g_free(c->artist_tag);
 
-  if (c->id3_content_group)
-    g_free(c->id3_content_group);
+  if (c->title_tag)
+    g_free(c->title_tag);
 
-  if (c->id3_title)
-    g_free(c->id3_title);
+  if (c->album_tag)
+    g_free(c->album_tag);
 
-  if (c->id3_album)
-    g_free(c->id3_album);
+  if (c->genre_tag)
+    g_free(c->genre_tag);
 
-  if (c->id3_content_type)
-    g_free(c->id3_content_type);
+  if (c->year_tag)
+    g_free(c->year_tag);
 
-  if (c->id3_year)
-    g_free(c->id3_year);
-
-  if (c->id3_comment)
-    g_free(c->id3_comment);
+  if (c->comment_tag)
+    g_free(c->comment_tag);
 
   if (c->regex_filter)
     g_free(c->regex_filter);
@@ -100,20 +97,14 @@ struct channel_configuration *channel_configuration_new(
   /* Read keys from configuration file. */
   c->url = _read_channel_configuration_key(kf, identifier, "url");
   c->spool_directory = _read_channel_configuration_key(kf, identifier, "spool");
-  c->filename_pattern =
-      _read_channel_configuration_key(kf, identifier, "filename");
+  c->filename_pattern = _read_channel_configuration_key(kf, identifier, "filename");
   c->playlist = _read_channel_configuration_key(kf, identifier, "playlist");
-  c->id3_lead_artist =
-      _read_channel_configuration_key(kf, identifier, "id3leadartist");
-  c->id3_content_group =
-      _read_channel_configuration_key(kf, identifier, "id3contentgroup");
-  c->id3_title = _read_channel_configuration_key(kf, identifier, "id3title");
-  c->id3_album = _read_channel_configuration_key(kf, identifier, "id3album");
-  c->id3_content_type =
-      _read_channel_configuration_key(kf, identifier, "id3contenttype");
-  c->id3_year = _read_channel_configuration_key(kf, identifier, "id3year");
-  c->id3_comment =
-      _read_channel_configuration_key(kf, identifier, "id3comment");
+  c->artist_tag = _read_channel_configuration_key(kf, identifier, "artist_tag");
+  c->title_tag = _read_channel_configuration_key(kf, identifier, "title_tag");
+  c->album_tag = _read_channel_configuration_key(kf, identifier, "album_tag");
+  c->genre_tag = _read_channel_configuration_key(kf, identifier, "genre_tag");
+  c->year_tag = _read_channel_configuration_key(kf, identifier, "year_tag");
+  c->comment_tag = _read_channel_configuration_key(kf, identifier, "comment_tag");
   c->regex_filter = _read_channel_configuration_key(kf, identifier, "filter");
 
   /* Populate with defaults if necessary. */
@@ -130,26 +121,23 @@ struct channel_configuration *channel_configuration_new(
     if (!c->playlist && defaults->playlist)
       c->playlist = g_strdup(defaults->playlist);
 
-    if (!c->id3_lead_artist && defaults->id3_lead_artist)
-      c->id3_lead_artist = g_strdup(defaults->id3_lead_artist);
+    if (!c->artist_tag && defaults->artist_tag)
+      c->artist_tag = g_strdup(defaults->artist_tag);
 
-    if (!c->id3_content_group && defaults->id3_content_group)
-      c->id3_content_group = g_strdup(defaults->id3_content_group);
+    if (!c->title_tag && defaults->title_tag)
+      c->title_tag = g_strdup(defaults->title_tag);
 
-    if (!c->id3_title && defaults->id3_title)
-      c->id3_title = g_strdup(defaults->id3_title);
+    if (!c->album_tag && defaults->album_tag)
+      c->album_tag = g_strdup(defaults->album_tag);
 
-    if (!c->id3_album && defaults->id3_album)
-      c->id3_album = g_strdup(defaults->id3_album);
+    if (!c->genre_tag && defaults->genre_tag)
+      c->genre_tag = g_strdup(defaults->genre_tag);
 
-    if (!c->id3_content_type && defaults->id3_content_type)
-      c->id3_content_type = g_strdup(defaults->id3_content_type);
+    if (!c->year_tag && defaults->year_tag)
+      c->year_tag = g_strdup(defaults->year_tag);
 
-    if (!c->id3_year && defaults->id3_year)
-      c->id3_year = g_strdup(defaults->id3_year);
-
-    if (!c->id3_comment && defaults->id3_comment)
-      c->id3_comment = g_strdup(defaults->id3_comment);
+    if (!c->comment_tag && defaults->comment_tag)
+      c->comment_tag = g_strdup(defaults->comment_tag);
 
     if (!c->regex_filter && defaults->regex_filter)
       c->regex_filter = g_strdup(defaults->regex_filter);
@@ -173,17 +161,30 @@ int channel_configuration_verify_keys(GKeyFile *kf, const char *identifier)
   }
 
   for (i = 0; key_list[i]; i++) {
-    if (!(!strcmp(key_list[i], "url") || !strcmp(key_list[i], "spool") ||
-          !strcmp(key_list[i], "filename") ||
-          !strcmp(key_list[i], "playlist") ||
-          !strcmp(key_list[i], "id3leadartist") ||
-          !strcmp(key_list[i], "id3contentgroup") ||
-          !strcmp(key_list[i], "id3title") ||
-          !strcmp(key_list[i], "id3album") ||
-          !strcmp(key_list[i], "id3contenttype") ||
-          !strcmp(key_list[i], "id3year") ||
-          !strcmp(key_list[i], "id3comment") ||
-          !strcmp(key_list[i], "filter"))) {
+    if (!strcmp(key_list[i], "id3contentgroup"))
+      fprintf(stderr, "Key id3contentgroup no longer supported.\n");
+    else if (!strcmp(key_list[i], "id3leadartist"))
+      fprintf(stderr, "Key id3leadartist no longer supported. Please use artist_tag instead.\n");
+    else if (!strcmp(key_list[i], "id3title"))
+      fprintf(stderr, "Key id3title no longer supported. Please use title_tag instead.\n");
+    else if (!strcmp(key_list[i], "id3album"))
+      fprintf(stderr, "Key id3album no longer supported. Please use album_tag instead.\n");
+    else if (!strcmp(key_list[i], "id3contenttype"))
+      fprintf(stderr, "Key id3contenttype no longer supported. Please use genre_tag instead.\n");
+    else if (!strcmp(key_list[i], "id3year"))
+      fprintf(stderr, "Key id3year no longer supported. Please use year_tag instead.\n");
+    else if (!strcmp(key_list[i], "id3comment"))
+      fprintf(stderr, "Key id3comment no longer supported. Please use comment_tag instead.\n");
+    else if (!(!strcmp(key_list[i], "url") || !strcmp(key_list[i], "spool") ||
+        !strcmp(key_list[i], "filename") ||
+        !strcmp(key_list[i], "playlist") ||
+        !strcmp(key_list[i], "artist_tag") ||
+        !strcmp(key_list[i], "title_tag") ||
+        !strcmp(key_list[i], "album_tag") ||
+        !strcmp(key_list[i], "genre_tag") ||
+        !strcmp(key_list[i], "year_tag") ||
+        !strcmp(key_list[i], "comment_tag") ||
+        !strcmp(key_list[i], "filter"))) {
       fprintf(stderr, "Invalid key %s in configuration of channel %s.\n",
               key_list[i], identifier);
       return -1;

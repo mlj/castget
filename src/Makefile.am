@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2005-2017 Marius L. Jøhndal
+# Copyright (C) 2005-2021 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -45,5 +45,6 @@ castget_SOURCES = \
   utils.h
 
 castget_LDADD = \
+  $(CURL_LIBS) \
   $(GLIBS_LIBS) \
-  $(CURL_LIBS)
+  $(TAGLIB_LIBS)

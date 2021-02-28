@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-# Copyright (C) 2005-2019 Marius L. Jøhndal
+# Copyright (C) 2005-2021 Marius L. Jøhndal
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,13 +23,6 @@ AM_INIT_AUTOMAKE([1.8 dist-bzip2 no-dist-gzip foreign])
 AC_CONFIG_SRCDIR([src/castget.c])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIRS([m4])
-
-AH_TEMPLATE([ENABLE_ID3LIB], [Define to 1 if you want to enable support for id3lib])
-AC_ARG_ENABLE(id3lib,
-              [AC_HELP_STRING([--disable-id3lib],
-                              [disable support for id3lib [default=no]])],
-              configure_enable_id3lib=$enableval,
-              configure_enable_id3lib=yes)
 
 # Checks for programs.
 AC_PROG_CC
@@ -53,16 +46,13 @@ else
   AC_SUBST(CURL_LIBS)
 fi
 
-if test "x$configure_enable_id3lib" = "xyes"; then
-  AC_SEARCH_LIBS(ID3Tag_Link,
-    "id3" "id3 -lstdc++" "id3 -lz" "id3 -lz -lstdc++",
-    ,
-    AC_MSG_ERROR(Required library id3lib not found))
-
-  dnl Needed to link correctly with id3lib 3.8.0
-  LIBS="-lz -lstdc++ $LIBS"
-
-  AC_DEFINE(ENABLE_ID3LIB, [1], [Define for id3lib support])
+#AC_ARG_WITH(taglib, [  --without-taglib        disable taglib support])
+AC_ARG_WITH(taglib, AC_HELP_STRING([--without-taglib], [disable taglib support])])
+if test "x$with_taglib" != "xno"; then
+  PKG_CHECK_MODULES(TAGLIB, [taglib_c])
+  AC_SUBST(TAGLIB_CFLAGS)
+  AC_SUBST(TAGLIB_LIBS)
+  AC_DEFINE(HAVE_TAGLIB, [1], [Define to 1 if you have taglib support])
 fi
 
 # Checks for header files.

@@ -6,53 +6,55 @@
 # Global settings.
 #
 
-# This sets the default ID3 tag "content type" to "Podcast" and use the
-# directory /home/tom/podcasts for downloading enclosures.
+# This sets the default genre tag to "Podcast" and the default
+# download directory to /home/tom/podcasts. These settings can be
+# overriden per channel.
 [*]
-id3contenttype=Podcast
+genre=Podcast
 spool=/home/tom/podcasts
 
 #
 # Per-channel settings.
 #
 
-# This will define a channel with the identifier "dsc", set the RSS
-# feed URL for the channel, override the download directory defined
-# in the global settings section, and append file names of downloaded
-# enclosures to /home/tom/podcasts.m3u.
+# This defines a channel "dsc", sets the feed URL and overrides the
+# download directory.
 [dsc]
 url=http://radio.weblogs.com/0001014/categories/dailySourceCode/rss.xml
 spool=/home/tom/podcasts/dsc
-playlist=/home/tom/podcasts.m3u
 
-# This will define a channel with the identifier "yeast", set the RSS
-# feed URL for the channel, and set several ID3 tags.
-[yeast]
-url=http://feeds.feedburner.com/YeastRadio
-id3album=Yeast Radio
-id3leadartist=Madge Weinstein
-id3comment=
-id3title=Yeast Radio
-id3year=2005
-
-# castget will by default download files using the filename that appears in the
-# RSS feed.
-#
-# This does not always work, e.g. if the RSS feed uses the same filename for
-# all files or if it uses filenames with characters that the filesystem
-# considers invalid.
-#
-# The following configures the channel with filename patterns so that files are
-# saved with the date and title from the RSS fee. See castgetrc(5) for a list
-# of supported patterns.
-[scientific_american]
-url=http://rss.sciam.com/sciam/science-talk
-spool=/home/joe/podcasts
-id3album=Scientific American
-filename=%(date)-%(title).mp3
-
-# Spaces in values, including filenames do not require quotation marks or
-# escaping.
+# Spaces in values (including filenames) do not require quotation marks
+# or escaping.
 [hollywoodbabbleon]
 url=http://feeds.feedburner.com/HollywoodBabbleOnPod
 spool=/Users/joe/My Podcasts
+
+# Use keys like "album_tag" to set tags in media files.
+[newsquizextra]
+url=http://podcasts.files.bbci.co.uk/b010m2mj.rss
+album_tag=BBC News Quiz Extra
+
+# Setting a tag to an empty string will clear the tag. Tags that are
+# not set to any specific value in the channel configuration will
+# be left the way they are.
+[freakonomics]
+url=http://feeds.feedburner.com/freakonomicsradio
+comment_tag=
+
+# castget will by default use the filnames that appear in the RSS feed.
+# This does not work if, for example, the RSS feed uses the same filename
+# for all files. You can use "filename" to specify a filename pattern
+# for saving files. See See castgetrc(5) for a list of supported patterns.
+# Be careful which patterns you use --- including the raw title from the
+# RSS feed, for example, may not be a good idea.
+[alphachat]
+url=http://podcast.ft.com/s/ft-alphachat/feed
+album_tag=FT Alphachat
+filespec=alphachat-$(date)-%(title).mp3
+
+# Media files can be added to a playlist when downloaded.
+[scientific_american]
+url=http://rss.sciam.com/sciam/science-talk
+album_tag=Scientific American
+filename=%(date)-%(title).mp3
+playlist=/home/tom/sciam.m3u

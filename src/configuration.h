@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2005-2020 Marius L. Jøhndal
+  Copyright (C) 2005-2021 Marius L. Jøhndal
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -28,13 +28,12 @@ struct channel_configuration {
   gchar *spool_directory;
   gchar *filename_pattern;
   gchar *playlist;
-  gchar *id3_lead_artist;
-  gchar *id3_content_group;
-  gchar *id3_title;
-  gchar *id3_album;
-  gchar *id3_content_type;
-  gchar *id3_year;
-  gchar *id3_comment;
+  gchar *artist_tag;
+  gchar *title_tag;
+  gchar *album_tag;
+  gchar *genre_tag;
+  gchar *year_tag;
+  gchar *comment_tag;
   gchar *regex_filter;
 };
 

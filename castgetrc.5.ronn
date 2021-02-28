@@ -44,26 +44,20 @@ Directory names and filenames with spaces do not need to be quoted or escaped.
   * `filter`:
     Restrict operation to enclosures whose URLs match this regular expression.
 
-  * `id3leadartist`:
-    Add or overwrite the `lead artist' (TPE1) ID3v2 tag in enclosures that support this.
+  * `title_tag`:
+    Add or set the title tag in the media file (e.g. `title' (TIT2) in ID3v2).
 
-  * `id3contentgroup`:
-    Add or overwrite the `content group' (TIT1) ID3v2 tag in enclosures that support this.
+  * `album_tag`:
+    Add or set the album tag in the media file (e.g. `album' (TALB) in ID3v2).
 
-  * `id3title`:
-    Add or overwrite the `title' (TIT2) ID3v2 tag in enclosures that support this.
+  * `genre_tag`:
+    Add or set the genre tag in the media file (e.g. `content type' (TCON) in ID3v2).
 
-  * `id3album`:
-    Add or overwrite the `album' (TALB) ID3v2 tag in enclosures that support this.
+  * `year_tag`:
+    Add or set the year tag in the media file (e.g. `year' (TYER) in ID3v2).
 
-  * `id3contenttype`:
-    Add or overwrite the `content type' (TCON) ID3v2 tag in enclosures that support this.
-
-  * `id3year`:
-    Add or overwrite the `year' (TYER) ID3v2 tag in enclosures that support this.
-
-  * `id3comment`:
-    Add or overwrite the `comment' (COMM) ID3v2 tag in enclosures that support this.
+  * `comment_tag`:
+    Add or set the comment tag in the media file (e.g. `comment' (COMM) in ID3v2).
 
   * `filename`:
     Save downloads using the given filename pattern instead of deriving it from the URL of the enclosure. See FILENAME PATTERNS.
@@ -74,10 +68,10 @@ A channel definition with the channel identifier `*` will define a global
 configuration affecting all channels. The global configuration
 
     [*]
-    id3contenttype=Podcast
+    genre_tag=Podcast
 
 for example, is equivalent to adding the key-value pair
-`id3contenttype=Podcast` to all other channel definitions.
+`genre_tag=Podcast` to all other channel definitions.
 
 Key-value pairs in channel definitions override the global configuration.
 

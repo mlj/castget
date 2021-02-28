@@ -17,21 +17,22 @@ castget depends on
 
   * glib2 >= 2.30
   * libcurl >= 7.21.6
-  * id3lib (optional, for ID3 tag support)
+  * taglib (optional)
 
 If building on macOS, you can use Homebrew to install the dependencies:
 
 ```shell
-brew install glib id3lib
+brew install glib taglib
 ```
 
-To disable id3lib support, pass `--disable-id3lib` to `configure`;
+To disable taglib support, pass `--without-taglib` to `configure`;
 
 ```shell
-./configure --disable-id3lib
+./configure --without-taglib
 ```
 
-If building from git, first regenerate the `configure` script using `autoreconf -fi`:
+If building from git, first regenerate the `configure` script using `autoreconf
+-fi`:
 
 ```shell
 autoreconf -fi
@@ -40,7 +41,8 @@ make
 make install
 ```
 
-You will also need [ronn](http://rtomayko.github.io/ronn/), which is used to build the man pages. Prebuilt man pages are included in the distribution.
+You will also need [ronn](http://rtomayko.github.io/ronn/), which is used to
+build the man pages. Prebuilt man pages are included in the distribution.
 
 Please see INSTALL for detailed installation instructions.
 
