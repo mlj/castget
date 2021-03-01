@@ -3,13 +3,13 @@ language: c
 addons:
   homebrew:
     packages:
-      - id3lib
+      - taglib
       - glib
       - libxml2
     update: true
   apt:
     packages:
-      - libid3-3.8.3-dev
+      - libtagc0-dev
       - libcurl4-gnutls-dev
 
 matrix:
