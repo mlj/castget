@@ -5,6 +5,10 @@ primarily intended for automatic, unattended downloading of podcasts.
 
 ## Installation and configuration
 
+| Branch | Linux (clang) | Linux (gcc) | macOS |
+|--------|---------------|-------------|-------|
+|master|[![Linux (clang) Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/2)](https://travis-ci.org/mlj/castget)|[![Linux (gcc) Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/3)](https://travis-ci.org/mlj/castget)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/1)](https://travis-ci.org/mlj/castget)|
+
 To build and install from a distribution tarball, do the following:
 
 ```shell
