@@ -3,13 +3,19 @@
 castget is a simple, command-line based RSS enclosure downloader. It is
 primarily intended for automatic, unattended downloading of podcasts.
 
-## Installation and configuration
+## Packages
+
+Many distributions have packages for castget:
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/castget.svg?header=castget)](https://repology.org/project/castget/versions)  
+
+## Building from source
 
 | Branch | Linux (clang) | Linux (gcc) | macOS |
 |--------|---------------|-------------|-------|
 |master|[![Linux (clang) Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/2)](https://travis-ci.org/mlj/castget)|[![Linux (gcc) Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/3)](https://travis-ci.org/mlj/castget)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/1)](https://travis-ci.org/mlj/castget)|
 
-To build and install from a distribution tarball, do the following:
+To build from a distribution tarball, do the following:
 
 ```shell
 ./configure
@@ -35,8 +41,13 @@ To disable taglib support, pass `--without-taglib` to `configure`;
 ./configure --without-taglib
 ```
 
-If building from git, first regenerate the `configure` script using `autoreconf
--fi`:
+To build from git, clone the master branch
+
+```shell
+git clone https://github.com/mlj/castget.git
+```
+
+then rebuild the autoconf scripts
 
 ```shell
 autoreconf -fi
@@ -47,8 +58,6 @@ make install
 
 You will also need [ronn](http://rtomayko.github.io/ronn/), which is used to
 build the man pages. Prebuilt man pages are included in the distribution.
-
-Please see INSTALL for detailed installation instructions.
 
 ## Usage
 
@@ -68,4 +77,3 @@ report bugs.
 ## License
 
 castget is maintained by Marius L. Jøhndal and is available under the LGPL license.
-
