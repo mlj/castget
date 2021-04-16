@@ -286,8 +286,12 @@ void *_do_download_thread(void *arg)
   download_data *data = (download_data *)arg;
   // Resume and progress bars are disabled, because
   // those will be tricky with threading.
+  if (data->show_progress_bar)
+    printf("Downloading: %s\n", data->item->title);
   data->result = _do_download(data->c, data->channel_info, data->item,
                               data->user_data, data->cb, 0, data->debug, 0);
+  if (data->show_progress_bar)
+    printf("Download Complete: %s\n", data->item->title);
   pthread_exit(NULL);
 }
 
