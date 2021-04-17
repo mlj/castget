@@ -29,7 +29,10 @@
 #include "urlget.h"
 #include "utils.h"
 
+#include <errno.h>
 #include <glib/gprintf.h>
+#include <pthread.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -278,6 +281,20 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
   return download_failed;
 }
 
+void *_do_download_thread(void *arg)
+{
+  download_data *data = (download_data *)arg;
+  // Resume and progress bars are disabled, because
+  // those will be tricky with threading.
+  if (data->show_progress_bar)
+    printf("Downloading: %s\n", data->item->title);
+  data->result = _do_download(data->c, data->channel_info, data->item,
+                              data->user_data, data->cb, 0, data->debug, 0);
+  if (data->show_progress_bar)
+    printf("Download Complete: %s\n", data->item->title);
+  pthread_exit(NULL);
+}
+
 static int _do_catchup(channel *c, channel_info *channel_info, rss_item *item,
                        void *user_data, channel_callback cb)
 {
@@ -292,6 +309,14 @@ static int _do_catchup(channel *c, channel_info *channel_info, rss_item *item,
   return 0;
 }
 
+void *_do_catchup_thread(void *arg)
+{
+  catchup_data *data = (catchup_data *)arg;
+  data->result = _do_catchup(data->c, data->channel_info, data->item,
+                             data->user_data, data->cb);
+  pthread_exit(NULL);
+}
+
 int channel_update(channel *c, void *user_data, channel_callback cb,
                    int no_download, int no_mark_read, int first_only,
                    int resume, enclosure_filter *filter, int debug,
@@ -299,9 +324,16 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
 {
   int i, download_failed;
   rss_file *f;
+  int num_catchup = 0;
+  int num_download = 0;
+  void *status;
+  int t_result;
 
   /* Retrieve the RSS file. */
   f = _get_rss(c, user_data, cb, debug);
+
+  catchup_data catchup_items[f->num_items];
+  download_data download_items[f->num_items];
 
   if (!f)
     return 1;
@@ -317,34 +349,87 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
         item = f->items[i];
 
         if (!filter || _enclosure_pattern_match(filter, item->enclosure)) {
-          if (no_download)
-            download_failed =
-                _do_catchup(c, &(f->channel_info), item, user_data, cb);
-          else
-            download_failed =
-                _do_download(c, &(f->channel_info), item, user_data, cb, resume,
-                             debug, show_progress_bar);
-
-          if (download_failed)
-            break;
-
-          if (!no_mark_read) {
-            /* Mark enclosure as downloaded and immediately save channel
-               file to ensure that it reflects the change. */
-            g_hash_table_insert(c->downloaded_enclosures,
-                                f->items[i]->enclosure->url,
-                                (gpointer)get_rfc822_time());
-
-            _cast_channel_save(c, debug);
+          if (no_download) {
+            //  download_failed =
+            //_do_catchup(c, &(f->channel_info), item, user_data, cb);
+            catchup_items[num_catchup] =
+                (catchup_data){ .c = c,
+                                .channel_info = &(f->channel_info),
+                                .item = item,
+                                .user_data = user_data,
+                                .cb = cb };
+            num_catchup++;
+          } else {
+            // download_failed =
+            //_do_download(c, &(f->channel_info), item, user_data, cb, resume,
+            //            debug, show_progress_bar);
+            download_items[num_download] =
+                (download_data){ .c = c,
+                                 .channel_info = &(f->channel_info),
+                                 .item = item,
+                                 .user_data = user_data,
+                                 .cb = cb,
+                                 .resume = resume,
+                                 .debug = debug,
+                                 .show_progress_bar = show_progress_bar };
+            num_download++;
           }
-
-          /* If we have been instructed to deal only with the first
-             available enclosure, it is time to break out of the loop. */
-          if (first_only)
-            break;
         }
+
+        /* If we have been instructed to deal only with the first
+           available enclosure, it is time to break out of the loop. */
+        if (first_only)
+          break;
       }
     }
+
+  pthread_t catchup_threads[num_catchup];
+
+  for (i = 0; i < num_catchup; i++) {
+    pthread_create(&catchup_threads[i], NULL, _do_catchup_thread,
+                   (void *)&catchup_items[i]);
+  }
+
+  pthread_t download_threads[num_download];
+  for (i = 0; i < num_download; i++) {
+    pthread_create(&download_threads[i], NULL, _do_download_thread,
+                   (void *)&download_items[i]);
+  }
+
+  for (i = 0; i < num_catchup; i++) {
+    t_result = pthread_join(catchup_threads[i], NULL);
+    if (t_result != 0)
+      printf(strerror(t_result));
+    if (catchup_items[i].result != 0) {
+      download_failed = 1;
+      break;
+    }
+    if (!no_mark_read) {
+      /* Mark enclosure as downloaded and immediately save channel
+         file to ensure that it reflects the change. */
+      g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url,
+                          (gpointer)get_rfc822_time());
+
+      _cast_channel_save(c, debug);
+    }
+  }
+
+  for (i = 0; i < num_download; i++) {
+    t_result = pthread_join(download_threads[i], NULL);
+    if (t_result != 0)
+      printf(strerror(t_result));
+    if (download_items[i].result != 0 || download_failed) {
+      download_failed = 1;
+      printf("Download failed");
+      break;
+    }
+    /* Mark enclosure as downloaded and immediately save channel
+       file to ensure that it reflects the change. */
+    g_hash_table_insert(c->downloaded_enclosures, f->items[i]->enclosure->url,
+                        (gpointer)get_rfc822_time());
+
+    _cast_channel_save(c, debug);
+  }
 
   if (!no_mark_read) {
     /* Update the RSS last fetched time and save the channel file again. */
