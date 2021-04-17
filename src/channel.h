@@ -23,37 +23,37 @@
 #include <glib.h>
 
 typedef enum {
-  CCA_RSS_DOWNLOAD_START,
-  CCA_RSS_DOWNLOAD_END,
-  CCA_ENCLOSURE_DOWNLOAD_START,
-  CCA_ENCLOSURE_DOWNLOAD_END
+    CCA_RSS_DOWNLOAD_START,
+    CCA_RSS_DOWNLOAD_END,
+    CCA_ENCLOSURE_DOWNLOAD_START,
+    CCA_ENCLOSURE_DOWNLOAD_END
 } channel_action;
 
 typedef struct _channel {
-  gchar *url;
-  gchar *channel_filename;
-  gchar *spool_directory;
-  gchar *filename_pattern;
-  GHashTable *downloaded_enclosures;
-  gchar *rss_last_fetched;
+    gchar *url;
+    gchar *channel_filename;
+    gchar *spool_directory;
+    gchar *filename_pattern;
+    GHashTable *downloaded_enclosures;
+    gchar *rss_last_fetched;
 } channel;
 
 typedef struct _channel_info {
-  char *title;
-  char *link;
-  char *description;
-  char *language;
+    char *title;
+    char *link;
+    char *description;
+    char *language;
 } channel_info;
 
 typedef struct _enclosure {
-  char *url;
-  long length;
-  char *type;
+    char *url;
+    long length;
+    char *type;
 } enclosure;
 
 typedef struct _enclosure_filter {
-  gchar *pattern;
-  gboolean caseless;
+    gchar *pattern;
+    gboolean caseless;
 } enclosure_filter;
 
 typedef void (*channel_callback)(void *user_data, channel_action action,
@@ -75,24 +75,24 @@ void enclosure_filter_free(enclosure_filter *e);
 typedef struct _rss_item rss_item;
 
 typedef struct _download_data {
-  channel *c;
-  channel_info *channel_info;
-  rss_item *item;
-  void *user_data;
-  channel_callback cb;
-  int resume;
-  int debug;
-  int show_progress_bar;
-  int result;
+    channel *c;
+    channel_info *channel_info;
+    rss_item *item;
+    void *user_data;
+    channel_callback cb;
+    int resume;
+    int debug;
+    int show_progress_bar;
+    int result;
 } download_data;
 
 typedef struct _catchup_data {
-  channel *c;
-  channel_info *channel_info;
-  rss_item *item;
-  void *user_data;
-  channel_callback cb;
-  int result;
+    channel *c;
+    channel_info *channel_info;
+    rss_item *item;
+    void *user_data;
+    channel_callback cb;
+    int result;
 } catchup_data;
 
 #endif /* CHANNEL_H */
