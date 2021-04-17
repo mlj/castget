@@ -49,4 +49,3 @@ castget_LDADD = \
   $(GLIBS_LIBS) \
   $(TAGLIB_LIBS) \
   $(PTHREAD_LIBS) \
-
