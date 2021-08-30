@@ -9,19 +9,7 @@ Many distributions have packages for castget:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/castget.svg?header=castget)](https://repology.org/project/castget/versions)  
 
-## Building from source
-
-| Branch | Linux (clang) | Linux (gcc) | macOS |
-|--------|---------------|-------------|-------|
-|master|[![Linux (clang) Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/2)](https://travis-ci.org/mlj/castget)|[![Linux (gcc) Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/3)](https://travis-ci.org/mlj/castget)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/1)](https://travis-ci.org/mlj/castget)|
-
-To build from a distribution tarball, do the following:
-
-```shell
-./configure
-make
-make install
-```
+## Building
 
 castget depends on
 
@@ -35,11 +23,47 @@ If building on macOS, you can use Homebrew to install the dependencies:
 brew install glib taglib
 ```
 
+On Ubuntu Xenial, you need the following:
+
+  * libcurl4-gnutls-dev
+  * libtagc0-dev (optional)
+
+On Alpine, you need the following:
+
+  * libxml2-dev
+  * glib-dev
+  * curl-dev
+  * taglib-dev (optional)
+
+On Debian 9 “stretch”, you need the following:
+
+  * pkg-config
+  * libglib2.0-dev
+  * libxml2-dev
+  * libcurl3-dev
+  * libtagc0-dev (optional)
+
+### Building from source
+
+| Branch | Linux (clang) | Linux (gcc) | macOS |
+|--------|---------------|-------------|-------|
+|master|[![Linux (clang) Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/2)](https://travis-ci.org/mlj/castget)|[![Linux (gcc) Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/3)](https://travis-ci.org/mlj/castget)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/mlj/castget/branches/master/1)](https://travis-ci.org/mlj/castget)|
+
+To build from a distribution tarball, do the following:
+
+```shell
+./configure
+make
+make install
+```
+
 To disable taglib support, pass `--without-taglib` to `configure`;
 
 ```shell
 ./configure --without-taglib
 ```
+
+### Building from git
 
 To build from git, clone the master branch
 
