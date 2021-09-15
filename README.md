@@ -85,10 +85,12 @@ build the man pages. Prebuilt man pages are included in the distribution.
 
 ### Building from Dockerfile
 
-Build docker image
+A Dockerfile is available in contrib folder.
+
+Build docker image. 
 
 ```
-docker build -t castget .
+docker build -t castget -f contrib/Dockerfile .
 ```
 
 Create a file `.castgetrc` as shown on [Usage](Usage) and run container.
