@@ -58,7 +58,6 @@ static gboolean resume = FALSE;
 static gboolean debug = FALSE;
 static gboolean show_progress_bar = FALSE;
 static gboolean show_version = FALSE;
-static gboolean show_debug_info = FALSE;
 static gboolean new_only = FALSE;
 static gboolean list = FALSE;
 static gboolean catchup = FALSE;
@@ -91,7 +90,7 @@ int main(int argc, char **argv)
     { "rcfile", 'C', 0, G_OPTION_ARG_FILENAME, &rcfile,
       "override the default configuration file name" },
 
-    { "debug", 'd', 0, G_OPTION_ARG_NONE, &show_debug_info,
+    { "debug", 'd', 0, G_OPTION_ARG_NONE, &debug,
       "print connection debug information" },
     { "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
       "print detailed progress information" },
