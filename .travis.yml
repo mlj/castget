@@ -6,7 +6,6 @@ addons:
       - taglib
       - glib
       - libxml2
-    update: true
   apt:
     packages:
       - libtagc0-dev
