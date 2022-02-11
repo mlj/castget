@@ -16,7 +16,6 @@ matrix:
   include:
     - name: macOS clang
       os: osx
-      osx_image: xcode11
       compiler: clang
     - name: Xenial clang
       os: linux
