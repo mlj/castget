@@ -162,10 +162,30 @@ int main(int argc, char **argv)
     }
   }
 
-  /* Try opening configuration file. */
-  if (!rcfile)
-    /* Supply default path name. */
-    rcfile = g_build_filename(g_get_home_dir(), ".castgetrc", NULL);
+  /* Determine if optinal rcfile has been supplied. */
+  bool rc_found = !(rcfile == NULL);
+
+  /* Try opening configuration file in default directories. */
+  if (!rc_found) {
+    /* Default paths. */
+	  gchar* rcfiledirs[4] = {
+      g_build_filename(g_get_home_dir(), ".castgetrc", NULL),
+      g_build_filename(g_get_user_config_dir(), "castget/.castgetrc", NULL),
+      g_build_filename(g_get_user_config_dir(), "castget/castgetrc", NULL),
+      g_build_filename(g_get_user_config_dir(), "castget/config", NULL)
+    };
+    for(;i<4;i++) {
+      rcfile = rcfiledirs[i];
+      if(g_file_test(rcfile, G_FILE_TEST_EXISTS)) {
+        rc_found = true;
+        break;
+      }
+    }
+    if(!rc_found) {
+      fprintf(stderr, "Failed to find configuration in ~/.castgetrc or in %s/castget/castgetrc or %s/castget/config .\n", g_get_home_dir(), g_get_user_config_dir());
+      return -1;
+    }
+  }
 
   kf = _configuration_file_open(rcfile);
 
