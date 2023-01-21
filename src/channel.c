@@ -293,15 +293,13 @@ static int _do_catchup(channel *c, channel_info *channel_info, rss_item *item,
 }
 
 int channel_update(channel *c, void *user_data, channel_callback cb,
-                   int no_download, int no_mark_read, int first_only,
-                   int resume, enclosure_filter *filter, int debug,
-                   int show_progress_bar)
+                       option_info *opts)
 {
   int i, download_failed;
   rss_file *f;
 
   /* Retrieve the RSS file. */
-  f = _get_rss(c, user_data, cb, debug);
+  f = _get_rss(c, user_data, cb, opts->debug);
 
   if (!f)
     return 1;
@@ -316,37 +314,37 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
 
         item = f->items[i];
 
-        if (!filter || _enclosure_pattern_match(filter, item->enclosure)) {
-          if (no_download)
+        if (!opts->filter || _enclosure_pattern_match(opts->filter, item->enclosure)) {
+          if (opts->no_download)
             download_failed =
                 _do_catchup(c, &(f->channel_info), item, user_data, cb);
           else
             download_failed =
-                _do_download(c, &(f->channel_info), item, user_data, cb, resume,
-                             debug, show_progress_bar);
+                _do_download(c, &(f->channel_info), item, user_data, cb, opts->resume,
+                             opts->debug, opts->show_progress_bar);
 
           if (download_failed)
             break;
 
-          if (!no_mark_read) {
+          if (!opts->no_mark_read) {
             /* Mark enclosure as downloaded and immediately save channel
                file to ensure that it reflects the change. */
             g_hash_table_insert(c->downloaded_enclosures,
                                 f->items[i]->enclosure->url,
                                 (gpointer)get_rfc822_time());
 
-            _cast_channel_save(c, debug);
+            _cast_channel_save(c, opts->debug);
           }
 
           /* If we have been instructed to deal only with the first
              available enclosure, it is time to break out of the loop. */
-          if (first_only)
+          if (opts->first_only)
             break;
         }
       }
     }
 
-  if (!no_mark_read) {
+  if (!opts->no_mark_read) {
     /* Update the RSS last fetched time and save the channel file again. */
 
     if (c->rss_last_fetched)
@@ -354,7 +352,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
 
     c->rss_last_fetched = g_strdup(f->fetched_time);
 
-    _cast_channel_save(c, debug);
+    _cast_channel_save(c, opts->debug);
   }
 
   rss_close(f);
@@ -396,6 +394,16 @@ static gboolean _enclosure_pattern_match(enclosure_filter *filter,
   g_regex_unref(regex);
 
   return match;
+}
+
+option_info *option_info_new()
+{
+  option_info *opts = g_try_malloc0(sizeof(struct _option_info));
+  return opts;
+}
+
+void option_info_free(option_info *opts) {
+  g_free(opts);
 }
 
 enclosure_filter *enclosure_filter_new(const gchar *pattern, gboolean caseless)
