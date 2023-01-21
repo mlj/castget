@@ -46,6 +46,11 @@ else
   AC_SUBST(CURL_LIBS)
 fi
 
+AC_PATH_PROG(RONN, ronn, no)
+if test "$RONN" = "no" ; then
+  AC_MSG_ERROR(Required tool ronn not found)
+fi
+
 #AC_ARG_WITH(taglib, [  --without-taglib        disable taglib support)
 AC_ARG_WITH(taglib, AC_HELP_STRING([--without-taglib], [disable taglib support]))
 if test "x$with_taglib" != "xno"; then
