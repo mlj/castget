@@ -60,6 +60,7 @@ typedef struct _option_info {
   int no_download;
   int no_mark_read;
   int stop_after_count;
+  int count_disregards_eligibility;
   int reverse;
   int resume;
   enclosure_filter *filter;
@@ -73,6 +74,7 @@ typedef struct _channel_index {
   int reverse;
   int current;
   int ended;
+  int iteration;
 } channel_index;
 
 typedef void (*channel_callback)(void *user_data, channel_action action,

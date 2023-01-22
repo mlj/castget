@@ -47,8 +47,14 @@ options as arguments.
   * `-s` <count>, `--stop-after`=<count>:
     Stop after <count> items are processed.  This is implemented per-channel.
 
+  * `-x`, `--count-disregards-eligibility`:
+    By default, `--stop-after` only counts items that castget considers eligible for processing (e.g. matches filters and has not been previously downloaded (or marked as downloaded with `--catchup`)).  This option modifies `--stop-after` so that the count applies to all items seen, regardless of whether the item was eligible for processing.
+
   * `-1`, `--first-only`:
-    Restrict operation to the most recent item in each channel only.  Equivalent to --stop-after=1.
+    Restrict operation to the most recent item in each channel only.  Equivalent to `--stop-after=1`.
+
+  * `-o`, `--first-only-disregards-eligibility`:
+    Stop processing when one item has been seen regardless of item's eligibility for processing.  Equivalent to `--stop-after=1 --count-disregards-eligibility`.
 
   * `-f` <pattern>, `--filter`=<pattern>:
     Restrict operation to enclosures whose download URLs match the regular expression `pattern`. Note that this will override any regular expression filters given in the configuration file.

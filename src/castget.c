@@ -69,7 +69,9 @@ int main(int argc, char **argv)
   GError *error = NULL;
   GOptionContext *context;
   static gboolean first_only = FALSE;
+  static gboolean first_only_disregard_eligibility = FALSE;
   static gint stop_after_count = 0;
+  static gboolean count_disregards_eligibility = FALSE;
   static gboolean resume = FALSE;
   static gboolean debug = FALSE;
   static gboolean reverse = FALSE;
@@ -105,7 +107,11 @@ int main(int argc, char **argv)
     { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet, "only print error messages" },
     { "stop-after", 's', 0, G_OPTION_ARG_INT, &stop_after_count,
       "stop after processing ARGUMENT items from each channel" },
+    { "count-disregards-eligibility", 'x', 0, G_OPTION_ARG_NONE, &count_disregards_eligibility,
+      "when processing --stop-after, count considers all items, not just those eligible" },
     { "first-only", '1', 0, G_OPTION_ARG_NONE, &first_only,
+      "only process the most recent item from each channel" },
+    { "first-only-disregard-eligibility", 'c', 0, G_OPTION_ARG_NONE, &first_only_disregard_eligibility,
       "only process the most recent item from each channel" },
     { "reverse", 'R', 0, G_OPTION_ARG_NONE, &reverse,
       "process the channel in reverse order" },
@@ -145,8 +151,21 @@ int main(int argc, char **argv)
     g_print("--stop-after and --first-only are incompatible\n");
     exit(1);
   }
+  if (first_only_disregard_eligibility && stop_after_count) {
+    g_print("--stop-after and --first-only-disregard-eligibility are incompatible\n");
+    exit(1);
+  }
+  if (first_only_disregard_eligibility && first_only) {
+    g_print("--first-only and --first-only-disregard-eligibility are incompatible\n");
+    exit(1);
+  }
+
   if (first_only)
     stop_after_count = 1;
+  if (first_only_disregard_eligibility) {
+    stop_after_count = 1;
+    count_disregards_eligibility = TRUE;
+  }
 
   /* Decide on the action to take */
   if (show_version) {
@@ -158,6 +177,7 @@ int main(int argc, char **argv)
   opts->no_download = 0;
   opts->no_mark_read = 0;
   opts->stop_after_count = stop_after_count;
+  opts->count_disregards_eligibility = count_disregards_eligibility;
   opts->resume = resume;
   opts->debug = debug;
   opts->reverse = reverse;

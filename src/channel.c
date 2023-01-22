@@ -343,12 +343,16 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
 
             _cast_channel_save(c, opts->debug);
           }
-
-          /* If we have been instructed to deal only with the first
-             available enclosure, it is time to break out of the loop. */
-          if (opts->stop_after_count && eligible_items_seen >= opts->stop_after_count)
-            break;
         }
+      }
+
+      /* If we have been instructed to only process a certain number of items
+         and we have seen that number, exit the loop */
+      if (opts->stop_after_count) {
+        int check_index = (opts->count_disregards_eligibility) ? index.iteration : eligible_items_seen;
+        if (check_index >= opts->stop_after_count) {
+          break;
+}
       }
     }
   }
@@ -372,6 +376,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
 void _initialize_index(channel_index *index, int num_items, int reverse) {
   index->ended = 0;
   index->reverse = reverse;
+  index->iteration = 0;
   if (reverse) {
     index->start = num_items -1;
     index->stop = 0;
@@ -387,6 +392,7 @@ int _next_index(channel_index *index) {
   if (index->ended)
     return 0;
 
+  index->iteration++;
   if (index->reverse) {
     index->current--;
     if (index->current < index->stop) {
