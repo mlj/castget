@@ -298,7 +298,7 @@ static int _do_catchup(channel *c, channel_info *channel_info, rss_item *item,
 int channel_update(channel *c, void *user_data, channel_callback cb,
                        option_info *opts)
 {
-  int i, download_failed;
+  int i, download_failed, eligible_items_seen = 0;
   rss_file *f;
 
   /* Retrieve the RSS file. */
@@ -322,6 +322,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
         item = f->items[i];
 
         if (!opts->filter || _enclosure_pattern_match(opts->filter, item->enclosure)) {
+          eligible_items_seen++;
           if (opts->no_download)
             download_failed =
                 _do_catchup(c, &(f->channel_info), item, user_data, cb);
@@ -345,7 +346,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
 
           /* If we have been instructed to deal only with the first
              available enclosure, it is time to break out of the loop. */
-          if (opts->first_only)
+          if (opts->stop_after_count && eligible_items_seen >= opts->stop_after_count)
             break;
         }
       }

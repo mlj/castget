@@ -69,6 +69,7 @@ int main(int argc, char **argv)
   GError *error = NULL;
   GOptionContext *context;
   static gboolean first_only = FALSE;
+  static gint stop_after_count = 0;
   static gboolean resume = FALSE;
   static gboolean debug = FALSE;
   static gboolean reverse = FALSE;
@@ -102,6 +103,8 @@ int main(int argc, char **argv)
     { "new-only", 'n', 0, G_OPTION_ARG_NONE, &new_only,
       "only process new channels" },
     { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet, "only print error messages" },
+    { "stop-after", 's', 0, G_OPTION_ARG_INT, &stop_after_count,
+      "stop after processing ARGUMENT items from each channel" },
     { "first-only", '1', 0, G_OPTION_ARG_NONE, &first_only,
       "only process the most recent item from each channel" },
     { "reverse", 'R', 0, G_OPTION_ARG_NONE, &reverse,
@@ -134,6 +137,17 @@ int main(int argc, char **argv)
     exit(1);
   }
 
+  if (stop_after_count < 0) {
+    g_print("--stop-after must be greater than 0\n");
+    exit(1);
+  }
+  if (first_only && stop_after_count) {
+    g_print("--stop-after and --first-only are incompatible\n");
+    exit(1);
+  }
+  if (first_only)
+    stop_after_count = 1;
+
   /* Decide on the action to take */
   if (show_version) {
     version();
@@ -143,7 +157,7 @@ int main(int argc, char **argv)
   opts = option_info_new();
   opts->no_download = 0;
   opts->no_mark_read = 0;
-  opts->first_only = first_only;
+  opts->stop_after_count = stop_after_count;
   opts->resume = resume;
   opts->debug = debug;
   opts->reverse = reverse;

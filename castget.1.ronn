@@ -44,8 +44,11 @@ options as arguments.
     configuration file will not be considered as 'new' if it is added to the
     configuration again at a later time.
 
+  * `-s` <count>, `--stop-after`=<count>:
+    Stop after <count> items are processed.  This is implemented per-channel.
+
   * `-1`, `--first-only`:
-    Restrict operation to the most recent item in each channel only.
+    Restrict operation to the most recent item in each channel only.  Equivalent to --stop-after=1.
 
   * `-f` <pattern>, `--filter`=<pattern>:
     Restrict operation to enclosures whose download URLs match the regular expression `pattern`. Note that this will override any regular expression filters given in the configuration file.

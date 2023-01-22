@@ -59,7 +59,7 @@ typedef struct _enclosure_filter {
 typedef struct _option_info {
   int no_download;
   int no_mark_read;
-  int first_only;
+  int stop_after_count;
   int reverse;
   int resume;
   enclosure_filter *filter;
