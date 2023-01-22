@@ -108,6 +108,7 @@ struct channel_configuration *channel_configuration_new(
   c->comment_tag =
       _read_channel_configuration_key(kf, identifier, "comment_tag");
   c->regex_filter = _read_channel_configuration_key(kf, identifier, "filter");
+  c->user_agent = _read_channel_configuration_key(kf, identifier, "user_agent");
 
   /* Populate with defaults if necessary. */
   if (defaults) {
@@ -143,6 +144,9 @@ struct channel_configuration *channel_configuration_new(
 
     if (!c->regex_filter && defaults->regex_filter)
       c->regex_filter = g_strdup(defaults->regex_filter);
+
+    if (!c->user_agent && defaults->user_agent)
+      c->user_agent = g_strdup(defaults->user_agent);
   }
 
   return c;
@@ -198,7 +202,8 @@ int channel_configuration_verify_keys(GKeyFile *kf, const char *identifier)
                !strcmp(key_list[i], "genre_tag") ||
                !strcmp(key_list[i], "year_tag") ||
                !strcmp(key_list[i], "comment_tag") ||
-               !strcmp(key_list[i], "filter"))) {
+               !strcmp(key_list[i], "filter") ||
+               !strcmp(key_list[i], "user_agent"))) {
       fprintf(stderr, "Invalid key %s in configuration of channel %s.\n",
               key_list[i], identifier);
       return -1;

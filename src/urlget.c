@@ -29,15 +29,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-int urlget_file(const char *url, FILE *f, int debug)
+int urlget_file(const char *url, FILE *f, int debug, channel *c)
 {
-  return urlget_buffer(url, (void *)f, NULL, 0, debug, NULL);
+  return urlget_buffer(url, (void *)f, NULL, 0, debug, NULL, c);
 }
 
 int urlget_buffer(const char *url, void *user_data,
                   size_t (*write_buffer)(void *buffer, size_t size,
                                          size_t nmemb, void *user_data),
-                  long resume_from, int debug, progress_bar *pb)
+                  long resume_from, int debug, progress_bar *pb,
+                  channel *c)
 {
   CURL *easyhandle;
   CURLcode success;
@@ -46,8 +47,11 @@ int urlget_buffer(const char *url, void *user_data,
   gchar *user_agent;
 
   /* Construct user agent string. */
-  user_agent = g_strdup_printf("%s (%s rss enclosure downloader)",
-                               PACKAGE_STRING, PACKAGE);
+  if (c->user_agent)
+    user_agent = g_strdup(c->user_agent);
+  else
+    user_agent = g_strdup_printf("%s (%s rss enclosure downloader)",
+                                 PACKAGE_STRING, PACKAGE);
 
   /* Initialise curl. */
   easyhandle = curl_easy_init();
