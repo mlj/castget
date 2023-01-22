@@ -52,6 +52,9 @@ options as arguments.
 
 ### Global options
 
+  * `-R`, `--reverse`:
+    Reverse the order in which items in feeds are processed.
+
   * `-r`, `--resume`:
     Resume aborted downloads. Make sure not to use this option if the RSS feed uses the same filename for multiple enclosures as this will corrupt existing downloads.
 

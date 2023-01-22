@@ -71,6 +71,7 @@ int main(int argc, char **argv)
   static gboolean first_only = FALSE;
   static gboolean resume = FALSE;
   static gboolean debug = FALSE;
+  static gboolean reverse = FALSE;
   static gboolean show_progress_bar = FALSE;
   static gchar *rcfile = NULL;
   static gchar *filter_regex = NULL;
@@ -103,6 +104,8 @@ int main(int argc, char **argv)
     { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet, "only print error messages" },
     { "first-only", '1', 0, G_OPTION_ARG_NONE, &first_only,
       "only process the most recent item from each channel" },
+    { "reverse", 'R', 0, G_OPTION_ARG_NONE, &reverse,
+      "process the channel in reverse order" },
     { "filter", 'f', 0, G_OPTION_ARG_STRING, &filter_regex,
       "only process items whose enclosure names match a regular expression" },
 
@@ -143,6 +146,7 @@ int main(int argc, char **argv)
   opts->first_only = first_only;
   opts->resume = resume;
   opts->debug = debug;
+  opts->reverse = reverse;
   opts->show_progress_bar = show_progress_bar;
 
   if (catchup) {

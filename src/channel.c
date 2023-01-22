@@ -34,6 +34,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+void _initialize_index(channel_index *index, int num_items, int reverse);
+int _next_index(channel_index *index);
+
 static int _enclosure_pattern_match(enclosure_filter *filter,
                                     const enclosure *enclosure);
 
@@ -304,8 +307,12 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
   if (!f)
     return 1;
 
+  channel_index index;
+  _initialize_index(&index, f->num_items, opts->reverse);
+
   /* Check enclosures in RSS file. */
-  for (i = 0; i < f->num_items; i++)
+  while (_next_index(&index)) {
+    i = index.current;
     if (f->items[i]->enclosure) {
       if (!g_hash_table_lookup_extended(c->downloaded_enclosures,
                                         f->items[i]->enclosure->url, NULL,
@@ -343,6 +350,7 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
         }
       }
     }
+  }
 
   if (!opts->no_mark_read) {
     /* Update the RSS last fetched time and save the channel file again. */
@@ -358,6 +366,41 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
   rss_close(f);
 
   return 0;
+}
+
+void _initialize_index(channel_index *index, int num_items, int reverse) {
+  index->ended = 0;
+  index->reverse = reverse;
+  if (reverse) {
+    index->start = num_items -1;
+    index->stop = 0;
+    index->current = num_items;
+  } else {
+    index->start = 0;
+    index->stop = num_items - 1;
+    index->current = -1;
+  }
+}
+
+int _next_index(channel_index *index) {
+  if (index->ended)
+    return 0;
+
+  if (index->reverse) {
+    index->current--;
+    if (index->current < index->stop) {
+      index->current = -1;
+      index->ended = 1;
+    }
+  } else {
+    index->current++;
+    if (index->current > index->stop) {
+      index->current = -1;
+      index->ended = 1;
+    }
+  }
+
+  return index->ended ? 0 : 1;
 }
 
 /* Match the (file) name of an enclosure against a regexp. Letters

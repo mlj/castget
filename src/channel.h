@@ -60,11 +60,20 @@ typedef struct _option_info {
   int no_download;
   int no_mark_read;
   int first_only;
+  int reverse;
   int resume;
   enclosure_filter *filter;
   int debug;
   int show_progress_bar;
 } option_info;
+
+typedef struct _channel_index {
+  int start;
+  int stop;
+  int reverse;
+  int current;
+  int ended;
+} channel_index;
 
 typedef void (*channel_callback)(void *user_data, channel_action action,
                                  channel_info *channel_info,
