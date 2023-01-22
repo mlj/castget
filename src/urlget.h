@@ -21,11 +21,13 @@
 #define URLGET_H
 
 #include "progress.h"
+#include "channel.h"
 
-int urlget_file(const char *url, FILE *f, int debug);
+int urlget_file(const char *url, FILE *f, int debug, channel *c);
 int urlget_buffer(const char *url, void *user_data,
                   size_t (*write_buffer)(void *buffer, size_t size,
                                          size_t nmemb, void *user_data),
-                  long resume_from, int debug, progress_bar *pb);
+                  long resume_from, int debug, progress_bar *pb,
+                  channel *c);
 
 #endif /* URLGET_H */

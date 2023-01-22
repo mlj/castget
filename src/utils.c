@@ -32,9 +32,9 @@
 
 int write_by_temporary_file(const gchar *filename,
                             int (*writer)(FILE *f, gpointer user_data,
-                                          int debug),
+                                          int debug, channel *c),
                             gpointer user_data, gchar **used_filename,
-                            int debug)
+                            int debug, channel *c)
 {
   int retval;
   FILE *f;
@@ -72,7 +72,7 @@ int write_by_temporary_file(const gchar *filename,
     return -1;
   }
 
-  retval = writer(f, user_data, debug);
+  retval = writer(f, user_data, debug, c);
 
   fclose(f);
 

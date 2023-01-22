@@ -21,6 +21,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include "channel.h"
 #include "htmlent.h"
 #include "libxmlutil.h"
 #include "rss.h"
@@ -252,20 +253,20 @@ rss_file *rss_open_file(const char *filename)
   return f;
 }
 
-static int _rss_open_url_cb(FILE *f, gpointer user_data, int debug)
+static int _rss_open_url_cb(FILE *f, gpointer user_data, int debug, channel *c)
 {
   gchar *url = (gchar *)user_data;
 
-  return urlget_file(url, f, debug);
+  return urlget_file(url, f, debug, c);
 }
 
-rss_file *rss_open_url(const char *url, int debug)
+rss_file *rss_open_url(const char *url, int debug, channel *c)
 {
   rss_file *f;
   gchar *rss_filename;
 
   if (write_by_temporary_file(NULL, _rss_open_url_cb, (gpointer)url,
-                              &rss_filename, debug))
+                              &rss_filename, debug, c))
     return NULL;
 
   f = rss_open_file(rss_filename);

@@ -46,7 +46,7 @@ typedef struct _rss_file {
 } rss_file;
 
 rss_file *rss_open_file(const char *filename);
-rss_file *rss_open_url(const char *url, int debug);
+rss_file *rss_open_url(const char *url, int debug, channel *c);
 void rss_close(rss_file *f);
 
 #endif /* RSS_H */

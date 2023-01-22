@@ -20,14 +20,16 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "channel.h"
+
 #include <glib.h>
 #include <stdio.h>
 
 int write_by_temporary_file(const gchar *filename,
                             int (*writer)(FILE *f, gpointer user_data,
-                                          int debug),
+                                          int debug, channel *c),
                             gpointer user_data, gchar **used_filename,
-                            int debug);
+                            int debug, channel *c);
 gchar *get_rfc822_time(void);
 
 #endif /* UTILS_H */
