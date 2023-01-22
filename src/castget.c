@@ -53,16 +53,8 @@ static int playlist_add(const gchar *playlist_file, const gchar *media_file);
 
 static gboolean verbose = FALSE;
 static gboolean quiet = FALSE;
-static gboolean first_only = FALSE;
-static gboolean resume = FALSE;
-static gboolean debug = FALSE;
-static gboolean show_progress_bar = FALSE;
-static gboolean show_version = FALSE;
 static gboolean new_only = FALSE;
-static gboolean list = FALSE;
-static gboolean catchup = FALSE;
-static gchar *rcfile = NULL;
-static gchar *filter_regex = NULL;
+static option_info *opts = NULL;
 
 int main(int argc, char **argv)
 {
@@ -76,6 +68,19 @@ int main(int argc, char **argv)
   enclosure_filter *filter = NULL;
   GError *error = NULL;
   GOptionContext *context;
+  static gboolean first_only = FALSE;
+  static gboolean first_only_disregard_eligibility = FALSE;
+  static gint stop_after_count = 0;
+  static gboolean count_disregards_eligibility = FALSE;
+  static gboolean resume = FALSE;
+  static gboolean debug = FALSE;
+  static gboolean reverse = FALSE;
+  static gboolean show_progress_bar = FALSE;
+  static gchar *rcfile = NULL;
+  static gchar *filter_regex = NULL;
+  static gboolean list = FALSE;
+  static gboolean catchup = FALSE;
+  static gboolean show_version = FALSE;
 
   static GOptionEntry options[] = {
     { "catchup", 'c', 0, G_OPTION_ARG_NONE, &catchup,
@@ -100,8 +105,16 @@ int main(int argc, char **argv)
     { "new-only", 'n', 0, G_OPTION_ARG_NONE, &new_only,
       "only process new channels" },
     { "quiet", 'q', 0, G_OPTION_ARG_NONE, &quiet, "only print error messages" },
+    { "stop-after", 's', 0, G_OPTION_ARG_INT, &stop_after_count,
+      "stop after processing ARGUMENT items from each channel" },
+    { "count-disregards-eligibility", 'x', 0, G_OPTION_ARG_NONE, &count_disregards_eligibility,
+      "when processing --stop-after, count considers all items, not just those eligible" },
     { "first-only", '1', 0, G_OPTION_ARG_NONE, &first_only,
       "only process the most recent item from each channel" },
+    { "first-only-disregard-eligibility", 'c', 0, G_OPTION_ARG_NONE, &first_only_disregard_eligibility,
+      "only process the most recent item from each channel" },
+    { "reverse", 'R', 0, G_OPTION_ARG_NONE, &reverse,
+      "process the channel in reverse order" },
     { "filter", 'f', 0, G_OPTION_ARG_STRING, &filter_regex,
       "only process items whose enclosure names match a regular expression" },
 
@@ -130,20 +143,62 @@ int main(int argc, char **argv)
     exit(1);
   }
 
+  if (stop_after_count < 0) {
+    g_print("--stop-after must be greater than 0\n");
+    exit(1);
+  }
+  if (first_only && stop_after_count) {
+    g_print("--stop-after and --first-only are incompatible\n");
+    exit(1);
+  }
+  if (first_only_disregard_eligibility && stop_after_count) {
+    g_print("--stop-after and --first-only-disregard-eligibility are incompatible\n");
+    exit(1);
+  }
+  if (first_only_disregard_eligibility && first_only) {
+    g_print("--first-only and --first-only-disregard-eligibility are incompatible\n");
+    exit(1);
+  }
+
+  if (first_only)
+    stop_after_count = 1;
+  if (first_only_disregard_eligibility) {
+    stop_after_count = 1;
+    count_disregards_eligibility = TRUE;
+  }
+
   /* Decide on the action to take */
   if (show_version) {
     version();
     exit(0);
   }
 
-  if (catchup)
+  opts = option_info_new();
+  opts->no_download = 0;
+  opts->no_mark_read = 0;
+  opts->stop_after_count = stop_after_count;
+  opts->count_disregards_eligibility = count_disregards_eligibility;
+  opts->resume = resume;
+  opts->debug = debug;
+  opts->reverse = reverse;
+  opts->show_progress_bar = show_progress_bar;
+
+  if (catchup) {
     op = OP_CATCHUP;
+    opts->no_download = 1;
+    opts->no_mark_read = 0;
+  }
 
-  if (list)
+  if (list) {
     op = OP_LIST;
+    opts->no_download = 1;
+    opts->no_mark_read = 1;
+  }
 
+  opts->filter = NULL;
   if (filter_regex) {
     filter = enclosure_filter_new(filter_regex, FALSE);
+    opts->filter = filter;
     g_free(filter_regex);
   }
 
@@ -205,6 +260,8 @@ int main(int argc, char **argv)
 
   if (filter)
     enclosure_filter_free(filter);
+
+  option_info_free(opts);
 
   g_free(rcfile);
 
@@ -394,7 +451,7 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf,
 
   c = channel_new(channel_configuration->url, channel_file,
                   channel_configuration->spool_directory,
-                  channel_configuration->filename_pattern, resume);
+                  channel_configuration->filename_pattern, opts->resume);
   g_free(channel_file);
 
   if (!c) {
@@ -415,18 +472,15 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf,
 
   switch (op) {
   case OP_UPDATE:
-    channel_update(c, channel_configuration, update_callback, 0, 0, first_only,
-                   resume, filter, debug, show_progress_bar);
+    channel_update(c, channel_configuration, update_callback, opts);
     break;
 
   case OP_CATCHUP:
-    channel_update(c, channel_configuration, catchup_callback, 1, 0, first_only,
-                   0, filter, debug, show_progress_bar);
+    channel_update(c, channel_configuration, catchup_callback, opts);
     break;
 
   case OP_LIST:
-    channel_update(c, channel_configuration, list_callback, 1, 1, first_only, 0,
-                   filter, debug, show_progress_bar);
+    channel_update(c, channel_configuration, list_callback, opts);
     break;
   }
 
