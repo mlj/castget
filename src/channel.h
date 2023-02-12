@@ -72,4 +72,27 @@ int channel_update(channel *c, void *user_data, channel_callback cb,
 enclosure_filter *enclosure_filter_new(const gchar *pattern, gboolean caseless);
 void enclosure_filter_free(enclosure_filter *e);
 
+typedef struct _rss_item rss_item;
+
+typedef struct _download_data {
+  channel *c;
+  channel_info *channel_info;
+  rss_item *item;
+  void *user_data;
+  channel_callback cb;
+  int resume;
+  int debug;
+  int show_progress_bar;
+  int result;
+} download_data;
+
+typedef struct _catchup_data {
+  channel *c;
+  channel_info *channel_info;
+  rss_item *item;
+  void *user_data;
+  channel_callback cb;
+  int result;
+} catchup_data;
+
 #endif /* CHANNEL_H */
