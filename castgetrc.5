@@ -1,0 +1,139 @@
+.TH "CASTGETRC" "5" "January 2025" "castget 2.0.1" "User Commands"
+.
+.SH "NAME"
+\fBcastgetrc\fR \- configuration file for castget
+.
+.SH "DESCRIPTION"
+The configuration file \fB\.castgetrc\fR should be located in a user\'s home directory\. It defines the behaviour of the RSS enclosure downloader \fBcastget\fR, and in particular the list of channels it operates on\.
+.
+.P
+The file is based on a simple key\-value format\. It consists of a channel definition for each RSS feed \fBcastget\fR should process\. A channel definition starts with a line containing a channel identifier enclosed in brackets\. The channel identifier can be freely chosen by the user and is used for all subsequent operations on the channel\. Following this are one or more key\-value pairs on the form \fBkey=value\fR that define \fBcastget\fR\'s behaviour when operating on the channel\. A channel definition ends when another channel definition is started or at the end of the file\.
+.
+.P
+Lines beginning with a hash character (`#\') and blank lines are considered comments\. All identifiers, keys and values should be UTF\-8 encoded\.
+.
+.P
+Key\-value pairs in a channel definition define the behaviour of \fBcastget\fR when processing the channel\. The channel definition
+.
+.IP "" 4
+.
+.nf
+
+[fooc]
+url=http://downloads\.bbc\.co\.uk/podcasts/radio4/fooc/rss\.xml
+spool=/home/joe/podcasts
+.
+.fi
+.
+.IP "" 0
+.
+.P
+for example, instructs \fBcastget\fR to use \fB/home/joe/podcasts\fR as a download directory when processing the channel \fBfooc\fR\.
+.
+.P
+Directory names and filenames with spaces do not need to be quoted or escaped\.
+.
+.SH "KEYS"
+.
+.TP
+\fBurl\fR
+Retrieve RSS feed from this URL\. The field is mandatory for all channel definitions\.
+.
+.TP
+\fBspool\fR
+Download enclosures to this directory\.
+.
+.TP
+\fBplaylist\fR
+Write the fully qualified file names of all downloaded enclosures to an m3u style playlist file with this name\.
+.
+.TP
+\fBfilter\fR
+Restrict operation to enclosures whose URLs match this regular expression\.
+.
+.TP
+\fBtitle_tag\fR
+Add or set the title tag in the media file (e\.g\. `title\' (TIT2) in ID3v2)\.
+.
+.TP
+\fBalbum_tag\fR
+Add or set the album tag in the media file (e\.g\. `album\' (TALB) in ID3v2)\.
+.
+.TP
+\fBgenre_tag\fR
+Add or set the genre tag in the media file (e\.g\. `content type\' (TCON) in ID3v2)\.
+.
+.TP
+\fByear_tag\fR
+Add or set the year tag in the media file (e\.g\. `year\' (TYER) in ID3v2)\.
+.
+.TP
+\fBcomment_tag\fR
+Add or set the comment tag in the media file (e\.g\. `comment\' (COMM) in ID3v2)\.
+.
+.TP
+\fBfilename\fR
+Save downloads using the given filename pattern instead of deriving it from the URL of the enclosure\. See FILENAME PATTERNS\.
+.
+.SH "GLOBAL CONFIGURATION"
+A channel definition with the channel identifier \fB*\fR will define a global configuration affecting all channels\. The global configuration
+.
+.IP "" 4
+.
+.nf
+
+[*]
+genre_tag=Podcast
+.
+.fi
+.
+.IP "" 0
+.
+.P
+for example, is equivalent to adding the key\-value pair \fBgenre_tag=Podcast\fR to all other channel definitions\.
+.
+.P
+Key\-value pairs in channel definitions override the global configuration\.
+.
+.SH "FILENAME PATTERNS"
+Filename patterns can contain patterns on the form \fB%(parameter)\fR, which are expanded to form a complete filename\. Patterns are expanded once for each enclosure download and can therefore be used to generate filenames that are unique to each download\.
+.
+.P
+Anything that is not a pattern is as a literal that will be reproduced verbatim (subject to some sanity checking)\. The complete pathname of a download is determined by concatenating the channel\'s spool directory with the filename\.
+.
+.P
+Note that \fBcastget\fR will refuse to overwrite files that already exist except when it is invoked with the \fB\-r\fR option to resume downloads\. Some RSS feeds reuse the same filename for all enclosures\. In such cases the \fB\-r\fR option will corrupt existing downloads unless you use filename patterns to construct unique filenames\.
+.
+.P
+The following patterns take information from the \fBitem\fR element or the enclosure in the RSS feed:
+.
+.IP "\(bu" 4
+\fB%(date)\fR: date (by default on the format YYYY\-MM\-DD)
+.
+.IP "\(bu" 4
+\fB%(title)\fR: title
+.
+.IP "" 0
+.
+.P
+The following take information from the \fBchannel\fR element or the enclosure in the RSS feed:
+.
+.IP "\(bu" 4
+\fB%(channel_title)\fR: channel title
+.
+.IP "" 0
+.
+.P
+If any of the information required by a pattern is missing from the RSS feed or is invalid the pattern will be ignored and removed from the resulting filename\.
+.
+.SH "CHANNEL REMOVAL"
+If a channel configuration is removed, the channel status remains the same so that if the channel is subsequently re\-added, any enclosures marked as already downloaded will not be downloaded again\.
+.
+.SH "NOTE"
+The source distribution includes a sample configuration file demonstrating all supported settings\.
+.
+.SH "SEE ALSO"
+castget(1)
+.
+.SH "AUTHOR"
+Marius L\. Jøhndal\.

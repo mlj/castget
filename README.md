@@ -76,9 +76,6 @@ make
 make install
 ```
 
-You will also need [ronn](http://rtomayko.github.io/ronn/), which is used to
-build the man pages. Prebuilt man pages are included in the distribution.
-
 ### Building from Dockerfile
 
 A Dockerfile is available in contrib folder.

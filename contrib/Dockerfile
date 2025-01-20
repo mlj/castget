@@ -5,7 +5,7 @@ VOLUME /castget
 COPY . ./build
 
 RUN apk add --no-cache --virtual build-dependencies \
-      libxml2-dev glib-dev curl-dev taglib-dev alpine-sdk autoconf automake libtool ronn \
+      libxml2-dev glib-dev curl-dev taglib-dev alpine-sdk autoconf automake libtool \
   && apk add --no-cache libxml2 glib curl taglib \
   && cd build \
   && autoreconf -fi \

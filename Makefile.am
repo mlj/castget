@@ -22,9 +22,7 @@ SUBDIRS = tests src
 EXTRA_DIST = \
   castgetrc.example \
   castget.1 \
-  castget.1.ronn \
   castgetrc.5 \
-  castgetrc.5.ronn \
   CHANGES.md \
   ChangeLog.old
 
@@ -33,13 +31,3 @@ man_MANS = \
   castgetrc.5
 
 AUTOMAKE_OPTIONS = foreign
-
-.PHONY: html
-
-html: castget.1.html castgetrc.5.html
-
-%.html: %.ronn
-	ronn --manual="User Commands" --organization="castget @VERSION@" --html $< > $@
-
-%: %.ronn
-	ronn --manual="User Commands" --organization="castget @VERSION@" --roff $< > $@

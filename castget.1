@@ -1,0 +1,140 @@
+.TH "CASTGET" "1" "January 2025" "castget 2.0.1" "User Commands"
+.
+.SH "NAME"
+\fBcastget\fR \- download RSS enclosures
+.
+.SH "SYNOPSIS"
+\fBcastget\fR [\fIOPTION\fR\.\.\.] [\fICHANNEL IDENTIFIER\fR\.\.\.]
+.
+.SH "DESCRIPTION"
+\fBcastget\fR downloads RSS enclosures, for example podcasts, from RSS feeds\.
+.
+.P
+RSS feeds are assigned \fIchannel identifier\fRs in the configuration file \fB\.castgetrc\fR\. Channels to be processed by \fBcastget\fR are indicated by supplying the channel identifiers as arguments\. If no channel identifiers are provided, all available channels are processed\.
+.
+.P
+If run without any options, \fBcastget\fR will perform the default action on all channels to be processed\. The default action is to download any enclosure not already downloaded\. Other actions may be performed by supplying one or more options as arguments\.
+.
+.SH "OPTIONS"
+.
+.SS "Operations"
+.
+.TP
+\fB\-c\fR, \fB\-\-catchup\fR
+Catch up with channels and exit\.
+.
+.TP
+\fB\-l\fR, \fB\-\-list\fR
+List available enclosures that have not yet been downloaded, and exit\.
+.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Display help and exit\.
+.
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Output version information and exit\.
+.
+.SS "Operation filters"
+.
+.TP
+\fB\-n\fR, \fB\-\-new\-only\fR
+Restrict operation to new channels only, i\.e\. to channels that have never been downloaded from or been caught up with before\. Note that if a channel is added to the configuration and subsequently removed, its download history is preserved\. This means that a channel that has been removed from the configuration file will not be considered as \'new\' if it is added to the configuration again at a later time\.
+.
+.TP
+\fB\-1\fR, \fB\-\-first\-only\fR
+Restrict operation to the most recent item in each channel only\.
+.
+.TP
+\fB\-f\fR \fIpattern\fR, \fB\-\-filter\fR=\fIpattern\fR
+Restrict operation to enclosures whose download URLs match the regular expression \fBpattern\fR\. Note that this will override any regular expression filters given in the configuration file\.
+.
+.SS "Global options"
+.
+.TP
+\fB\-r\fR, \fB\-\-resume\fR
+Resume aborted downloads\. Make sure not to use this option if the RSS feed uses the same filename for multiple enclosures as this will corrupt existing downloads\.
+.
+.TP
+\fB\-q\fR, \fB\-\-quiet\fR
+Do not print anything except error messages\.
+.
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+Print detailed progress information\.
+.
+.TP
+\fB\-d\fR, \fB\-\-debug\fR
+Print (lots of) connection debug information\.
+.
+.TP
+\fB\-p\fR, \fB\-\-progress\-bar\fR
+Print a progress bar when downloading enclosures\.
+.
+.TP
+\fB\-C\fR \fIfilename\fR, \fB\-\-rcfile\fR=\fIfilename\fR
+Override the default filename for the configuration file\.
+.
+.SH "EXAMPLES"
+.
+.TP
+Download all enclosures not already downloaded:
+.
+.IP
+$ castget
+.
+.TP
+Download all enclosures not already downloaded from channel \fBfoobar\fR and be verbose:
+.
+.IP
+$ castget \-v foobar
+.
+.TP
+List all enclosures not already downloaded:
+.
+.IP
+$ castget \-l
+.
+.TP
+Catch up with channel \fBfoobar\fR:
+.
+.IP
+$ castget \-c foobar
+.
+.TP
+List the first available enclosure in all new channels:
+.
+.IP
+$ castget \-1 \-n \-l
+.
+.TP
+Catch up with items that match the regular expression \fBFreddies0[67]\fR in the channel \fBfrederator\fR:
+.
+.IP
+$ castget \-c \-f "Freddies0[67]" frederator
+.
+.SH "HTTP PROXY"
+.
+.TP
+To use a HTTP proxy, set the environment variable \fBhttp_proxy\fR:
+.
+.IP
+http_proxy=http://your\.proxy\.server:port/ castget
+.
+.SH "SEE ALSO"
+castgetrc(5)
+.
+.SH "BUGS"
+Please see the castget home page \fIhttp://mlj\.github\.io/castget\fR for instructions on how to submit bug reports\.
+.
+.SH "AUTHORS"
+Marius L\. Jøhndal, Jick Nan\.
+.
+.SH "COPYRIGHT"
+Castget is Copyright (C) 2005\-2021 Marius L\. Jøhndal\.
+.
+.P
+Castget is Copyright (C) 2007 Jick Nan\.
+.
+.P
+This is free software; see the source for copying conditions\. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\.

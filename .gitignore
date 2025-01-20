@@ -21,10 +21,6 @@ config.status
 config.sub
 aclocal.m4
 po
-castget.1
-castget.1.html
-castgetrc.5
-castgetrc.5.html
 .libs
 .deps
 *.o
