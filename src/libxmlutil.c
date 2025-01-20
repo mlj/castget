@@ -23,6 +23,7 @@
 
 #include "libxmlutil.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 char *libxmlutil_dup_attr(const xmlNode *node, const char *name)
