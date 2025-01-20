@@ -1,11 +1,15 @@
 This is a summary of changes between each release. See the commit log on
 https://github.com/mlj/castget/commits/master for a details.
 
-Version 2.0.1 (2019/10/26):
+Version 3.0.0 (TBD):
+
+  * Update autotools configuration (autoconf 2.72 and automake 1.16).
+
+Version 2.0.1 (2019-10-26):
 
   * Fix broken man pages in distribution (issue #37)
 
-Version 2.0.0 (2019/10/12):
+Version 2.0.0 (2019-10-12):
 
   * Add support for filename patterns (configuration option `filename`, issue #13, issue #21)
   * Behaviour change: The `-f`/`--filter` option and the filter configuration
@@ -18,11 +22,11 @@ Version 2.0.0 (2019/10/12):
   * Enable libcurl's compression support (PR #28)
   * Fix feeds with enclosure type `audio/mp3` (PR #30)
 
-Version 1.2.4 (2017/05/17):
+Version 1.2.4 (2017-05-17):
 
   * Fix build issues involving man pages (issue #20)
 
-Version 1.2.3 (2017/05/16):
+Version 1.2.3 (2017-05-16):
 
   * Fix lack of support for https (issue #10, issue #14, PR #15)
   * Fix broken handling of COLUMNS environment variable etc. (PR #16)
@@ -31,15 +35,15 @@ Version 1.2.3 (2017/05/16):
   * Fix MacOS build
   * Replace ChangeLog and NEWS files with CHANGES file
 
-Version 1.2.2 (2016/01/26):
+Version 1.2.2 (2016-01-26):
 
   * Fix width of the progress bar.
 
-Version 1.2.1 (2016/01/04):
+Version 1.2.1 (2016-01-04):
 
   * Fix broken enclosure filenames.
 
-Version 1.2.0 (2013/07/10):
+Version 1.2.0 (2013-07-10):
 
   * Add command line option -p for an optional progress bar.
   * Add command line option --debug for optional connection debugging.
@@ -47,7 +51,7 @@ Version 1.2.0 (2013/07/10):
   * Fix incorrect memory allocation when enclosure download fails.
   * Document proxy configuration.
 
-Version 1.1.0 (2010/02/20):
+Version 1.1.0 (2010-02-20):
 
   * New command line option --rcfile for specifying an alternate location for
   the configuration file.
@@ -59,7 +63,7 @@ Version 1.1.0 (2010/02/20):
 
   * Distribution files are compressed with bzip2.
 
-Version 1.0.1 (2007/11/14):
+Version 1.0.1 (2007-11-14):
 
   * castget now identifies itself using the HTTP User-Agent header.
 

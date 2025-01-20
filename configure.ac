@@ -17,17 +17,17 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-AC_PREREQ(2.59)
-AC_INIT(castget, 2.0.1, mariuslj@ifi.uio.no)
-AM_INIT_AUTOMAKE([1.8 dist-bzip2 no-dist-gzip foreign])
+AC_PREREQ([2.72])
+AC_INIT([castget],[2.0.1],[mariuslj@ifi.uio.no])
+AM_INIT_AUTOMAKE([1.16 dist-bzip2 no-dist-gzip foreign])
 AC_CONFIG_SRCDIR([src/castget.c])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIRS([m4])
 
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
-AC_PROG_LIBTOOL
+LT_INIT
 
 # Checks for libraries.
 PKG_CHECK_MODULES(GLIBS, [
@@ -46,8 +46,7 @@ else
   AC_SUBST(CURL_LIBS)
 fi
 
-#AC_ARG_WITH(taglib, [  --without-taglib        disable taglib support])
-AC_ARG_WITH(taglib, AC_HELP_STRING([--without-taglib], [disable taglib support])])
+AC_ARG_WITH(taglib, AS_HELP_STRING([--without-taglib],[disable taglib support])])
 if test "x$with_taglib" != "xno"; then
   PKG_CHECK_MODULES(TAGLIB, [taglib_c])
   AC_SUBST(TAGLIB_CFLAGS)
@@ -56,7 +55,6 @@ if test "x$with_taglib" != "xno"; then
 fi
 
 # Checks for header files.
-AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
