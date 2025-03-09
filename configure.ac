@@ -46,6 +46,10 @@ else
   AC_SUBST(CURL_LIBS)
 fi
 
+PTHREAD_LIBS=-lpthread
+AC_SUBST(PTHREAD_CFLAGS)
+AC_SUBST(PTHREAD_LIBS)
+
 #AC_ARG_WITH(taglib, [  --without-taglib        disable taglib support])
 AC_ARG_WITH(taglib, AC_HELP_STRING([--without-taglib], [disable taglib support])])
 if test "x$with_taglib" != "xno"; then

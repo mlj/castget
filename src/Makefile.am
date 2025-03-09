@@ -15,7 +15,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-AM_CPPFLAGS = $(GLIBS_CFLAGS) $(CURL_CFLAGS)
+AM_CPPFLAGS = $(GLIBS_CFLAGS) $(CURL_CFLAGS) $(PTHREAD_CFLAGS)
 
 bin_PROGRAMS = castget
 
@@ -47,4 +47,6 @@ castget_SOURCES = \
 castget_LDADD = \
   $(CURL_LIBS) \
   $(GLIBS_LIBS) \
-  $(TAGLIB_LIBS)
+  $(TAGLIB_LIBS) \
+  $(PTHREAD_LIBS) \
+
