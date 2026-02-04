@@ -61,8 +61,9 @@ static void test_progress_bar_cb()
                   "####################################                        "
                   "             ");
 
-  fclose(pb->f);
+  FILE *f = pb->f;
   progress_bar_free(pb);
+  fclose(f);
 
   if (old_columns) {
     setenv("COLUMNS", old_columns, 1);
