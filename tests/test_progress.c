@@ -6,7 +6,7 @@
 
 static void test_progress_bar_new()
 {
-  char *old_columns = getenv("COLUMNS");
+  char *old_columns = g_strdup(getenv("COLUMNS"));
   progress_bar *pb;
 
   setenv("COLUMNS", "120", 1);
@@ -26,12 +26,15 @@ static void test_progress_bar_new()
 
   if (old_columns) {
     setenv("COLUMNS", old_columns, 1);
+    g_free(old_columns);
+  } else {
+    unsetenv("COLUMNS");
   }
 }
 
 static void test_progress_bar_cb()
 {
-  char *old_columns = getenv("COLUMNS");
+  char *old_columns = g_strdup(getenv("COLUMNS"));
   progress_bar *pb;
 
   setenv("COLUMNS", "78", 1);
@@ -67,6 +70,9 @@ static void test_progress_bar_cb()
 
   if (old_columns) {
     setenv("COLUMNS", old_columns, 1);
+    g_free(old_columns);
+  } else {
+    unsetenv("COLUMNS");
   }
 }
 
