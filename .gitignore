@@ -1,4 +1,6 @@
 *.dirstamp
+*.gcda
+*.gcno
 *.log
 *.o
 *.trs
@@ -19,6 +21,8 @@ config.sub
 configure
 configure.ac~
 configure~
+coverage-html
+coverage.info
 depcomp
 install-sh
 libtool

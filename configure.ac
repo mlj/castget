@@ -64,6 +64,20 @@ AC_C_CONST
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([strdup strtol])
 
+AC_ARG_ENABLE([coverage],
+  [AS_HELP_STRING([--enable-coverage], [enable code coverage support])],
+  [case "${enableval}" in
+    yes) coverage=true ;;
+    no)  coverage=false ;;
+    *) AC_MSG_ERROR([bad value ${enableval} for --enable-coverage]) ;;
+  esac],
+  [coverage=false])
+
+if test "x$coverage" = "xtrue"; then
+  CFLAGS="$CFLAGS -O0 -fprofile-arcs -ftest-coverage"
+  LDFLAGS="$LDFLAGS -lgcov"
+fi
+
 AC_CONFIG_FILES([
   Makefile
   src/Makefile

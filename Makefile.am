@@ -31,3 +31,14 @@ man_MANS = \
   castgetrc.5
 
 AUTOMAKE_OPTIONS = foreign
+
+coverage: check
+	lcov --capture --directory . --output-file coverage.info
+	lcov --remove coverage.info '/usr/*' 'tests/*' --output-file coverage.info
+	genhtml coverage.info --output-directory coverage-html
+	@echo "Coverage report generated in coverage-html/index.html"
+
+clean-local:
+	rm -rf coverage.info coverage-html
+	find . -name "*.gcda" -delete
+	find . -name "*.gcno" -delete
