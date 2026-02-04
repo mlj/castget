@@ -22,6 +22,7 @@
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdio.h>
 #include "date_parsing.h"
 #include "filenames.h"
 #include "patterns.h"
@@ -70,6 +71,7 @@ gchar *build_enclosure_filename(const char *spool_directory,
     filename = guess_filename_from_url(item->enclosure->url);
 
   sanitised_filename = sanitise_filename(filename);
+  printf(" * Saving as %s\n", sanitised_filename);
   g_free(filename);
 
   pathname = g_build_filename(spool_directory, sanitised_filename, NULL);

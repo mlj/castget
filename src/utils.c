@@ -91,6 +91,8 @@ int write_by_temporary_file(const gchar *filename,
       unlink(tmp_filename_used);
       g_free(tmp_filename_used);
       return -1;
+    } else {
+      printf(" * Renamed file to %s\n", filename);
     }
 
     if (used_filename)
