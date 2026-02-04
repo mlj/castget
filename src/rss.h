@@ -48,5 +48,6 @@ typedef struct _rss_file {
 rss_file *rss_open_file(const char *filename);
 rss_file *rss_open_url(const char *url, int debug);
 void rss_close(rss_file *f);
+long rss_total_enclosure_size(rss_file *f);
 
 #endif /* RSS_H */
