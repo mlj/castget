@@ -35,6 +35,7 @@ struct channel_configuration {
   gchar *year_tag;
   gchar *comment_tag;
   gchar *regex_filter;
+  gchar *user_agent;
 };
 
 struct channel_configuration *channel_configuration_new(

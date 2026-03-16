@@ -394,7 +394,8 @@ static int _process_channel(const gchar *channel_directory, GKeyFile *kf,
 
   c = channel_new(channel_configuration->url, channel_file,
                   channel_configuration->spool_directory,
-                  channel_configuration->filename_pattern, resume);
+                  channel_configuration->filename_pattern, resume,
+                  channel_configuration->user_agent);
   g_free(channel_file);
 
   if (!c) {

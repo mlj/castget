@@ -58,7 +58,7 @@ static void _enclosure_iterator(const void *user_data, int i,
 
 channel *channel_new(const char *url, const char *channel_file,
                      const char *spool_directory, const char *filename_pattern,
-                     int resume)
+                     int resume, const char *user_agent)
 {
   channel *c;
   xmlDocPtr doc;
@@ -70,6 +70,7 @@ channel *channel_new(const char *url, const char *channel_file,
   c->channel_filename = g_strdup(channel_file);
   c->spool_directory = g_strdup(spool_directory);
   c->filename_pattern = g_strdup(filename_pattern);
+  c->user_agent = g_strdup(user_agent);
   //  c->resume = resume;
   c->rss_last_fetched = NULL;
   c->downloaded_enclosures =
@@ -126,7 +127,7 @@ static void _cast_channel_save_downloaded_enclosure(gpointer key,
   g_free(escaped_key);
 }
 
-static int _cast_channel_save_channel(FILE *f, gpointer user_data, int debug)
+static int _cast_channel_save_channel(FILE *f, gpointer user_data, int debug, channel *cc)
 {
   channel *c = (channel *)user_data;
 
@@ -149,7 +150,7 @@ static int _cast_channel_save_channel(FILE *f, gpointer user_data, int debug)
 static void _cast_channel_save(channel *c, int debug)
 {
   write_by_temporary_file(c->channel_filename, _cast_channel_save_channel, c,
-                          NULL, debug);
+                          NULL, debug, c);
 }
 
 void channel_free(channel *c)
@@ -180,7 +181,7 @@ static rss_file *_get_rss(channel *c, void *user_data, channel_callback cb,
 
   if (!strncmp("http://", c->url, strlen("http://")) ||
       !strncmp("https://", c->url, strlen("https://")))
-    f = rss_open_url(c->url, debug);
+    f = rss_open_url(c->url, debug, c);
   else
     f = rss_open_file(c->url);
 
@@ -256,7 +257,7 @@ static int _do_download(channel *c, channel_info *channel_info, rss_item *item,
     pb = NULL;
 
   if (urlget_buffer(item->enclosure->url, enclosure_file, _enclosure_urlget_cb,
-                    resume_from, debug, pb)) {
+                    resume_from, debug, pb, c)) {
     g_fprintf(stderr, "Error downloading enclosure from %s.\n",
               item->enclosure->url);
 
